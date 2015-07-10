@@ -32,17 +32,7 @@ $nama_modem             = fetch_one_value("select coalesce((select nama_modem fr
  *  return array if sms is valid
  *  return false if sms is invalid/empty 
  */
-/*
-$options = array('Item1','Item2');
-echo 'Here is the array: ';
-print_r($options); 
-echo '<hr>';
-echo 'And then joined:';
-$opts = implode('|', $options); 
-echo $opts;
-die();
-*/
-
+ 
 function sms_create_options($options = array())
 {    
     if (!is_array($options)) { return ''; } else { return '<'.implode('|', $options).'>'; }    
@@ -170,16 +160,26 @@ function sms_process_keyword_info($orig_sender, $sms_params)
                 break;
             case KW_KEMBALI:
                 $pesan = FORMAT_SMS_KEMBALI;
+                $pesan2 = CONTOH_SMS_KEMBALI;
                 break;
             case KW_MONITOR:
                 $pesan = FORMAT_SMS_MONITOR;
+                $pesan2 = CONTOH_SMS_KEMBALI;
                 break;
             default:
-                $pesan = $dp;                
+                $pesan = $dp;      
+                $pesan2 = '';          
         }        
     }
-    $insert = sms_generate_send_query($orig_sender, $pesan);
-    if (exec_query($insert)) { return true; } else { return false; }     
+    $insert = sms_generate_send_query($orig_sender, $pesan1);
+    $ok1 = exec_query($insert);
+    $ok2 = true;
+    if (!empty($pesan2))
+    {
+        $insert = sms_generate_send_query($orig_sender, $pesan2);
+        $ok2 = exec_query($insert);
+    }
+    return ($ok1 && $ok2);
 }
 
 $last_id    = fetch_one_value("select coalesce((select config_value from configs where config_name = '$last_config_name'),0)");
