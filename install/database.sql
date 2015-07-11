@@ -11,7 +11,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 -- Dumping structure for table freeinkubator.configs
-DROP TABLE IF EXISTS `configs`;
 CREATE TABLE IF NOT EXISTS `configs` (
   `config_name` varchar(50) NOT NULL,
   `config_value` varchar(100) NOT NULL DEFAULT '',
@@ -21,11 +20,12 @@ CREATE TABLE IF NOT EXISTS `configs` (
 
 -- Dumping data for table freeinkubator.configs: 0 rows
 /*!40000 ALTER TABLE `configs` DISABLE KEYS */;
+INSERT INTO `configs` (`config_name`, `config_value`) VALUES
+	('last_processed_valid_sms_id', '24102383252406273');
 /*!40000 ALTER TABLE `configs` ENABLE KEYS */;
 
 
 -- Dumping structure for table freeinkubator.daemons
-DROP TABLE IF EXISTS `daemons`;
 CREATE TABLE IF NOT EXISTS `daemons` (
   `Start` text NOT NULL,
   `Info` text NOT NULL
@@ -37,7 +37,6 @@ CREATE TABLE IF NOT EXISTS `daemons` (
 
 
 -- Dumping structure for table freeinkubator.frontend_comments
-DROP TABLE IF EXISTS `frontend_comments`;
 CREATE TABLE IF NOT EXISTS `frontend_comments` (
   `id` bigint(20) NOT NULL DEFAULT '0',
   `pub_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -60,7 +59,6 @@ INSERT INTO `frontend_comments` (`id`, `pub_date`, `nama`, `email`, `url`, `cont
 
 
 -- Dumping structure for table freeinkubator.frontend_posts
-DROP TABLE IF EXISTS `frontend_posts`;
 CREATE TABLE IF NOT EXISTS `frontend_posts` (
   `id` bigint(20) NOT NULL DEFAULT '0',
   `pub_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -81,7 +79,6 @@ INSERT INTO `frontend_posts` (`id`, `pub_date`, `title`, `content`, `excerpt`, `
 
 
 -- Dumping structure for table freeinkubator.gammu
-DROP TABLE IF EXISTS `gammu`;
 CREATE TABLE IF NOT EXISTS `gammu` (
   `Version` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -94,7 +91,6 @@ INSERT INTO `gammu` (`Version`) VALUES
 
 
 -- Dumping structure for table freeinkubator.inbox
-DROP TABLE IF EXISTS `inbox`;
 CREATE TABLE IF NOT EXISTS `inbox` (
   `UpdatedInDB` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `ReceivingDateTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -117,7 +113,6 @@ CREATE TABLE IF NOT EXISTS `inbox` (
 
 
 -- Dumping structure for table freeinkubator.inkubator_kembali
-DROP TABLE IF EXISTS `inkubator_kembali`;
 CREATE TABLE IF NOT EXISTS `inkubator_kembali` (
   `id` bigint(20) unsigned NOT NULL DEFAULT '0',
   `kode_pinjam` varchar(20) NOT NULL DEFAULT '',
@@ -139,7 +134,6 @@ CREATE TABLE IF NOT EXISTS `inkubator_kembali` (
 
 
 -- Dumping structure for table freeinkubator.inkubator_master
-DROP TABLE IF EXISTS `inkubator_master`;
 CREATE TABLE IF NOT EXISTS `inkubator_master` (
   `id` bigint(20) NOT NULL,
   `nama` varchar(50) NOT NULL,
@@ -161,7 +155,6 @@ INSERT INTO `inkubator_master` (`id`, `nama`, `jumlah`, `panjang`, `lebar`, `tin
 
 
 -- Dumping structure for table freeinkubator.inkubator_monitoring
-DROP TABLE IF EXISTS `inkubator_monitoring`;
 CREATE TABLE IF NOT EXISTS `inkubator_monitoring` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
   `kode_pinjam` varchar(20) NOT NULL DEFAULT '',
@@ -180,7 +173,6 @@ CREATE TABLE IF NOT EXISTS `inkubator_monitoring` (
 
 
 -- Dumping structure for table freeinkubator.inkubator_pinjam
-DROP TABLE IF EXISTS `inkubator_pinjam`;
 CREATE TABLE IF NOT EXISTS `inkubator_pinjam` (
   `id` bigint(20) unsigned NOT NULL DEFAULT '0',
   `kode_pinjam` varchar(20) NOT NULL DEFAULT '',
@@ -217,7 +209,6 @@ CREATE TABLE IF NOT EXISTS `inkubator_pinjam` (
 
 
 -- Dumping structure for table freeinkubator.modem_baudrates
-DROP TABLE IF EXISTS `modem_baudrates`;
 CREATE TABLE IF NOT EXISTS `modem_baudrates` (
   `baudrate` int(8) NOT NULL,
   `default` enum('Y','N') NOT NULL DEFAULT 'N',
@@ -243,7 +234,6 @@ INSERT INTO `modem_baudrates` (`baudrate`, `default`) VALUES
 
 
 -- Dumping structure for table freeinkubator.modem_flowcontrols
-DROP TABLE IF EXISTS `modem_flowcontrols`;
 CREATE TABLE IF NOT EXISTS `modem_flowcontrols` (
   `flwcontrol` varchar(20) NOT NULL,
   `default` enum('Y','N') NOT NULL DEFAULT 'N',
@@ -261,7 +251,6 @@ INSERT INTO `modem_flowcontrols` (`flwcontrol`, `default`) VALUES
 
 
 -- Dumping structure for table freeinkubator.modem_gateway
-DROP TABLE IF EXISTS `modem_gateway`;
 CREATE TABLE IF NOT EXISTS `modem_gateway` (
   `id` int(8) NOT NULL AUTO_INCREMENT,
   `nama_modem` varchar(50) NOT NULL DEFAULT '',
@@ -290,7 +279,6 @@ INSERT INTO `modem_gateway` (`id`, `nama_modem`, `nama_port`, `mode`, `baudrate`
 
 
 -- Dumping structure for table freeinkubator.modem_modes
-DROP TABLE IF EXISTS `modem_modes`;
 CREATE TABLE IF NOT EXISTS `modem_modes` (
   `mode` varchar(5) NOT NULL,
   `default` enum('Y','N') NOT NULL DEFAULT 'N',
@@ -308,7 +296,6 @@ INSERT INTO `modem_modes` (`mode`, `default`) VALUES
 
 
 -- Dumping structure for table freeinkubator.modem_parities
-DROP TABLE IF EXISTS `modem_parities`;
 CREATE TABLE IF NOT EXISTS `modem_parities` (
   `parity` varchar(10) NOT NULL,
   `default` enum('Y','N') NOT NULL DEFAULT 'N',
@@ -327,7 +314,6 @@ INSERT INTO `modem_parities` (`parity`, `default`) VALUES
 
 
 -- Dumping structure for table freeinkubator.modem_stopbits
-DROP TABLE IF EXISTS `modem_stopbits`;
 CREATE TABLE IF NOT EXISTS `modem_stopbits` (
   `stopbits` varchar(3) NOT NULL,
   `default` enum('Y','N') NOT NULL DEFAULT 'N',
@@ -344,7 +330,6 @@ INSERT INTO `modem_stopbits` (`stopbits`, `default`) VALUES
 
 
 -- Dumping structure for table freeinkubator.outbox
-DROP TABLE IF EXISTS `outbox`;
 CREATE TABLE IF NOT EXISTS `outbox` (
   `UpdatedInDB` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `InsertIntoDB` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -375,7 +360,6 @@ CREATE TABLE IF NOT EXISTS `outbox` (
 
 
 -- Dumping structure for table freeinkubator.outbox_multipart
-DROP TABLE IF EXISTS `outbox_multipart`;
 CREATE TABLE IF NOT EXISTS `outbox_multipart` (
   `Text` text,
   `Coding` enum('Default_No_Compression','Unicode_No_Compression','8bit','Default_Compression','Unicode_Compression') NOT NULL DEFAULT 'Default_No_Compression',
@@ -393,7 +377,6 @@ CREATE TABLE IF NOT EXISTS `outbox_multipart` (
 
 
 -- Dumping structure for table freeinkubator.outbox_tmp
-DROP TABLE IF EXISTS `outbox_tmp`;
 CREATE TABLE IF NOT EXISTS `outbox_tmp` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `DestinationNumber` varchar(20) NOT NULL DEFAULT '',
@@ -407,11 +390,13 @@ CREATE TABLE IF NOT EXISTS `outbox_tmp` (
 
 -- Dumping data for table freeinkubator.outbox_tmp: 0 rows
 /*!40000 ALTER TABLE `outbox_tmp` DISABLE KEYS */;
+INSERT INTO `outbox_tmp` (`id`, `DestinationNumber`, `TextDecoded`, `SenderID`, `CreatorID`, `Text`) VALUES
+	(59, '+6282345798006', '', 'ZTE MF636', 'Gammu 1.32.0', ''),
+	(60, '+6282345798006', 'KEMBALI*DIAN KHAMSAWARNI*21/09/2015*23/09/2015*28*3,2*SEHAT*RSU Wahidin*Dr. Marhamah, Sp.OG*9288299288*RINA MAWARNI*ARIFIN ADINEGORO', 'ZTE MF636', 'Gammu 1.32.0', '004B0045004D00420041004C0049002A004400490041004E0020004B00480041004D00530041005700410052004E0049002A00320031002F00300039002F0032003000310035002A00320033002F00300039002F0032003000310035002A00320038002A0033002C0032002A00530045004800410054002A0052005300550020005700610068006900640069006E002A00440072002E0020004D0061007200680061006D00610068002C002000530070002E004F0047002A0039003200380038003200390039003200380038002A00520049004E00410020004D0041005700410052004E0049002A00410052004900460049004E0020004100440049004E00450047004F0052004F');
 /*!40000 ALTER TABLE `outbox_tmp` ENABLE KEYS */;
 
 
 -- Dumping structure for table freeinkubator.pbk
-DROP TABLE IF EXISTS `pbk`;
 CREATE TABLE IF NOT EXISTS `pbk` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `GroupID` int(11) NOT NULL DEFAULT '-1',
@@ -426,7 +411,6 @@ CREATE TABLE IF NOT EXISTS `pbk` (
 
 
 -- Dumping structure for table freeinkubator.pbk_groups
-DROP TABLE IF EXISTS `pbk_groups`;
 CREATE TABLE IF NOT EXISTS `pbk_groups` (
   `Name` text NOT NULL,
   `ID` int(11) NOT NULL AUTO_INCREMENT,
@@ -439,7 +423,6 @@ CREATE TABLE IF NOT EXISTS `pbk_groups` (
 
 
 -- Dumping structure for table freeinkubator.phones
-DROP TABLE IF EXISTS `phones`;
 CREATE TABLE IF NOT EXISTS `phones` (
   `ID` text NOT NULL,
   `UpdatedInDB` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -466,7 +449,6 @@ INSERT INTO `phones` (`ID`, `UpdatedInDB`, `InsertIntoDB`, `TimeOut`, `Send`, `R
 
 
 -- Dumping structure for table freeinkubator.sentitems
-DROP TABLE IF EXISTS `sentitems`;
 CREATE TABLE IF NOT EXISTS `sentitems` (
   `UpdatedInDB` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `InsertIntoDB` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -500,7 +482,6 @@ CREATE TABLE IF NOT EXISTS `sentitems` (
 
 
 -- Dumping structure for table freeinkubator.sms_valid
-DROP TABLE IF EXISTS `sms_valid`;
 CREATE TABLE IF NOT EXISTS `sms_valid` (
   `id` bigint(20) NOT NULL DEFAULT '0',
   `udh` varchar(20) NOT NULL DEFAULT '',
@@ -519,7 +500,6 @@ CREATE TABLE IF NOT EXISTS `sms_valid` (
 
 
 -- Dumping structure for table freeinkubator.users
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user_name` varchar(30) NOT NULL,
@@ -534,7 +514,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `user_name` (`user_name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=23985714693668894 DEFAULT CHARSET=utf8;
 
--- Dumping data for table freeinkubator.users: 2 rows
+-- Dumping data for table freeinkubator.users: 3 rows
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (`id`, `user_name`, `group_id`, `user_password`, `email`, `first_name`, `last_name`, `image_path`) VALUES
 	(23985714693668883, 'jokorivai', 'dev', '1c4d3efaf239b9c3bb348bbbe8d98ab5', 'buyutjokorivai@gmail.com', 'Joko', 'Rivai', 'jokorb.png'),
@@ -544,7 +524,6 @@ INSERT INTO `users` (`id`, `user_name`, `group_id`, `user_password`, `email`, `f
 
 
 -- Dumping structure for table freeinkubator.user_groups
-DROP TABLE IF EXISTS `user_groups`;
 CREATE TABLE IF NOT EXISTS `user_groups` (
   `id` char(3) NOT NULL,
   `parent_group_id` char(3) NOT NULL DEFAULT '',
@@ -566,7 +545,6 @@ INSERT INTO `user_groups` (`id`, `parent_group_id`, `group_name`, `group_descrip
 
 
 -- Dumping structure for view freeinkubator.vw_inkubator_perkembangan
-DROP VIEW IF EXISTS `vw_inkubator_perkembangan`;
 -- Creating temporary table to overcome VIEW dependency errors
 CREATE TABLE `vw_inkubator_perkembangan` (
 	`id` BIGINT(20) UNSIGNED NOT NULL,
@@ -603,7 +581,6 @@ CREATE TABLE `vw_inkubator_perkembangan` (
 
 
 -- Dumping structure for view freeinkubator.vw_inkubator_pinjam
-DROP VIEW IF EXISTS `vw_inkubator_pinjam`;
 -- Creating temporary table to overcome VIEW dependency errors
 CREATE TABLE `vw_inkubator_pinjam` (
 	`id` BIGINT(20) UNSIGNED NOT NULL,
@@ -645,7 +622,6 @@ CREATE TABLE `vw_inkubator_pinjam` (
 
 
 -- Dumping structure for view freeinkubator.vw_inkubator_tersedia
-DROP VIEW IF EXISTS `vw_inkubator_tersedia`;
 -- Creating temporary table to overcome VIEW dependency errors
 CREATE TABLE `vw_inkubator_tersedia` (
 	`id` BIGINT(20) NOT NULL,
@@ -660,7 +636,6 @@ CREATE TABLE `vw_inkubator_tersedia` (
 
 
 -- Dumping structure for view freeinkubator.vw_user_login
-DROP VIEW IF EXISTS `vw_user_login`;
 -- Creating temporary table to overcome VIEW dependency errors
 CREATE TABLE `vw_user_login` (
 	`id` BIGINT(20) NOT NULL,
@@ -678,7 +653,6 @@ CREATE TABLE `vw_user_login` (
 
 
 -- Dumping structure for trigger freeinkubator.frontend_comments_before_insert
-DROP TRIGGER IF EXISTS `frontend_comments_before_insert`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `frontend_comments_before_insert` BEFORE INSERT ON `frontend_comments` FOR EACH ROW BEGIN
@@ -689,7 +663,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for trigger freeinkubator.frontend_posts_before_insert
-DROP TRIGGER IF EXISTS `frontend_posts_before_insert`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `frontend_posts_before_insert` BEFORE INSERT ON `frontend_posts` FOR EACH ROW BEGIN
@@ -703,7 +676,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for trigger freeinkubator.inbox_after_insert
-DROP TRIGGER IF EXISTS `inbox_after_insert`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `inbox_after_insert` AFTER INSERT ON `inbox` FOR EACH ROW BEGIN
@@ -810,7 +782,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for trigger freeinkubator.inbox_timestamp
-DROP TRIGGER IF EXISTS `inbox_timestamp`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `inbox_timestamp` BEFORE INSERT ON `inbox` FOR EACH ROW BEGIN
@@ -823,7 +794,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for trigger freeinkubator.inkubator_kembali_after_insert
-DROP TRIGGER IF EXISTS `inkubator_kembali_after_insert`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `inkubator_kembali_after_insert` AFTER INSERT ON `inkubator_kembali` FOR EACH ROW BEGIN
@@ -839,7 +809,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for trigger freeinkubator.inkubator_monitoring_before_insert
-DROP TRIGGER IF EXISTS `inkubator_monitoring_before_insert`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `inkubator_monitoring_before_insert` BEFORE INSERT ON `inkubator_monitoring` FOR EACH ROW BEGIN
@@ -854,7 +823,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for trigger freeinkubator.inkubator_monitoring_before_update
-DROP TRIGGER IF EXISTS `inkubator_monitoring_before_update`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `inkubator_monitoring_before_update` BEFORE UPDATE ON `inkubator_monitoring` FOR EACH ROW BEGIN
@@ -869,7 +837,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for trigger freeinkubator.inkubator_pinjam_after_delete
-DROP TRIGGER IF EXISTS `inkubator_pinjam_after_delete`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `inkubator_pinjam_after_delete` AFTER DELETE ON `inkubator_pinjam` FOR EACH ROW BEGIN
@@ -881,7 +848,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for trigger freeinkubator.outbox_timestamp
-DROP TRIGGER IF EXISTS `outbox_timestamp`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `outbox_timestamp` BEFORE INSERT ON `outbox` FOR EACH ROW BEGIN
@@ -900,7 +866,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for trigger freeinkubator.outbox_tmp_after_insert
-DROP TRIGGER IF EXISTS `outbox_tmp_after_insert`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `outbox_tmp_after_insert` AFTER INSERT ON `outbox_tmp` FOR EACH ROW BEGIN
@@ -988,7 +953,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for trigger freeinkubator.outbox_tmp_before_insert
-DROP TRIGGER IF EXISTS `outbox_tmp_before_insert`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `outbox_tmp_before_insert` BEFORE INSERT ON `outbox_tmp` FOR EACH ROW BEGIN
@@ -1007,7 +971,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for trigger freeinkubator.phones_timestamp
-DROP TRIGGER IF EXISTS `phones_timestamp`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `phones_timestamp` BEFORE INSERT ON `phones` FOR EACH ROW BEGIN
@@ -1023,7 +986,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for trigger freeinkubator.pinjam_after_insert
-DROP TRIGGER IF EXISTS `pinjam_after_insert`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `pinjam_after_insert` AFTER INSERT ON `inkubator_pinjam` FOR EACH ROW BEGIN
@@ -1037,7 +999,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for trigger freeinkubator.pinjam_before_insert
-DROP TRIGGER IF EXISTS `pinjam_before_insert`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `pinjam_before_insert` BEFORE INSERT ON `inkubator_pinjam` FOR EACH ROW BEGIN
@@ -1049,7 +1010,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for trigger freeinkubator.sentitems_timestamp
-DROP TRIGGER IF EXISTS `sentitems_timestamp`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `sentitems_timestamp` BEFORE INSERT ON `sentitems` FOR EACH ROW BEGIN
@@ -1065,7 +1025,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for trigger freeinkubator.sms_valid_before_insert
-DROP TRIGGER IF EXISTS `sms_valid_before_insert`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `sms_valid_before_insert` BEFORE INSERT ON `sms_valid` FOR EACH ROW BEGIN
@@ -1076,7 +1035,6 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
 -- Dumping structure for view freeinkubator.vw_inkubator_perkembangan
-DROP VIEW IF EXISTS `vw_inkubator_perkembangan`;
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `vw_inkubator_perkembangan`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`inkubator`@`localhost` VIEW `vw_inkubator_perkembangan` AS select 
@@ -1122,7 +1080,6 @@ group by p.kode_pinjam ;
 
 
 -- Dumping structure for view freeinkubator.vw_inkubator_pinjam
-DROP VIEW IF EXISTS `vw_inkubator_pinjam`;
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `vw_inkubator_pinjam`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`inkubator`@`localhost` VIEW `vw_inkubator_pinjam` AS select 
@@ -1168,7 +1125,6 @@ left join inkubator_kembali k on k.kode_pinjam = p.kode_pinjam ;
 
 
 -- Dumping structure for view freeinkubator.vw_inkubator_tersedia
-DROP VIEW IF EXISTS `vw_inkubator_tersedia`;
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `vw_inkubator_tersedia`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`inkubator`@`localhost` VIEW `vw_inkubator_tersedia` AS select 
@@ -1187,7 +1143,6 @@ group by i.id ;
 
 
 -- Dumping structure for view freeinkubator.vw_user_login
-DROP VIEW IF EXISTS `vw_user_login`;
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `vw_user_login`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`inkubator`@`localhost` VIEW `vw_user_login` AS SELECT 
