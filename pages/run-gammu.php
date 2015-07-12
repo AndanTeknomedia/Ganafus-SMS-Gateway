@@ -11,6 +11,10 @@ if (USE_GAMMU){
         
     }
 }
+else
+{
+    header('location:index.php');    
+} 
 include_once('../gammu/gammu-cores.php');
 include_once('../cores/db.php');
 include_once('../cores/session.php');

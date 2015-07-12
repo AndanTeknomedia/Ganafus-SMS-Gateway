@@ -213,7 +213,7 @@ $(document).ready(function(){
     /* ajax params */
     var sms_offset      = parseInt(getCookie('sms_offset_outbox') || "0",10);    
     var sms_limit       = parseInt(getCookie('sms_limit_outbox') || "10",10);
-    var sms_sortorder   = getCookie('sms_sortorder_outbox') || 'asc';
+    var sms_sortorder   = getCookie('sms_sortorder_outbox') || 'desc';
     $('#btn-nav-sort i')
         .removeClass('fa-sort-amount-asc')
         .removeClass('fa-sort-amount-desc')

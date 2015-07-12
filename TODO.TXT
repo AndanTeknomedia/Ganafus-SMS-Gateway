@@ -1,13 +1,5 @@
+TODO:
 
-<!--  -->
-manage-skpd-item.php
-daftar user dan program
-
-<!--  -->
-ajax-fetch-skpd.php line 182: send update data
-action: function(dialogRef)
-{    
-	dialogRef.close();
-	alert ($("#dlg-edit-kode-skpd").val());
-	// EDIT SKPD
-}
+* Chart -> Moris Ajax
+* SMS Processor: Redefine. Cek kemungkinan dua processor per 30 detik.
+* Setup pooling SMS

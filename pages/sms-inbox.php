@@ -232,7 +232,7 @@ $(document).ready(function(){
     var sms_offset      = parseInt(getCookie('sms_offset') || "0",10);    
     var sms_limit       = parseInt(getCookie('sms_limit') || "10",10);
     var sms_keyword     = getCookie('sms_keyword') || 'PINJAM';
-    var sms_sortorder   = getCookie('sms_sortorder') || 'asc';
+    var sms_sortorder   = getCookie('sms_sortorder') || 'desc';
     // alert (sms_offset+"\n"+sms_limit+"\n"+sms_keyword+"\n"+sms_sortorder);
     $('#btn-nav-sort i')
         .removeClass('fa-sort-amount-asc')

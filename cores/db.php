@@ -11,6 +11,22 @@ $_mysqli = new mysqli(
 	DB_DATABASE
 );
 
+$_CLEANABLE_TABLES =  array(
+    // 'tablename' => 'condition'
+    'sentitems'             => "",
+    'outbox'                => "",
+    'outbox_multipart'      => "",
+    'outbox_tmp'            => "",
+    'inbox'                 => "",
+    'sms_valid'             => "",          
+    'inkubator_pinjam'      => "",
+    'inkubator_monitoring'  => "",
+    'inkubator_kembali'     => "",
+    'configs'               => "where config_name = 'last_processed_valid_sms_id'",
+    'sms_keywords'          => "",
+    'sms_keyword_columns'   => ""
+);
+
 if ($_mysqli->connect_errno)
 {
     die("DATABASE CONNECTION IS INVALID!<br>
@@ -103,4 +119,39 @@ function exec_query($sql)
 	}
 }
 
+function drop_user_tables($exceptions = array())
+{
+    $tables = fetch_query('show tables');
+    $tabs = array_values($tables);
+    $ok = true;
+    foreach($tabs as $table)
+    {
+        $v = array_values($table);
+        $table = $v[0];
+        if (substr($table, 0, strlen(USER_TABLE_PREFIX))== USER_TABLE_PREFIX)
+        {   
+            // $av[] = $table;
+            $ok &= exec_query("drop table if exists `".$v[0]."`;");
+        } 
+    }
+    // var_dump($av);
+    return $ok;
+}
+
+function clean_tables()
+{
+    global $_CLEANABLE_TABLES;
+    $ok = true;
+    foreach ($_CLEANABLE_TABLES as $table=>$cond)
+    {
+        $ok &= exec_query("delete from `$table`".(empty($cond)?"":(" ".$cond)));
+        // $ok .= "delete from `".$table."`".(empty($cond)?"":(" ".$cond)).";<br>";
+    }
+    /*
+    var_dump($_CLEANABLE_TABLES);  
+    var_dump( $ok );
+    return true;
+    */
+    return $ok;
+}
 ?>

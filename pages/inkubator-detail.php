@@ -9,6 +9,7 @@ if (USE_GAMMU){
         
     }
 }
+
 require_once('../cores/db.php'); 
 include_once('../cores/session.php');
 // require_login('post.php?show/newest');

@@ -8,9 +8,6 @@ define ('SP_AUTHOR', 'Joko Rivai,jokorb@yahoo.co.uk,https://facebook.com/jokoriv
 define ('SP_ORG_NAME','AndanTeknomedia');
 define ('SP_UNDEFINED_SLUG','00000.00-new');
 
-// Determine Gammu Usage:    
-// define ('USE_GAMMU', true); 
-
 define ('SP_DEV_MODE', true	);
 
 define ('SP_POSTFIX_URL','inkubator');

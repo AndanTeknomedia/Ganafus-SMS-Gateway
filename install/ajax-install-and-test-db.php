@@ -43,7 +43,9 @@ else
         define('DB_USER','$user');
         define('DB_PASSWORD','$pass');
         define('DB_DATABASE','$db');
-        define('USE_GAMMU',$use_gammu);
+        define('USE_GAMMU',$use_gammu);   
+        define('GAMMU_CREATOR_ID', 'Gammu 1.32.0');
+        define('USER_TABLE_PREFIX','usr_tables_');
         ?>"
     );
     fclose($f);

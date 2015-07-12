@@ -29,7 +29,7 @@ if (substr($no_tujuan,0,2)=='08')
     $no_tujuan = $pno . substr($no_tujuan,1);
 }
 
-$pesan     = substr(stripslashes( post_var('pesan') ), 0, 400); 
+$pesan     = substr($_mysqli->real_escape_string(stripslashes( post_var('pesan') )), 0, 400); 
 // $pesan     = post_var('pesan');
 // $tipe      = strlen($pesan)>160 ? 'EMS' : 'TEXT';
 $tipe      = 'TEXT';

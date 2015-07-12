@@ -1,19 +1,12 @@
 <?php
 
 include_once(str_replace("\\", "/", dirname(dirname(__FILE__))."/cores/db.php"));
-include_once(str_replace("\\", "/", dirname(dirname(__FILE__))."/gammu/gammu-cores.php"));
 include_once(str_replace("\\", "/", dirname(dirname(__FILE__))."/cores/definition.php"));
+include_once(str_replace("\\", "/", dirname(dirname(__FILE__))."/gammu/gammu-cores.php"));
+include_once(str_replace("\\", "/", dirname(dirname(__FILE__))."/gammu/gammu-fetch-sms.php"));
 
-/**
- * SMS Parser constants. Sesuaikan dengan trigger inbox_after_insert pada tabel inbox di database.
- */
-define('DELIMITER', '*');	
-define('KW_TEST', 'TEST');
-define('KW_INFO', 'INFO');
-define('KW_PINJAM', 'PINJAM');
-define('KW_KEMBALI', 'KEMBALI');
-define('KW_MONITOR', 'MONITOR');
-define('KW_UNKNOWN', 'UNKNOWN');
+if (!USE_GAMMU) {die('Not supported on this server. Gammu is not used.'); }
+
 
 $app_name       = SP_APP_NAME_SHORT;
 $app_version    = SP_APP_VERSION;
@@ -23,28 +16,9 @@ $last_config_name       = 'last_processed_valid_sms_id';
 $data_count_to_process  = 10; // execute 10 data every minute - as this task run
 $nama_modem             = fetch_one_value("select coalesce((select nama_modem from modem_gateway order by id desc limit 0,1),'')");
 
-/**
- * SMS processor utilities:
- */
 
-/**
- * Split sms by DELIMITER and 
- *  return array if sms is valid
- *  return false if sms is invalid/empty 
- */
- 
-function sms_create_options($options = array())
-{    
-    if (!is_array($options)) { return ''; } else { return '<'.implode('|', $options).'>'; }    
-}
-
-function sms_create_format($keyword, $params = array())
-{
-    $params = array_merge(array(strtoupper($keyword)), $params);
-    return implode(DELIMITER, $params);
-}
 // FORMAT SMS
-define('FORMAT_SMS_PINJAM',sms_create_format(KW_KEMBALI, array(
+define('FORMAT_SMS_PINJAM',sms_create_format(KW_PINJAM, array(
     'NAMA_BAYI',
     'TGL_LAHIR',
     'TGL_PULANG_RS',    
@@ -54,6 +28,7 @@ define('FORMAT_SMS_PINJAM',sms_create_format(KW_KEMBALI, array(
     'NAMA_RS',
     'NM_DOKTER/BIDAN',
     'NO_KK',
+    'ALAMAT',
     'NAMA_IBU',
     'NAMA_AYAH'
 )));
@@ -61,7 +36,7 @@ define('FORMAT_SMS_KEMBALI',sms_create_format(KW_KEMBALI, array('KODEPINJAM','CM
 define('FORMAT_SMS_MONITOR',sms_create_format(KW_MONITOR, array('KODEPINJAM','CM_PANJANGBAYI','KG_BERATBAYI',sms_create_options(array('SEHAT','SAKIT')))));
 define('FORMAT_SMS_INFO',sms_create_format(KW_INFO,array(sms_create_options(array(KW_PINJAM, KW_KEMBALI, KW_MONITOR)))));
 // CONTOH SMS
-define('CONTOH_SMS_PINJAM',sms_create_format(KW_KEMBALI, array(
+define('CONTOH_SMS_PINJAM',sms_create_format(KW_PINJAM, array(
     'DIAN KHAMSAWARNI',
     '21/09/2015',
     '23/09/2015',
@@ -71,11 +46,12 @@ define('CONTOH_SMS_PINJAM',sms_create_format(KW_KEMBALI, array(
     'RSU Wahidin',
     'Dr. Marhamah, Sp.OG',
     '9288299288',
+    'BTN Hamzy E8/A',
     'RINA MAWARNI',
     'ARIFIN ADINEGORO'
 )));
-define('CONTOH_SMS_KEMBALI',sms_create_format(KW_KEMBALI, array('F8F4902B','31','3,5','SEHAT','SAKIT')));
-define('CONTOH_SMS_MONITOR',sms_create_format(KW_MONITOR, array('F8F4902B','31','3,5','SEHAT','SAKIT')));
+define('CONTOH_SMS_KEMBALI',sms_create_format(KW_KEMBALI, array('F8F4902B','31','3,5','SEHAT')));
+define('CONTOH_SMS_MONITOR',sms_create_format(KW_MONITOR, array('F8F4902B','31','3,5','SAKIT')));
 define('CONTOH_SMS_INFO',sms_create_format(KW_INFO,array(KW_PINJAM)));
 
 /**
@@ -85,64 +61,36 @@ define('CONTOH_SMS_INFO',sms_create_format(KW_INFO,array(KW_PINJAM)));
  * die();
  */
 
-function sms_get_parameter($pesan)
-{
-    if (strlen($pesan)==0) { return false; }
-    $res = explode(DELIMITER,$pesan);
-    if (count($res)<1)
-    {
-        return false;
-    }
-    else
-    {
-        $res[0] = strtoupper($res[0]); //keyword in uppercase.
-        return $res;
-    }
-}
 
-function sms_generate_send_query($orig_sender, $sms_text)
-{
-    global $nama_modem;
-    return "insert into outbox_tmp(            
-        DestinationNumber,
-        TextDecoded,
-        SenderID,
-        CreatorID
-        ) values (
-        '$orig_sender', 
-        '$sms_text', 
-        '$nama_modem', 
-        '".GAMMU_CREATOR_ID."'
-        )";        
-}
 
-function sms_status_dibalas($sms_id)
-{
-    return exec_query("update sms_valid set diproses = 'Dibalas' where id = '$sms_id'");
-}
+
 /**
  * Process keywords:
  */
 function sms_process_keyword_test($orig_sender, $sms_params)
 {
-    $insert = sms_generate_send_query($orig_sender, SP_APP_NAME_SHORT." v.".SP_APP_VERSION." siap melayani Anda. Ketik ".KW_INFO." utk bantuan."); 
+    global $nama_modem;
+    $insert = sms_generate_send_query($orig_sender, SP_APP_NAME_SHORT." v.".SP_APP_VERSION." siap melayani Anda. Ketik ".KW_INFO." utk bantuan.", $nama_modem); 
     if (exec_query($insert)) { return true; } else { return false; }         
 }
 
 function sms_process_keyword_unknown($orig_sender, $sms_params)
 {
-    $insert = sms_generate_send_query($orig_sender, 'SMS Anda tidak dikenali. Ketik '.KW_INFO.' utk bantuan.');
+    global $nama_modem;
+    $insert = sms_generate_send_query($orig_sender, 'SMS Anda tidak dikenali. Ketik '.KW_INFO.' utk bantuan.', $nama_modem);
     if (exec_query($insert)) { return true; } else { return false; }     
 }
 
 function sms_process_improper_format($orig_sender, $sms_params)
 {
-    $insert = sms_generate_send_query($orig_sender, 'Format SMS salah. Ketik '.KW_INFO.DELIMITER.$sms_params[0].' utk bantuan.');
+    global $nama_modem;
+    $insert = sms_generate_send_query($orig_sender, 'Format SMS salah. Ketik '.KW_INFO.DELIMITER.$sms_params[0].' utk bantuan.', $nama_modem);
     if (exec_query($insert)) { return true; } else { return false; }     
 }
 
 function sms_process_keyword_info($orig_sender, $sms_params)
 {
+    global $nama_modem;
     $c = count($sms_params); 
     $dp = 'Terimakasih. Ketik '.FORMAT_SMS_INFO.' untuk bantuan.';
     if ($c!=2)
@@ -155,28 +103,28 @@ function sms_process_keyword_info($orig_sender, $sms_params)
         switch(strtoupper($sms_params[1]))
         {
             case KW_PINJAM:
-                $pesan = FORMAT_SMS_PINJAM;
+                $pesan1 = FORMAT_SMS_PINJAM;
                 $pesan2 = CONTOH_SMS_PINJAM;
                 break;
             case KW_KEMBALI:
-                $pesan = FORMAT_SMS_KEMBALI;
+                $pesan1 = FORMAT_SMS_KEMBALI;
                 $pesan2 = CONTOH_SMS_KEMBALI;
                 break;
             case KW_MONITOR:
-                $pesan = FORMAT_SMS_MONITOR;
-                $pesan2 = CONTOH_SMS_KEMBALI;
+                $pesan1 = FORMAT_SMS_MONITOR;
+                $pesan2 = CONTOH_SMS_MONITOR;
                 break;
             default:
-                $pesan = $dp;      
+                $pesan1 = $dp;      
                 $pesan2 = '';          
         }        
     }
-    $insert = sms_generate_send_query($orig_sender, $pesan1);
+    $insert = sms_generate_send_query($orig_sender, $pesan1, $nama_modem);
     $ok1 = exec_query($insert);
     $ok2 = true;
     if (!empty($pesan2))
     {
-        $insert = sms_generate_send_query($orig_sender, $pesan2);
+        $insert = sms_generate_send_query($orig_sender, $pesan2, $nama_modem);
         $ok2 = exec_query($insert);
     }
     return ($ok1 && $ok2);
@@ -208,10 +156,10 @@ else
             switch ($keyword)
             {
                 case KW_TEST:
-                    if (sms_process_keyword_test($sms['pengirim'], $params)) { sms_status_dibalas($sms['id']); }
+                    if (sms_process_keyword_test($sms['pengirim'], $params, $nama_modem)) { sms_status_dibalas($sms['id']); }
                     break;
                 case KW_INFO:
-                    if (sms_process_keyword_info($sms['pengirim'], $params)) { sms_status_dibalas($sms['id']); }
+                    if (sms_process_keyword_info($sms['pengirim'], $params,  $nama_modem)) { sms_status_dibalas($sms['id']); }
                     break;
                 case KW_PINJAM:
                     echo 'Pinjam keyword';
@@ -223,7 +171,7 @@ else
                     echo 'Kembali keyword';
                     break;
                 default:
-                    if (sms_process_keyword_unknown($sms['pengirim'], $params)) { sms_status_dibalas($sms['id']); }
+                    if (sms_process_keyword_unknown($sms['pengirim'], $params, $nama_modem)) { sms_status_dibalas($sms['id']); }
             }    
             // echo '<hr>';    
             exec_query("insert into configs (config_name, config_value) values ('$last_config_name', '$last_processed_id')

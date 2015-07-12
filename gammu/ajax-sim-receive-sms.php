@@ -29,7 +29,7 @@ if (substr($pengirim,0,2)=='08')
     $pengirim = $pno . substr($pengirim,1);
 }
 
-$pesan      = substr(stripslashes( post_var('pesan') ), 0, 400); 
+$pesan      = addslashes(stripslashes( post_var('pesan') )); 
 $multipart  =  strlen($pesan)>160;     
 
 $data       = 'ERSMS gagal diterima.';
@@ -69,7 +69,7 @@ if (!$multipart) {
             )";  
     if (!exec_query($sql))
     {
-        echo $data.'<br>'.$sql;
+        echo $data.'<br>';
     }
     else
     {   

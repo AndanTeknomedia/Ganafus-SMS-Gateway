@@ -134,7 +134,11 @@ require_once('../cores/functions.php');
                                     3. Assign the database to the user.<br />
                                     4. Restore file <strong>database.sql</strong> in folder <strong>install</strong> into the database.<br />
                                     5. Complete tasks below.                                
-                                </div>                            
+                                </div>   
+                                <div class="alert alert-danger">
+                                    User harus memilik akses penuh terhadap database, karena diperlukan untuk
+                                    membuat tabel, mengupdate field-field dan mengatur trigger.       
+                                </div>                          
                             </div>
                         </div>  
                         <div class="row">
@@ -248,8 +252,16 @@ require_once('../cores/functions.php');
                         $('#btn-lanjut').show();
                         if (data == 'OK')
     					{   
-                            location.href = '../pages/'
-                            // alert('OK');
+                            $.post('../cores/db-clean-tables.php',{r: Math.random()}, function(data){
+                                if (data.substr(0,2).toUpperCase()=='OK')
+                                {
+                                    location.href = '../pages/';
+                                }
+                                else
+                                {
+                                    msgBox('Masalah!', '<div class="alert alert-warning">' + data.substr(2) + '</div>', false); 
+                                }    
+                            });
     					}
     					else
     					{
