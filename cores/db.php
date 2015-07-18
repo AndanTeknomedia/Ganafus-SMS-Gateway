@@ -23,8 +23,9 @@ $_CLEANABLE_TABLES =  array(
     'inkubator_monitoring'  => "",
     'inkubator_kembali'     => "",
     'configs'               => "where config_name = 'last_processed_valid_sms_id'",
-    'sms_keywords'          => "",
-    'sms_keyword_columns'   => ""
+    'sms_keywords'          => ""
+    // ,
+    // 'sms_keyword_columns'   => ""
 );
 
 if ($_mysqli->connect_errno)

@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(E_ALL ^ E_NOTICE);
+
 define ('SP_APP_NAME_SHORT', 'Inkubator Bayi');
 define ('SP_APP_NAME_LONG','Sistem Monitoring Peminjaman Inkubator Gratis');
 define ('SP_APP_VERSION','1.0.0');

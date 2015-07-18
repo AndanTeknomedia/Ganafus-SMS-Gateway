@@ -16,8 +16,9 @@ extension=php_pdo_mysql.dll
 extension=php_mbstring.dll
 
 extension_dir = "./extensions"
-;error_reporting = E_ALL | E_STRICT
-error_reporting = E_ALL 
+; error_reporting = E_ALL | E_STRICT
+error_reporting = E_ALL & ~E_NOTICE
+; display_errors = On
 date.timezone = "Europe/London"
 
 sendmail_path = "${US_ROOTF}/core/msmtp/msmtp.exe --file=${US_ROOTF}/core/msmtp/msmtprc.ini  -t"

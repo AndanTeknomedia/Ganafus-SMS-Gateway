@@ -45,6 +45,7 @@ else
         define('DB_DATABASE','$db');
         define('USE_GAMMU',$use_gammu);   
         define('GAMMU_CREATOR_ID', 'Gammu 1.32.0');
+        define('GAMMU_SERVICE_NAME', 'inkubator-gammu-service');
         define('USER_TABLE_PREFIX','usr_tables_');
         ?>"
     );

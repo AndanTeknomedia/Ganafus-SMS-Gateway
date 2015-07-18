@@ -79,10 +79,7 @@ if ($ajax)
                         </small>
                     </div>
                     <p>
-                        <i class="fa fa-comment-o"></i> <?php echo substr($sms['sms'],0,100).'...';?>
-                        <a href="#" class="full-sms"><i class="fa fa-hand-o-right "></i>
-                            <span class="hide" id="full-sms-<?php echo $sms['id']; ?>"><?php echo $sms['sms'];?></span>
-                        </a>
+                        <i class="fa fa-comment-o"></i> <?php echo implode('<br>',str_split(htmlentities($sms['sms']), 100));?>
                     </p>
                     <br />
                     <p class="text-muted small">                     

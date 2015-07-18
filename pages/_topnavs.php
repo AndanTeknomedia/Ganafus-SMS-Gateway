@@ -10,7 +10,7 @@
                         <?php if (USE_GAMMU) { ?>
                         <li class="divider"></li>
                         <li><a href="#" class="send-recv-sms" jenis="kirim" id="btn-send-sms"><i class="fa fa-upload fa-fw"></i> Kirim SMS</a></li>
-                        <li><a href="#" class="send-recv-sms" jenis="terima" id="btn-recv-sms"><i class="fa fa-download fa-fw"></i> Sim. Terima SMS</a></li>
+                        <li><a href="#" class="send-recv-sms" jenis="terima" id="btn-recv-sms"><i class="fa fa-download fa-fw"></i> Simulasi Terima SMS</a></li>
                         <?php } ?>
                     </ul>
                 </li>

@@ -94,6 +94,10 @@ $query_string = get_query_string();
     <!-- Custom Fonts -->
     <link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="../bower_components/bootstrap3-dialog/dist/css/bootstrap-dialog.min.css" rel="stylesheet" type="text/css" />
+    
+    <!-- DataTables CSS -->
+    <link href="../bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="../bower_components/datatables-responsive/css/dataTables.responsive.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -109,75 +113,6 @@ $query_string = get_query_string();
     <script src="../dist/js/jsHash.js"></script>
     <script src="../dist/js/slowaescrypt.js"></script>        
     
-    <script>
-    
-    function msgBox(caption, text, autoClose){
-        BootstrapDialog.show({
-            size    : BootstrapDialog.SIZE_SMALL,
-            draggable: true,
-            title   : caption || 'Informasi',
-            message : text || 'Ada pesan baru.',
-            onshown: function(d){
-                if (autoClose || true) {
-                    setTimeout(function(){d.close();},7000);
-                }
-            }
-        });    
-    }
-    
-    function msgConfirm(caption, text, btnYes, btnNo, callBack)
-    {
-        var res;
-        BootstrapDialog.show({
-            size: BootstrapDialog.SIZE_SMALL,
-            draggable: true,
-            title: caption || 'Konfirmasi',
-            message: text || 'Anda yakin untuk melanjutkan?',
-            buttons: 
-            [
-                {
-                    label: btnYes,
-                    cssClass: 'btn-primary',
-                    icon: 'fa fa-check',
-                    action: function(dlg){                    
-                        dlg.close();
-                        callBack(true);
-                    }
-                },
-                {
-                    label: btnNo,
-                    cssClass: 'btn-warning',
-                    icon: 'fa fa-ban',
-                    action: function(dlg){
-                        dlg.close();
-                        callBack(false);
-                    }
-                }
-            ]
-        });
-    }    
-    
-    function assigned(obj)
-    {
-        return (!(typeof obj === 'undefined'));
-    }
-    
-    function setCookie(cname, cvalue, exdays) {
-        var d = new Date();
-        d.setTime(d.getTime() + (exdays*24*60*60*1000));
-        var expires = "expires="+d.toUTCString();
-        document.cookie = cname + "=" + cvalue + "; " + expires;
-    }
-    function getCookie(cname) {
-        var name = cname + "=";
-        var ca = document.cookie.split(';');
-        for(var i=0; i<ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0)==' ') c = c.substring(1);
-            if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
-        }
-        return "";
-    }  
-    </script>
+    <script src="../dist/js/head-utils.js"></script>
 
 </head>
