@@ -11,6 +11,7 @@ $_mysqli = new mysqli(
 	DB_DATABASE
 );
 
+/*
 $_CLEANABLE_TABLES =  array(
     // 'tablename' => 'condition'
     'sentitems'             => "",
@@ -26,6 +27,21 @@ $_CLEANABLE_TABLES =  array(
     'sms_keywords'          => ""
     // ,
     // 'sms_keyword_columns'   => ""
+);
+*/
+$_CLEANABLE_TABLES =  array(
+    // 'name' => array('tablename','conditions','description')
+    'SMS Terkirim'                      => array('sentitems', "", 'Data SMS terkirim.'),
+    'SMS Sedang Dikirim'                => array('outbox', "", 'Data-data SMS yang sedang mengantre untuk dikirim.'),
+    'Data Multipart SMS Sedang Dikirim' => array('outbox_multipart', "", 'Data SMS multipart untuk SMS yang panjangnya melebihi 160 karakter.'),
+    'Data Temporer SMS Dikirim'         => array('outbox_tmp', "", 'Data SMS temporer yang di-generate oleh Sistem untuk diproses oleh Gammu SMS Daemon.'),
+    'SMS Masuk'                         => array('inbox', "", 'Data SMS yang diterima.'),
+    'SMS Masuk yang Telah Diproses'     => array('sms_valid', "", 'Data SMS masuk yang telah diproses dan ditandai berdasarkan keyword.'),          
+    'Data Peminjaman Inkubator'         => array('inkubator_pinjam', "", 'Data transaksi peminjaman inkubator.'),
+    'Data Monitoring Inkubator'         => array('inkubator_monitoring', "", 'Data monitoring perkembangan bayi pengguna inkubator.'),
+    'Data Pengembalian Inkubator'       => array('inkubator_kembali', "", 'Data taransaksi pengembalian inkubator yang dipinjam.'),
+    'Data Konfigurasi Sistem'           => array('configs', "where config_name = 'last_processed_valid_sms_id'", 'Data-data konfigurasi sistem dan Gammu Server.'),
+    'Data Keyword Pooling SMS'          => array('sms_keywords', "", 'Data keyword dan hook function yang memproses SMS yang masuk.')
 );
 
 if ($_mysqli->connect_errno)
@@ -143,9 +159,9 @@ function clean_tables()
 {
     global $_CLEANABLE_TABLES;
     $ok = true;
-    foreach ($_CLEANABLE_TABLES as $table=>$cond)
+    foreach ($_CLEANABLE_TABLES as $table=>$data)
     {
-        $ok &= exec_query("delete from `$table`".(empty($cond)?"":(" ".$cond)));
+        $ok &= exec_query("delete from `".$data[0]."`".(empty($data[1])?"":(" ".$data[1])));
         // $ok .= "delete from `".$table."`".(empty($cond)?"":(" ".$cond)).";<br>";
     }
     /*

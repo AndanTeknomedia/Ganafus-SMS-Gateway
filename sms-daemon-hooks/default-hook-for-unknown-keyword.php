@@ -53,7 +53,7 @@ function my_hook_default_function($keyword, $params)
  * Register your keyword and its hook function to database . This is not required by SMS daemon, 
  * but is required - by SMS parser in database - to identify and classify each arriving SMS.  
  */
-keyword_hook_register($my_default_keyword, 'my_hook_default_function', $my_default_description);
-// keyword_hook_unregister($my_default_keyword, 'my_hook_default_function', $my_default_description);
+keyword_hook_register($my_default_keyword, 'my_hook_default_function', __FILE__, $my_default_description);
+// keyword_hook_unregister($my_default_keyword, 'my_hook_default_function');
 
 ?>

@@ -1,6 +1,9 @@
 <?php
 $page_name = 'SMS Manager';
 include_once('../cores/definition.php'); 
+require_once('../cores/db.php'); 
+include_once('../cores/session.php');
+
 $ajax = post_var('ajax');
 if (!$ajax) {
     if (USE_GAMMU){
@@ -12,9 +15,6 @@ if (!$ajax) {
         }
     }
 }
-require_once('../cores/db.php'); 
-include_once('../cores/session.php');
-// require_login('post.php?show/newest');
 
 /**
  * If this page is is being loaded using Ajax call,

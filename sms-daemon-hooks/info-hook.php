@@ -26,6 +26,8 @@
  */
 $my_info_keyword = KW_INFO;
 $my_info_description = 'Ini adalah hook untuk SMS dengan keyword INFO';
+$my_info_sms_format = FORMAT_SMS_INFO;
+$my_info_sms_sample = CONTOH_SMS_INFO;
  
 /**
  * Define your hook for specific SMS keyword. 
@@ -85,8 +87,8 @@ function my_hook_info_function($keyword, $params)
  * Register your keyword and its hook function to database . This is not required by SMS daemon, 
  * but is required - by SMS parser in database - to identify and classify each arriving SMS.  
  */
-keyword_hook_register($my_info_keyword, 'my_hook_info_function', $my_info_description);
-// keyword_hook_unregister($my_info_keyword, 'my_hook_info_function', $my_info_description);
+keyword_hook_register($my_info_keyword, 'my_hook_info_function', __FILE__, $my_info_description, $my_info_sms_format, $my_info_sms_sample);
+// keyword_hook_unregister($my_info_keyword, 'my_hook_info_function');
 
 
 ?>

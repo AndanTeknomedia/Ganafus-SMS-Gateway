@@ -15,11 +15,13 @@
                         <li>
                             <a href="blank.php"><i class="fa fa-laptop fa-fw"></i> Sample Blank Page</a>
                         </li>
+                        <li class="sidebar-divider"></li>
                         
                         <!-- Dashboard -->
                         <li>
                             <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
+                        <li class="sidebar-divider"></li>
                         
                         <!-- Master Data -->
                         <li>
@@ -74,7 +76,53 @@
                             </ul>
                             
                         </li>
-          
+                        <li class="sidebar-divider"></li>
+                        <!-- SMS Manager -->
+                        <li>
+                            <a href="#"><i class="fa fa-envelope-o fa-fw"></i> SMS Manager<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li><a href="sms-inbox.php">SMS Masuk</a></li>
+                                <li><a href="sms-outbox.php">SMS Sedang Dikirim</a></li>    
+                                <li><a href="sms-sent.php">SMS Terkirim</a></li>
+                                <?php if (USE_GAMMU) { ?>
+                                <li class="divider"></li>
+                                <li><a href="#" class="send-recv-sms" jenis="kirim" id="btn-send-sms"><i class="fa fa-upload fa-fw"></i> Kirim SMS</a></li>
+                                <li><a href="#" class="send-recv-sms" jenis="terima" id="btn-recv-sms"><i class="fa fa-download fa-fw"></i> Simulasi Terima SMS</a></li>
+                                <?php } ?>
+                            </ul>
+                            
+                        </li>
+                        <li class="sidebar-divider"></li>
+                        <?php if (USE_GAMMU) { ?>
+                        <!-- Konfigurasi SMS Gateway -->
+                        <li class="warning">
+                            <a href="#"><i class="fa fa-gears fa-fw"></i> SMS Gateway<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li><a href="run-gammu.php">Restart SMS Gateway</a></li>                        
+                                <li><a href="run-task-scheduler.php">Periksa SMS Processor</a></li>
+                                <li><a href="setup-gammu.php">Setting SMS Gateway</a></li>
+                                <li><a href="sms-pooling-setup.php">Setup Pooling SMS</a></li>                                
+                            </ul>                            
+                        </li>
+                        <?php } ?>
+                        <!-- User profile -->
+                        <li>
+                            <a href="#"><i class="fa fa-user fa-fw"></i> User Profile<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li><a href="user-profile.php?id=<?php echo $user_data['user_id']; ?>"><i class="fa fa-user fa-fw"></i> User Profile</a></li>
+                                <!--
+                                <li><a href="user-settings.php?id=<?php echo $user_data['user_id']; ?>"><i class="fa fa-gear fa-fw"></i> Settings</a></li>
+                                -->
+                                <li><a href="../cores/logout.php"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>                              
+                            </ul>                            
+                        </li>
+                        <!-- Utils -->
+                        <li>
+                            <a href="#"><i class="fa fa-database fa-fw"></i> Utilites<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li><a href="util-clean-db.php"><i class="fa fa-scissors fa-fw"></i> Clean User Data</a></li>                              
+                            </ul>                            
+                        </li>
                         <?php
                         /*
                         <li>

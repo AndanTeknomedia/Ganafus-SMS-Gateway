@@ -20,10 +20,10 @@
                         <i class="fa fa-cogs fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-gateway">                        
-                        <li><a href="run-gammu.php"><i class="fa fa-repeat fa-fw"></i> Restart SMS Gateway</a></li>
-                        <li><a href="setup-gammu.php"><i class="fa fa-gear fa-fw"></i> Setting SMS Gateway</a></li>
+                        <li><a href="run-gammu.php"><i class="fa fa-repeat fa-fw"></i> Restart SMS Gateway</a></li>                        
                         <li><a href="run-task-scheduler.php"><i class="fa fa-tasks fa-fw"></i> Periksa SMS Processor</a></li>
                         <li class="divider"></li>
+                        <li><a href="setup-gammu.php"><i class="fa fa-gear fa-fw"></i> Setting SMS Gateway</a></li>
                         <li><a href="sms-pooling-setup.php"><i class="fa fa-th-list fa-fw"></i> Setup Pooling SMS</a></li>
                     </ul>
                 </li>                

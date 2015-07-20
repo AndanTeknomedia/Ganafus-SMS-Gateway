@@ -7,7 +7,7 @@ $user_data = user_data();
 
 function is_admin($group_id)
 {
-    if (isset($group_id) && ($group_id<=2) && ($group_id>0))
+    if (isset($group_id) && (($group_id==='adm') || ($group_id==='dev')))
     {
         return true;
     }
@@ -30,7 +30,7 @@ function user_logged_in()
 		if (isset($_SESSION['user_name']) && (!empty($_SESSION['user_name'])) )
 		{
         	return TRUE; 
-        	exit;
+        	// exit;
 		}
 		else
 		{
@@ -61,7 +61,7 @@ function user_data(){
     $userdata['user_group_id'] = $_SESSION['user_group_id'];
     $userdata['user_group_name'] = $_SESSION['user_group_name'];
     $userdata['user_image_path'] = $_SESSION['user_image_path'];
-    $userdata['user_skpd_count'] = $_SESSION['user_skpd_count'];
+    // $userdata['user_skpd_count'] = $_SESSION['user_skpd_count'];
     return $userdata;
 }
 

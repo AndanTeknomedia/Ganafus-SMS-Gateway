@@ -51,6 +51,12 @@ function common_var($var_name, $default = NULL)
         );
 }
 
+function dump_variable($the_var)
+{
+    echo '<pre>';
+    var_dump($the_var);
+    echo '</pre>';
+}
 /**
  * Time Lapse: fungsi yang menghitung waktu sebuah kejadian dari saat ini.
  * Contoh: 30 detik lalu, 25 menit lalu
