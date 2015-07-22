@@ -19,8 +19,10 @@ CREATE TABLE IF NOT EXISTS `configs` (
   UNIQUE KEY `config_name` (`config_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Dumping data for table freeinkubator.configs: 0 rows
+-- Dumping data for table freeinkubator.configs: 1 rows
 /*!40000 ALTER TABLE `configs` DISABLE KEYS */;
+INSERT INTO `configs` (`config_name`, `config_value`) VALUES
+	('last_processed_valid_sms_id', '24118194654412817');
 /*!40000 ALTER TABLE `configs` ENABLE KEYS */;
 
 
@@ -109,10 +111,17 @@ CREATE TABLE IF NOT EXISTS `inbox` (
   `RecipientID` text NOT NULL,
   `Processed` enum('false','true') NOT NULL DEFAULT 'false',
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=3969 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=3977 DEFAULT CHARSET=utf8;
 
--- Dumping data for table freeinkubator.inbox: 0 rows
+-- Dumping data for table freeinkubator.inbox: 6 rows
 /*!40000 ALTER TABLE `inbox` DISABLE KEYS */;
+INSERT INTO `inbox` (`UpdatedInDB`, `ReceivingDateTime`, `Text`, `SenderNumber`, `Coding`, `UDH`, `SMSCNumber`, `Class`, `TextDecoded`, `ID`, `RecipientID`, `Processed`) VALUES
+	('2015-07-22 17:38:10', '2015-07-22 17:38:10', '00500049004C0047005500420053005500530045004C00310035002A00410053004D004100520041', '+628093049034', 'Default_No_Compression', '', '+6289644000001', -1, 'PILGUBSUSEL15*ASMARA', 3971, 'ZTE MF636', 'false'),
+	('2015-07-22 17:50:10', '2015-07-22 17:50:10', '0054004500530054', '+6288787878', 'Default_No_Compression', '', '+6289644000001', -1, 'TEST', 3972, 'ZTE MF636', 'false'),
+	('2015-07-22 17:54:29', '2015-07-22 17:54:29', '00500049004C0047005500420053005500530045004C00310035002A00410053004D004100520041', '+628938989389', 'Default_No_Compression', '', '+6289644000001', -1, 'PILGUBSUSEL15*ASMARA', 3973, 'ZTE MF636', 'false'),
+	('2015-07-22 18:33:30', '2015-07-22 18:33:30', '00500049004C0047005500420053005500530045004C00310035002A00410053004D0041005200410032', '+628u989809', 'Default_No_Compression', '', '+6289644000001', -1, 'PILGUBSUSEL15*ASMARA2', 3974, 'ZTE MF636', 'false'),
+	('2015-07-22 18:34:18', '2015-07-22 18:34:18', '00500049004C0047005500420053005500530045004C00310035002A00410053004D0041005200410033', '+6287687487878', 'Default_No_Compression', '', '+6289644000001', -1, 'PILGUBSUSEL15*ASMARA3', 3975, 'ZTE MF636', 'false'),
+	('2015-07-22 19:07:33', '2015-07-22 19:07:33', '0049004E0046004F002A00500049004E004A0041004D', '+6282345798006', 'Default_No_Compression', '', '+6289644000001', -1, 'INFO*PINJAM', 3976, 'ZTE MF636', 'false');
 /*!40000 ALTER TABLE `inbox` ENABLE KEYS */;
 
 
@@ -367,10 +376,15 @@ CREATE TABLE IF NOT EXISTS `outbox` (
   PRIMARY KEY (`ID`),
   KEY `outbox_date` (`SendingDateTime`,`SendingTimeOut`),
   KEY `outbox_sender` (`SenderID`)
-) ENGINE=MyISAM AUTO_INCREMENT=166 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=172 DEFAULT CHARSET=utf8;
 
--- Dumping data for table freeinkubator.outbox: 0 rows
+-- Dumping data for table freeinkubator.outbox: 4 rows
 /*!40000 ALTER TABLE `outbox` DISABLE KEYS */;
+INSERT INTO `outbox` (`UpdatedInDB`, `InsertIntoDB`, `SendingDateTime`, `SendBefore`, `SendAfter`, `Text`, `DestinationNumber`, `Coding`, `UDH`, `Class`, `TextDecoded`, `ID`, `MultiPart`, `RelativeValidity`, `SenderID`, `SendingTimeOut`, `DeliveryReport`, `CreatorID`) VALUES
+	('2015-07-22 17:39:01', '2015-07-22 17:39:01', '2015-07-22 17:39:01', '23:59:59', '00:00:00', '0059006F0075007200200053004D005300200068006100730020006200650065006E002000700072006F006300650073007300650064002E', '+628093049034', 'Default_No_Compression', '', -1, 'Your SMS has been processed.', 168, 'false', 255, 'ZTE MF636', '2015-07-22 17:39:01', 'default', 'Gammu 1.32.0'),
+	('2015-07-22 17:52:39', '2015-07-22 17:52:39', '2015-07-22 17:52:39', '23:59:59', '00:00:00', '00540065007300740020004F004B002E00200049006E006B0075006200610074006F00720020004200610079006900200076002E0031002E0030002E003000200073006900610070002E', '+6288787878', 'Default_No_Compression', '', -1, 'Test OK. Inkubator Bayi v.1.0.0 siap.', 169, 'false', 255, 'ZTE MF636', '2015-07-22 17:52:39', 'default', 'Gammu 1.32.0'),
+	('2015-07-22 18:34:24', '2015-07-22 18:34:24', '2015-07-22 18:34:24', '23:59:59', '00:00:00', '0059006F0075007200200053004D005300200068006100730020006200650065006E002000700072006F006300650073007300650064002E', '+6287687487878', 'Default_No_Compression', '', -1, 'Your SMS has been processed.', 170, 'false', 255, 'ZTE MF636', '2015-07-22 18:34:24', 'default', 'Gammu 1.32.0'),
+	('2015-07-22 19:07:49', '2015-07-22 19:07:49', '2015-07-22 19:07:49', '23:59:59', '00:00:00', '0059006F0075007200200053004D005300200068006100730020006200650065006E002000700072006F006300650073007300650064002E', '+6282345798006', 'Default_No_Compression', '', -1, 'Your SMS has been processed.', 171, 'false', 255, 'ZTE MF636', '2015-07-22 19:07:49', 'default', 'Gammu 1.32.0');
 /*!40000 ALTER TABLE `outbox` ENABLE KEYS */;
 
 
@@ -403,10 +417,15 @@ CREATE TABLE IF NOT EXISTS `outbox_tmp` (
   `Text` text,
   PRIMARY KEY (`id`),
   KEY `outbox_sender` (`SenderID`)
-) ENGINE=MyISAM AUTO_INCREMENT=117 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=123 DEFAULT CHARSET=utf8;
 
--- Dumping data for table freeinkubator.outbox_tmp: 0 rows
+-- Dumping data for table freeinkubator.outbox_tmp: 4 rows
 /*!40000 ALTER TABLE `outbox_tmp` DISABLE KEYS */;
+INSERT INTO `outbox_tmp` (`id`, `DestinationNumber`, `TextDecoded`, `SenderID`, `CreatorID`, `Text`) VALUES
+	(119, '+628093049034', 'Your SMS has been processed.', 'ZTE MF636', 'Gammu 1.32.0', '0059006F0075007200200053004D005300200068006100730020006200650065006E002000700072006F006300650073007300650064002E'),
+	(120, '+6288787878', 'Test OK. Inkubator Bayi v.1.0.0 siap.', 'ZTE MF636', 'Gammu 1.32.0', '00540065007300740020004F004B002E00200049006E006B0075006200610074006F00720020004200610079006900200076002E0031002E0030002E003000200073006900610070002E'),
+	(121, '+6287687487878', 'Your SMS has been processed.', 'ZTE MF636', 'Gammu 1.32.0', '0059006F0075007200200053004D005300200068006100730020006200650065006E002000700072006F006300650073007300650064002E'),
+	(122, '+6282345798006', 'Your SMS has been processed.', 'ZTE MF636', 'Gammu 1.32.0', '0059006F0075007200200053004D005300200068006100730020006200650065006E002000700072006F006300650073007300650064002E');
 /*!40000 ALTER TABLE `outbox_tmp` ENABLE KEYS */;
 
 
@@ -509,17 +528,17 @@ CREATE TABLE IF NOT EXISTS `sms_keywords` (
   `description` text,
   `format_sms` text,
   `contoh_sms` text,
+  `active` enum('Y','N') DEFAULT 'N',
   PRIMARY KEY (`id`),
   UNIQUE KEY `keyword` (`keyword`),
   UNIQUE KEY `function_name` (`function_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Dumping data for table freeinkubator.sms_keywords: 3 rows
+-- Dumping data for table freeinkubator.sms_keywords: 2 rows
 /*!40000 ALTER TABLE `sms_keywords` DISABLE KEYS */;
-INSERT INTO `sms_keywords` (`id`, `keyword`, `function_name`, `file_name`, `description`, `format_sms`, `contoh_sms`) VALUES
-	(24115104257671181, 'INFO', 'my_hook_info_function', 'C:\\xeroxl\\UniServerZ\\vhosts\\inkubator-local\\sms-daemon-hooks\\info-hook.php', 'Ini adalah hook untuk SMS dengan keyword INFO', 'INFO*<PINJAM/KEMBALI/MONITOR>', 'INFO*PINJAM'),
-	(24115104257671182, 'TEST', 'my_hook_test_function', 'C:\\xeroxl\\UniServerZ\\vhosts\\inkubator-local\\sms-daemon-hooks\\test-hook.php', 'Ini adalah keyword test', 'TEST', 'TEST'),
-	(24115104257671180, 'UNKNOWN', 'my_hook_default_function', 'C:\\xeroxl\\UniServerZ\\vhosts\\inkubator-local\\sms-daemon-hooks\\default-hook-for-unknown-keyword.php', 'Ini adalah default hook untuk keyword unknown', '', '');
+INSERT INTO `sms_keywords` (`id`, `keyword`, `function_name`, `file_name`, `description`, `format_sms`, `contoh_sms`, `active`) VALUES
+	(24118194654412805, 'UNKNOWN', 'my_hook_default_function', 'C:\\xeroxl\\UniServerZ\\vhosts\\inkubator-local\\sms-daemon-hooks\\default-hook-for-unknown-keyword.php', 'Ini adalah default hook untuk keyword unknown', '', '', 'Y'),
+	(24118194654412807, 'TEST', 'my_hook_test_function', 'C:\\xeroxl\\UniServerZ\\vhosts\\inkubator-local\\sms-daemon-hooks\\test-hook.php', 'Ini adalah keyword test', 'TEST', 'TEST', 'Y');
 /*!40000 ALTER TABLE `sms_keywords` ENABLE KEYS */;
 
 
@@ -537,8 +556,15 @@ CREATE TABLE IF NOT EXISTS `sms_valid` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Dumping data for table freeinkubator.sms_valid: 0 rows
+-- Dumping data for table freeinkubator.sms_valid: 6 rows
 /*!40000 ALTER TABLE `sms_valid` DISABLE KEYS */;
+INSERT INTO `sms_valid` (`id`, `udh`, `waktu_terima`, `pengirim`, `sms`, `jenis`, `param_count`, `diproses`) VALUES
+	(24118194654412809, '', '2015-07-22 17:38:10', '+628093049034', 'PILGUBSUSEL15*ASMARA', 'PILGUBSUSEL15', 0, 'Dibalas'),
+	(24118194654412810, '', '2015-07-22 17:50:10', '+6288787878', 'TEST', 'TEST', 0, 'Dibalas'),
+	(24118194654412811, '', '2015-07-22 17:54:29', '+628938989389', 'PILGUBSUSEL15*ASMARA', 'PILGUBSUSEL15', 0, 'Dibalas'),
+	(24118194654412812, '', '2015-07-22 18:33:30', '+628u989809', 'PILGUBSUSEL15*ASMARA2', 'PILGUBSUSEL15', 0, 'Dibalas'),
+	(24118194654412813, '', '2015-07-22 18:34:18', '+6287687487878', 'PILGUBSUSEL15*ASMARA3', 'PILGUBSUSEL15', 0, 'Dibalas'),
+	(24118194654412817, '', '2015-07-22 19:07:33', '+6282345798006', 'INFO*PINJAM', 'INFO', 0, 'Dibalas');
 /*!40000 ALTER TABLE `sms_valid` ENABLE KEYS */;
 
 

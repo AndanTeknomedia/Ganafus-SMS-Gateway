@@ -15,7 +15,7 @@ if (!$ajax) {
         }
     }
 }
-
+include_once('../gammu/gammu-fetch-sms.php');
 /**
  * If this page is is being loaded using Ajax call,
  * fetch the requested data and skip the rest of the page:
@@ -26,9 +26,9 @@ if ($ajax)
     
     $sms_offset     = post_var('sms_offset', 0);  // default offset of first item to fetch.
     $sms_limit      = post_var('sms_limit', 10); // default item count per page.
-    $sms_keyword    = post_var('sms_keyword', 'PINJAM'); // default SMS with this keyword to display.
+    $sms_keyword    = post_var('sms_keyword', ''); // default SMS with this keyword to display.
     $sms_sort_order = post_var('sms_sortorder','asc'); // default SMS will be sorted ascending way. Only SMS timestamp supported.
-    $sms_count      = fetch_one_value("select count(id) from sms_valid");
+    $sms_count      = fetch_one_value("select count(id) from sms_valid". (!empty($sms_keyword)? " where upper(jenis) = upper('$sms_keyword')" :"" ) );
     // $sms_count = 0;
     if ($sms_offset==-1) {
         $sms_offset = $sms_count-$sms_limit;
@@ -38,7 +38,9 @@ if ($ajax)
     // $leftover_sql   = "select max(id) from sms_valid sv order by sv.waktu_terima $sms_sort_order, sv.id $sms_sort_order limit $sms_offset,$sms_limit";
     
     $sql = "select sv.id, sv.udh, sv.waktu_terima, sv.pengirim, sv.sms, sv.jenis, sv.param_count, sv.diproses
-        from sms_valid sv order by sv.waktu_terima $sms_sort_order, sv.id $sms_sort_order limit $sms_offset,$sms_limit";
+        from sms_valid sv" 
+        . (!empty($sms_keyword)? " where upper(sv.jenis) = upper('$sms_keyword')" :"" ) .
+        " order by sv.waktu_terima $sms_sort_order, sv.id $sms_sort_order limit $sms_offset,$sms_limit";
     // echo $sql;
     if ($sms_count == 0)
     {
@@ -203,15 +205,29 @@ include "_head.php";
                                 <span>&nbsp;&nbsp;</span>
                                 <button id="btn-nav-sort"    class="btn btn-circle btn-default btn-xs data-nav"><i class="fa fa-sort-amount-asc"></i></button>
                                 <span>&nbsp;&nbsp;</span>
-                                <span class="pull-right">
-                                    <select id="data-count" class="form-control input-sm" style="width: 75px;">
+                                <div class="pull-right">
+                                    <select id="data-count" class="form-control input-sm pull-left" style="width: 75px;">
                                         <option value="5">5</option>
                                         <option value="10" selected="">10</option>
                                         <option value="20">20</option>
                                         <option value="50">50</option>
                                         <option value="100">100</option>
-                                    </select>                
-                                </span>                
+                                    </select>
+                                    &nbsp;&nbsp;
+                                    <?php                                    
+                                    $keywords = keyword_fetch_from_db();
+                                    // var_dump($keywords);
+                                    echo '<select id="data-keyword" class="form-control input-sm pull-right" style="width: 200px;">';
+                                    echo '<option value="">Not Filtered</option>';
+                                    if (count($keywords)>0){                                        
+                                        foreach($keywords as $kwd) 
+                                        {
+                                            echo '<option value="'.$kwd.'">Keyword '.strtoupper($kwd).'</option>';
+                                        }                                   
+                                    }
+                                    echo '</select>';   
+                                    ?>                
+                                </div>               
                             </span>
                             <div class="clearfix"></div>
                         </div>
@@ -232,7 +248,7 @@ $(document).ready(function(){
     /* ajax params */
     var sms_offset      = parseInt(getCookie('sms_offset') || "0",10);    
     var sms_limit       = parseInt(getCookie('sms_limit') || "10",10);
-    var sms_keyword     = getCookie('sms_keyword') || 'PINJAM';
+    var sms_keyword     = getCookie('sms_keyword') || '';
     var sms_sortorder   = getCookie('sms_sortorder') || 'desc';
     // alert (sms_offset+"\n"+sms_limit+"\n"+sms_keyword+"\n"+sms_sortorder);
     $('#btn-nav-sort i')
@@ -245,6 +261,14 @@ $(document).ready(function(){
         .change(function(){
             sms_limit = $(this).val();
             setCookie('sms_limit',sms_limit,365);
+            reloadData(sms_offset, sms_limit, sms_keyword, sms_sortorder); 
+        });
+    $('#data-keyword')
+        // .change(function(){return false;})
+        .val(sms_keyword)
+        .change(function(){
+            sms_keyword = $(this).val();
+            setCookie('sms_keyword',sms_keyword,365);
             reloadData(sms_offset, sms_limit, sms_keyword, sms_sortorder); 
         });
     var ajax            = true;    

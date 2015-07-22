@@ -23,7 +23,7 @@
  * or process it  - such as database operation, log, etc. and return true 
  * to the daemon to indicate that the SMS has been processed.
  */
-$my_test_keyword = KW_TEST;
+$my_test_keyword = 'TEST';
 $my_test_description = 'Ini adalah keyword test';
 $my_info_sms_format = 'TEST';
 $my_info_sms_sample = 'TEST';

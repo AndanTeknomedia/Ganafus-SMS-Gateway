@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL ^ E_NOTICE);
 $ref = $_SERVER['HTTP_REFERER'];
 $ref = empty($ref) ? '/index.php' : $ref;
 ?>

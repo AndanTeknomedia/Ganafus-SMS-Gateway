@@ -1,7 +1,6 @@
 <?php
 // error_reporting(E_ALL);
 // error_reporting(E_ERROR | E_WARNING & ~E_NOTICE);
-// error_reporting(E_ALL ^ E_NOTICE);
 /**
  * This function retrieves CLI arguments or server $_GETs
  * $_GET's key and value are merged, so
@@ -45,6 +44,7 @@ $app_name       = SP_APP_NAME_SHORT;
 $app_version    = SP_APP_VERSION;
 $gammu_id       = GAMMU_CREATOR_ID;
 
+
 /**
  * This daemon will look for hook files in this directory and load them to processor engine: 
  */
@@ -80,6 +80,8 @@ if (!($hd===false))
 $data_count_to_process  = 10; // execute 10 data every minute - as this task run
 $nama_modem             = fetch_one_value("select coalesce((select nama_modem from modem_gateway order by id desc limit 0,1),'')");
 $last_id                = fetch_one_value("select coalesce((select config_value from configs where config_name = '".LAST_ID_CONFIG_NAME."'),0)");
+// create keyword state cache:
+$keyword_states         = keyword_fetch_states_from_db();
 /*
 $sms_query  = 
     "select sv.id, sv.udh, sv.waktu_terima, sv.pengirim, sv.sms, sv.jenis, sv.param_count, sv.diproses
@@ -93,6 +95,7 @@ $smses      = fetch_query($sms_query);
 
 $last_processed_id = $last_id;
 $all_ok = true;
+$cnt = 0;
 
 if (count($smses)==0)
 {
@@ -101,6 +104,7 @@ if (count($smses)==0)
 }
 else
 {
+    echo 'Processing '.count($smses).' SMS(es) : '; 
     foreach ($smses as $sms)
     {
         $last_processed_id = $sms['id'];
@@ -110,23 +114,36 @@ else
         {
             if ($sms_keyword == strtoupper($keyword))
             {
-                // echo $last_processed_id.'- '.$keyword.'<br>';
-                $result = call_user_func($_SMS_PROCESSOR_DAEMON_HOOKS[$keyword], $keyword, $sms_item);
-                /**
-                 * If keyword hook returned true,
-                 * mark it's status as 'Dibalas'
-                 * and set it's ID as last processed SMS ID.
-                 */
-                if ($result)
+                if // only process active keyword:
+                (array_key_exists($keyword, $keyword_states) && ($keyword_states[$keyword] == 'Y'))
                 {
+                    // echo $last_processed_id.'- '.$keyword.'<br>';
+                    $result = call_user_func($_SMS_PROCESSOR_DAEMON_HOOKS[$keyword], $keyword, $sms_item);
+                    /**
+                     * If keyword hook returned true,
+                     * mark it's status as 'Dibalas'
+                     * and set it's ID as last processed SMS ID.
+                     */
+                    if ($result)
+                    {
+                        sms_status_dibalas($last_processed_id);
+                        sms_set_last_processed_id($last_processed_id);
+                        $cnt++;
+                        
+                    }
+                }
+                else
+                {
+                    // keyword tidak aktif, langsung tangani:
                     sms_status_dibalas($last_processed_id);
-                    sms_set_last_processed_id($last_processed_id);
-                    
+                    sms_set_last_processed_id($last_processed_id);    
+                    $cnt++;
                 }
             }
         }
-             
+                 
     }
+    echo $cnt.' of '. count($smses).' processed.';
 }
 unset($smses);
 
