@@ -1,5 +1,4 @@
 <?php
-define(KW_TEST, 'TEST');
 define(KW_INFO, 'INFO');
 define(KW_PINJAM, 'PINJAM');
 define(KW_MONITOR, 'MONITOR');

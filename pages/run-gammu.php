@@ -41,6 +41,23 @@ function waktu() { echo date('H:i:s'); }
                         <h3 class="panel-title"><i class="fa fa-send-o fa-fw"></i> <strong>Setup SMS Gateway</strong></h3>                        
                     </div>
                     <div class="panel-body">
+                        <div class="list-group" id="list-control">
+                            <?php /* ?>
+                            <a href="#" class="list-group-item text-info">
+                                <i class="fa fa-clock-o fa-fw"></i> Proses SMS setiap 
+                                <span class="pull-right text-muted small">
+                                    <select id="sms-daemon-timer" class="form-control input-sm">                                        
+                                        <option value="1" selected="">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                    </select> menit.
+                                </span>
+                            </a>
+                            <?php */ ?>
+                            <a href="#" class="list-group-item text-info">
+                                <button class="btn btn-primary btn-sm" id="run-sms-daemon"> Jalankan SMS Gateway <i class="fa fa-chevron-right"></i></button>
+                            </a>
+                        </div>
                         <div class="list-group" id="list-progress">
                             <a href="#" class="list-group-item text-info" id="progress-0">
                                 <i class="fa fa-gear fa-fw"></i> Initializing <img src="img/ajax-loaders/ajax-loader-1.gif">
@@ -99,69 +116,71 @@ function waktu() { echo date('H:i:s'); }
     	    );
             return false;
             */
+            $('#run-sms-daemon').click(function(e){    
+                e.preventDefault;            
+                var currentItem = 0;
+                var allOK = true;
+                var executeAndNext = function(i, success, data){                
+                    if (i>5) { return; }                
+                    var command = $('#progress-'+(i+1).toString()).attr('ajax-uri');
+                    // var uri = 'gammu-'+$('#progress-'+(i+1).toString()).attr('ajax-uri')+'.php';                
+                    // alert((i+1)+'->>'+command);
+                    allOK = allOK & success;
+                    if (!success) {                    
+                        $('#progress-'+i+' img').hide();
+                        $('#progress-'+i+' i').removeClass('fa-gear').addClass('fa-warning');
+                        $('#progress-'+i+' em').text(data);
+                        /*
+                        $('#btn-retry').show();
+                        $('#btn-next').hide();
+                        */
+                        executeAndNext(i+1, false, 'Dibatalkan.');
+                    }
+                    else
+                    {
+                        // alert(i.toString() +':'+data);
+                        $('#progress-'+i+' img').hide();
+                        $('#progress-'+i+' i').removeClass('fa-gear').addClass('fa-check');
+                        $('#progress-'+i+' em').text(data);     
                         
-            var currentItem = 0;
-            var allOK = true;
-            var executeAndNext = function(i, success, data){                
-                if (i>5) { return; }                
-                var command = $('#progress-'+(i+1).toString()).attr('ajax-uri');
-                // var uri = 'gammu-'+$('#progress-'+(i+1).toString()).attr('ajax-uri')+'.php';                
-                // alert((i+1)+'->>'+command);
-                allOK = allOK & success;
-                if (!success) {                    
-                    $('#progress-'+i+' img').hide();
-                    $('#progress-'+i+' i').removeClass('fa-gear').addClass('fa-warning');
-                    $('#progress-'+i+' em').text(data);
-                    /*
-                    $('#btn-retry').show();
-                    $('#btn-next').hide();
-                    */
-                    executeAndNext(i+1, false, 'Dibatalkan.');
+                        if (i<=5){               
+                            $.post('../gammu/ajax-gammu-service.php',{rnd: Math.random(),command:command, ajax:'ajax'},
+             			        function(data)
+                                {	    
+                                    setTimeout(function(){    
+                                        // alert(i.toString() +':'+data);
+                                        if (i==4) {                                        
+                                            p = data.substr(2);                                                                           
+                                            if (data.substr(0,2) == 'OK')
+                                            {executeAndNext(i+1, true, p);}
+                        				    else 
+                                            {executeAndNext(i+1, false, p);}
+                                        } else {
+                                            if (data == 'OK')
+                                            {executeAndNext(i+1, true, data);}
+                        				    else 
+                                            {executeAndNext(i+1, false, data);}
+                                        }
+                                    },1000);
+                                }                                
+              			    );
+                        }
+                    }
+                };
+                // executing tasks:
+                executeAndNext(currentItem, true, 'Done.');
+                
+                $('#btn-retry').hide();
+                $('#btn-next').hide();
+                if (allOK)
+                {
+                    $('#btn-next').show();    
                 }
                 else
                 {
-                    // alert(i.toString() +':'+data);
-                    $('#progress-'+i+' img').hide();
-                    $('#progress-'+i+' i').removeClass('fa-gear').addClass('fa-check');
-                    $('#progress-'+i+' em').text(data);     
-                    
-                    if (i<=5){               
-                        $.post('../gammu/ajax-gammu-service.php',{rnd: Math.random(),command:command, ajax:'ajax'},
-         			        function(data)
-                            {	    
-                                setTimeout(function(){    
-                                    // alert(i.toString() +':'+data);
-                                    if (i==4) {                                        
-                                        p = data.substr(2);                                                                           
-                                        if (data.substr(0,2) == 'OK')
-                                        {executeAndNext(i+1, true, p);}
-                    				    else 
-                                        {executeAndNext(i+1, false, p);}
-                                    } else {
-                                        if (data == 'OK')
-                                        {executeAndNext(i+1, true, data);}
-                    				    else 
-                                        {executeAndNext(i+1, false, data);}
-                                    }
-                                },1000);
-                            }                                
-          			    );
-                    }
+                    $('#btn-retry').show();     
                 }
-            };
-            // executing tasks:
-            executeAndNext(currentItem, true, 'Done.');
-            
-            $('#btn-retry').hide();
-            $('#btn-next').hide();
-            if (allOK)
-            {
-                $('#btn-next').show();    
-            }
-            else
-            {
-                $('#btn-retry').show();     
-            }
+            });
         });
     </script>    
 

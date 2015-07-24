@@ -83,12 +83,14 @@ if ($ajax && ($req_type!=NULL))
         case 'savetemplate':
             $req_file = post_var('reqfile','');
             $req_kw = post_var('reqkw');
+            /*
             if (keyword_hook_registered($req_kw)!==false)
             {
                 echo 'ERKeyword telah digunakan sebelumnya.<br>Silahkan gunakan keyword lain.';
             }
             else
             {
+            */
                 if (empty($req_file))
                 {
                     echo 'ERHook Template kosong.';
@@ -109,7 +111,9 @@ if ($ajax && ($req_type!=NULL))
     				}
                     
                 }
+            /*
             }
+            */
             break;
         case 'checkkeyword':
             $req_kw = post_var('reqkw');
@@ -145,15 +149,14 @@ if ($ajax && ($req_type!=NULL))
                 if (file_exists($kw_file))
                 {
                     unlink($kw_file);
-                    // unlink($kw_file);
-                    if (exec_query("delete from sms_keywords where id = '$req_id'")) 
-                    {
-                        echo 'OKKeyword telah dihapus';
-                    }
-                    else
-                    {
-                        echo 'ERGagal menghapus keyword';
-                    }
+                }
+                if (exec_query("delete from sms_keywords where id = '$req_id'")) 
+                {
+                    echo 'OKKeyword telah dihapus';
+                }
+                else
+                {
+                    echo 'ERGagal menghapus keyword';
                 }    
             }
             catch (Exception $e)
@@ -202,7 +205,7 @@ include "_head.php";
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-database fa-fw"></i> Daftar Keyword Pooling SMS
+                            <i class="fa fa-gear fa-fw"></i> Daftar Keyword Pooling SMS
                             <div class="pull-right">
                                 <div class="btn-group">
                                     <button type="button" class="new-keyword btn btn-default btn-xs first">
@@ -213,160 +216,182 @@ include "_head.php";
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <ul class="chat" id="data-container"> 
-                                <li class="left clearfix hide" id="keyword-editor">
-                                    <div class="panel panel-default" style="border: 0;">
-                                        <div class="panel-heading">
-                                            <strong>Tambahkan Keyword Baru</strong>                                            
-                                        </div> 
-                                        <!-- /.panel-heading -->
-                                        <div class="panel-body" id="input-container">                                            
-                                            <div class="col-lg-12" id="kw-inputs">
-                                                <!-- Keyword -->
-                                                <div class="row" style="padding-bottom: 6px;" id="row-kw-keyword">
-                                                    <div class="col-sm-2">Keyword</div>
-                                                    <div class="col-sm-4">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-tag fa-fw"></i></span>
-                                                            <input class="form-control input-sm" placeholder="MYKEYWORD" id="kw-keyword" type="text" autofocus="" maxlength="30">
+                            <div class="row">
+                                <div class="col-lg-11">
+                                    <div class="alert alert-warning">
+                                        Sebelum mengedit file-file Hooking Template, pastikan Anda telah mematikan keywordnya terlebih dulu.
+                                        <small><span class="label label-success"><i class="fa fa-check fa-fw"></i> Active</a></small>
+                                        menjadi <small><span class="label label-warning"><i class="fa fa-times fa-fw"></i> Disabled</a></small>
+                                        <br />
+                                        <span class="text-danger">Jika tidak, Anda dapat <strong>merusak sistem!</strong></span>
+                                    </div>         
+                                </div>
+                                <div class="col-lg-1" style="margin-top: 15px;" >
+                                    <!--
+                                    <img style="padding-top: 15px;" src="img/ajax-loaders/ajax-loader-fan.gif" id="ajax-indicator" />
+                                    -->                                    
+                                    <span class="fa fa-gear fa-3x text-info" id="ajax-indicator"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <ul class="chat" id="data-container"> 
+                                        <li class="left clearfix hide" id="keyword-editor">
+                                            <div class="panel panel-default" style="border: 0;">
+                                                <div class="panel-heading">
+                                                    <strong>Tambahkan Keyword Baru</strong>                                            
+                                                </div> 
+                                                <!-- /.panel-heading -->
+                                                <div class="panel-body" id="input-container">                                            
+                                                    <div class="col-lg-12" id="kw-inputs">
+                                                        <!-- Keyword -->
+                                                        <div class="row" style="padding-bottom: 6px;" id="row-kw-keyword">
+                                                            <div class="col-sm-2">Keyword</div>
+                                                            <div class="col-sm-4">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon"><i class="fa fa-tag fa-fw"></i></span>
+                                                                    <input class="form-control input-sm" placeholder="MYKEYWORD" id="kw-keyword" type="text" autofocus="" maxlength="30">
+                                                                </div>    
+                                                            </div>
+                                                            <div class="col-sm-6 small">
+                                                                <strong>HURUF dan ANGKA SAJA</strong> tanpa spasi dan tanda baca.
+                                                            </div>
+                                                        </div>
+                                                        <!-- Description -->
+                                                        <div class="row" style="padding-bottom: 6px;"  >
+                                                            <div class="col-sm-2">Keterangan</div>
+                                                            <div class="col-sm-6">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon"><i class="fa fa-lightbulb-o fa-fw"></i></span>
+                                                                    <textarea style="height: 40px;" class="form-control input-sm" placeholder="Keterangan" id="kw-description" ></textarea>
+                                                                </div>     
+                                                            </div>
+                                                        </div>
+                                                        <!-- Format -->
+                                                        <div class="row" style="padding-bottom: 6px;" >
+                                                            <div class="col-sm-2">Format SMS</div>
+                                                            <div class="col-sm-6">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon"><i class="fa fa-code fa-fw"></i></span>
+                                                                    <textarea style="height: 40px;" class="form-control input-sm" placeholder="Contoh: MYKEYWORD<?php echo DELIMITER; ?>YOURNAME<?php echo DELIMITER; ?>BIRTHDAY" id="kw-format" ></textarea>
+                                                                </div>     
+                                                            </div>
+                                                            <div class="col-sm-4 small">
+                                                                Delimiter SMS saat ini: <span class="label label-info"><strong><?php echo DELIMITER; ?></strong></span>
+                                                            </div>
                                                         </div>    
-                                                    </div>
-                                                    <div class="col-sm-6 small">
-                                                        <strong>HURUF dan ANGKA SAJA</strong> tanpa spasi dan tanda baca.
-                                                    </div>
+                                                        <!-- Sample -->
+                                                        <div class="row" style="padding-bottom: 6px;" >
+                                                            <div class="col-sm-2">Contoh SMS</div>
+                                                            <div class="col-sm-6">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon"><i class="fa fa-pencil fa-fw"></i></span>
+                                                                    <textarea style="height: 40px;" class="form-control input-sm" placeholder="Contoh: MYKEYWORD<?php echo DELIMITER; ?>JohnDoe<?php echo DELIMITER; ?>31/12/1999" id="kw-sample" ></textarea>
+                                                                </div>     
+                                                            </div>
+                                                            <div class="col-sm-4 small">
+                                                                Delimiter SMS saat ini: <span class="label label-info"><strong><?php echo DELIMITER; ?></strong></span>
+                                                            </div>
+                                                        </div>    
+                                                        <!-- Default Action -->   
+                                                        <div class="row" style="padding-bottom: 6px;" >
+                                                            <div class="col-sm-2"></div>
+                                                            <div class="col-sm-6">
+                                                                <label class="checkbox-inline"><input type="checkbox" id="kw-reply-sms" checked=""> Otomatis Balas SMS</label>                                                             
+                                                            </div>                                                    
+                                                        </div>
+                                                        
+                                                        <div class="row" style="padding-bottom: 6px;" >
+                                                            <div class="col-sm-12 small">
+                                                                <hr>
+                                                                Klik Generate untuk membuat <strong>hook template</strong> baru bagi keyword ini - berupa file PHP. Semua SMS dengan keyword di
+                                                                ini akan diarahkan untuk diproses oleh file tersebut.
+                                                            </div>
+                                                        </div>                                                                                      
+                                                        <!-- Generate Hook Template -->
+                                                        <div class="row" style="padding-bottom: 6px;" >                                                    
+                                                            <div class="col-sm-12">
+                                                                <button type="button" class="btn btn-success btn-sm" id="generate-hook-template">Generate <i class="fa fa-chevron-right"></i></button>    
+                                                            </div>
+                                                        </div>
+                                                        <div class="row" style="padding-bottom: 6px;" id="row-hook-template">
+                                                            <div class="col-sm-12 small">                                                        
+                                                                You&apos;d better copy this code to your PHP editor, edit it, and paste it back here.
+                                                                <strong class="label label-warning">Warning!</strong> Any error here can break the whole system!
+                                                                <hr> 
+                                                                <textarea style="height: auto;" class="form-control input-sm" placeholder="Generated" id="kw-hook-template" ></textarea>                                                         
+                                                            </div>
+                                                        </div>
+                                                    </div>  
                                                 </div>
-                                                <!-- Description -->
-                                                <div class="row" style="padding-bottom: 6px;"  >
-                                                    <div class="col-sm-2">Keterangan</div>
-                                                    <div class="col-sm-6">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-lightbulb-o fa-fw"></i></span>
-                                                            <textarea style="height: 40px;" class="form-control input-sm" placeholder="Keterangan" id="kw-description" ></textarea>
-                                                        </div>     
+                                                <!-- /.panel-body -->
+                                                <!-- Add fields -->
+                                                <div class="panel-footer">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <input type="hidden" value="new" id="keyword-edit-mode">
+                                                            <button type="button" class="btn btn-primary btn-sm" id="save-keyword"><i class="fa fa-save"></i> Save</button>
+                                                            <button type="button" class="btn btn-danger btn-sm" id="cancel-keyword">Close</button>
+        													<span class="small">Jika file sudah ada, menekan Save akan menimpa file lama.</span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <!-- Format -->
-                                                <div class="row" style="padding-bottom: 6px;" >
-                                                    <div class="col-sm-2">Format SMS</div>
-                                                    <div class="col-sm-6">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-code fa-fw"></i></span>
-                                                            <textarea style="height: 40px;" class="form-control input-sm" placeholder="Contoh: MYKEYWORD<?php echo DELIMITER; ?>YOURNAME<?php echo DELIMITER; ?>BIRTHDAY" id="kw-format" ></textarea>
-                                                        </div>     
-                                                    </div>
-                                                    <div class="col-sm-4 small">
-                                                        Delimiter SMS saat ini: <span class="label label-info"><strong><?php echo DELIMITER; ?></strong></span>
-                                                    </div>
-                                                </div>    
-                                                <!-- Sample -->
-                                                <div class="row" style="padding-bottom: 6px;" >
-                                                    <div class="col-sm-2">Contoh SMS</div>
-                                                    <div class="col-sm-6">
-                                                        <div class="input-group">
-                                                            <span class="input-group-addon"><i class="fa fa-pencil fa-fw"></i></span>
-                                                            <textarea style="height: 40px;" class="form-control input-sm" placeholder="Contoh: MYKEYWORD<?php echo DELIMITER; ?>JohnDoe<?php echo DELIMITER; ?>31/12/1999" id="kw-sample" ></textarea>
-                                                        </div>     
-                                                    </div>
-                                                    <div class="col-sm-4 small">
-                                                        Delimiter SMS saat ini: <span class="label label-info"><strong><?php echo DELIMITER; ?></strong></span>
-                                                    </div>
-                                                </div>    
-                                                <!-- Default Action -->   
-                                                <div class="row" style="padding-bottom: 6px;" >
-                                                    <div class="col-sm-2"></div>
-                                                    <div class="col-sm-6">
-                                                        <label class="checkbox-inline"><input type="checkbox" id="kw-reply-sms" checked=""> Otomatis Balas SMS</label>                                                             
-                                                    </div>                                                    
-                                                </div>
-                                                
-                                                <div class="row" style="padding-bottom: 6px;" >
-                                                    <div class="col-sm-12 small">
-                                                        <hr>
-                                                        Klik Generate untuk membuat <strong>hook template</strong> baru bagi keyword ini - berupa file PHP. Semua SMS dengan keyword di
-                                                        ini akan diarahkan untuk diproses oleh file tersebut.
-                                                    </div>
-                                                </div>                                                                                      
-                                                <!-- Generate Hook Template -->
-                                                <div class="row" style="padding-bottom: 6px;" >                                                    
-                                                    <div class="col-sm-12">
-                                                        <button type="button" class="btn btn-success btn-sm" id="generate-hook-template">Generate <i class="fa fa-chevron-right"></i></button>    
-                                                    </div>
-                                                </div>
-                                                <div class="row" style="padding-bottom: 6px;" id="row-hook-template">
-                                                    <div class="col-sm-12 small">                                                        
-                                                        You&apos;d better copy this code to your PHP editor, edit it, and paste it back here.
-                                                        <strong class="label label-warning">Warning!</strong> Any error here can break the whole system!
-                                                        <hr> 
-                                                        <textarea style="height: auto;" class="form-control input-sm" placeholder="Generated" id="kw-hook-template" ></textarea>                                                         
-                                                    </div>
-                                                </div>
-                                            </div>  
-                                        </div>
-                                        <!-- /.panel-body -->
-                                        <!-- Add fields -->
-                                        <div class="panel-footer">
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <input type="hidden" value="new" id="keyword-edit-mode">
-                                                    <button type="button" class="btn btn-primary btn-sm" id="save-keyword"><i class="fa fa-save"></i> Save</button>
-                                                    <button type="button" class="btn btn-danger btn-sm" id="cancel-keyword">Close</button>
-													<span class="small">Jika file sudah ada, menekan Save akan menimpa file lama.</span>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <?php
-                                $keywords = fetch_query("select * from sms_keywords order by id asc");
-                                $c = count($keywords);
-                                if ($c==0)
-                                {
-                                ?>
-                                <li class="left clearfix">
-                                    <span class="chat-img pull-left">
-                                        <img id="img-ajax" src="img/front-end/sms-keyword.jpg" class="img-circle" />
-                                    </span>
-                                    <div class="chat-body clearfix">
-                                        <div class="header">
-                                            <strong class="primary-font">Keyword Pooling SMS belum diatur.</strong>                                            
-                                        </div>
-                                        <p>
-                                            Klik tombol Buat Baru untuk membuat keyword baru.
-                                        </p>
-                                    </div>
-                                </li>
-                                <?php
-                                }
-                                else
-                                {
-                                    foreach($keywords as $i=>$key) 
-                                    {
-                                ?>                    
-                                <li class="left clearfix keyword" id="<?php echo $key['id']; ?>">
-                                    <span class="chat-img pull-left">
-                                        <img id="img-ajax" src="img/front-end/sms-keyword.jpg" class="img-circle" />
-                                    </span>
-                                    <div class="chat-body clearfix">
-                                        <div class="header">
-                                            <strong class="primary-font"><?php echo $key['keyword']; ?></strong>
-                                            <small class="pull-right text-muted">
-                                                <a href="#" class="label label-success button-test" data-id="<?php echo $key['id']; ?>" data-sms="<?php echo $key['contoh_sms']; ?>"><i class="fa fa-chevron-right fa-fw"></i> Test SMS</a>
-                                                <a href="#" class="label label-<?php echo ($key['active']=='Y'?'success':'warning') ?> button-edit-keyword-state" data-id="<?php echo $key['id']; ?>" data-state="<?php echo ($key['active']=='Y'?'active':'disabled') ?>"><i class="fa fa-<?php echo ($key['active']=='Y'?'check':'times') ?> fa-fw" id="fa-state-<?php echo $key['id']; ?>"></i> <?php echo ($key['active']=='Y'?'Active':'Disabled') ?></a>
-												<a href="#" class="label label-danger button-drop-keyword" data-id="<?php echo $key['id']; ?>"><i class="fa fa-trash-o fa-fw"></i> Drop</a>
-                                            </small>
-                                        </div>
-                                        <p><small><strong class="label label-success">KETERANGAN:</strong> <?php echo htmlentities($key['description']); ?></small></p>
-                                        <p><small><strong class="label label-info">FORMAT SMS:</strong> <?php echo htmlentities($key['format_sms']); ?></small></p>
-                                        <p><small><strong class="label label-info">CONTOH SMS:</strong> <?php echo htmlentities($key['contoh_sms']); ?></small></p>
-                                    </div>
-                                </li>
-                                <?php 
-                                    }
-                                }
-                                unset($keywords);
-                                // var_dump(keyword_fetch_by_keyword('TEST'));
-                                ?>
-                            </ul>
+                                        </li>
+                                        <?php
+                                        $keywords = fetch_query("select * from sms_keywords order by id asc");
+                                        $c = count($keywords);
+                                        if ($c==0)
+                                        {
+                                        ?>
+                                        <li class="left clearfix">
+                                            <span class="chat-img pull-left">
+                                                <img id="img-ajax" src="img/front-end/sms-keyword.jpg" class="img-circle" />
+                                            </span>
+                                            <div class="chat-body clearfix">
+                                                <div class="header">
+                                                    <strong class="primary-font">Keyword Pooling SMS belum diatur.</strong>                                            
+                                                </div>
+                                                <p>
+                                                    Klik tombol Buat Baru untuk membuat keyword baru.
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <?php
+                                        }
+                                        else
+                                        {
+                                            foreach($keywords as $i=>$key) 
+                                            {
+                                        ?>                    
+                                        <li class="left clearfix keyword" id="<?php echo $key['id']; ?>">
+                                            <span class="chat-img pull-left">
+                                                <img id="img-ajax" src="img/front-end/sms-keyword.jpg" class="img-circle" />
+                                            </span>
+                                            <div class="chat-body clearfix">
+                                                <div class="header">
+                                                    <strong class="primary-font"><?php echo $key['keyword']; ?></strong>
+                                                    <small class="pull-right text-muted">
+                                                        <a href="#" class="label label-success button-test" data-id="<?php echo $key['id']; ?>" data-sms="<?php echo $key['contoh_sms']; ?>"><i class="fa fa-chevron-right fa-fw"></i> Test SMS</a>
+                                                        <a href="#" class="label label-<?php echo ($key['active']=='Y'?'success':'warning') ?> button-edit-keyword-state" data-id="<?php echo $key['id']; ?>" data-state="<?php echo ($key['active']=='Y'?'active':'disabled') ?>"><i class="fa fa-<?php echo ($key['active']=='Y'?'check':'times') ?> fa-fw" id="fa-state-<?php echo $key['id']; ?>"></i> <?php echo ($key['active']=='Y'?'Active':'Disabled') ?></a>
+        												<a href="#" class="label label-danger button-drop-keyword" data-id="<?php echo $key['id']; ?>"><i class="fa fa-trash-o fa-fw"></i> Drop</a>
+                                                    </small>
+                                                </div>
+                                                <p><small><strong class="label label-success">KETERANGAN:</strong> <?php echo htmlentities($key['description']); ?></small></p>
+                                                <p><small><strong class="label label-info">FORMAT SMS:</strong> <?php echo htmlentities($key['format_sms']); ?></small></p>
+                                                <p><small><strong class="label label-info">CONTOH SMS:</strong> <?php echo htmlentities($key['contoh_sms']); ?></small></p>
+                                            </div>
+                                        </li>
+                                        <?php 
+                                            }
+                                        }
+                                        unset($keywords);
+                                        // var_dump(fetch_query('select keyword from sms_keywords order by keyword asc'));
+                                        
+                                        ?>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                         <!-- /.panel-body -->
                         <div class="panel-footer">
@@ -403,7 +428,13 @@ function getKwParams()
         kwDefaultAction: $('#kw-reply-sms').is(':checked')
     };
 }
-$(document).ready(function(){    
+$(document).ready(function(){
+    /**
+     * Setup ajax handler:
+     */
+    $(document).ajaxStart(function(){$("#ajax-indicator").addClass('fa-spin');});
+    $(document).ajaxStop(function(){$("#ajax-indicator").removeClass('fa-spin');}); 
+    
     // var editMode = $('#keyword-edit-mode').val();
     $('.new-keyword').click(function(e){
         $('#keyword-editor').removeClass('hide');
@@ -501,7 +532,7 @@ $(document).ready(function(){
                         ajax:true, 
                         r: Math.random(), 
                         reqtype: 'savetemplate',
-                        reqfile: $('#kw-hook-template').text(),
+                        reqfile: $('#kw-hook-template').val(),
                         reqkw: kwParam.kwKeyword.toLowerCase()
                     },
                     function(data){
