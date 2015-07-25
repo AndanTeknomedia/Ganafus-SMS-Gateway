@@ -39,6 +39,7 @@ if ($ajax && ($req_type!=NULL))
                 $req_format = post_var('reqformat');
                 $req_sample = post_var('reqsample');
                 $req_reply = strtolower(post_var('reqaction')) == 'true';
+                $req_kategori = ucfirst(strtolower(post_var('reqkategori','')));
                 if ($req_kw==NULL)
                 {
                     echo 'ERInvalid Parameter.';
@@ -58,6 +59,7 @@ if ($ajax && ($req_type!=NULL))
                         unset($tpl);
                         $tpl_str = str_replace(
                             array(
+                                '%KEYWORD%_kategori_str',
                                 '%KEYWORD%_description_str',
                                 '%KEYWORD%_format_str',
                                 '%KEYWORD%_sample_str',
@@ -66,6 +68,7 @@ if ($ajax && ($req_type!=NULL))
                                 '%KEYWORD%'
                             ),
                             array(
+                                $req_kategori,
                                 $req_desc, 
                                 $req_format, 
                                 $req_sample, 
@@ -76,6 +79,7 @@ if ($ajax && ($req_type!=NULL))
                             $tpl_str
                         );
                         echo $tpl_str;
+                        // echo 'OKss';
                     }
                 }
             }
@@ -257,6 +261,19 @@ include "_head.php";
                                                                 <strong>HURUF dan ANGKA SAJA</strong> tanpa spasi dan tanda baca.
                                                             </div>
                                                         </div>
+                                                        <!-- Kategori -->
+                                                        <div class="row" style="padding-bottom: 6px;" id="row-kw-kategori">
+                                                            <div class="col-sm-2">Kategori</div>
+                                                            <div class="col-sm-4">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon"><i class="fa fa-folder-o fa-fw"></i></span>
+                                                                    <input class="form-control input-sm" placeholder="Kategori" id="kw-kategori" type="text" value="<?php echo SP_APP_NAME_SHORT; ?>" maxlength="50">
+                                                                </div>    
+                                                            </div>
+                                                            <div class="col-sm-6 small">
+                                                                <strong>HURUF dan ANGKA SAJA</strong> tanpa spasi dan tanda baca.
+                                                            </div>
+                                                        </div>
                                                         <!-- Description -->
                                                         <div class="row" style="padding-bottom: 6px;"  >
                                                             <div class="col-sm-2">Keterangan</div>
@@ -377,6 +394,7 @@ include "_head.php";
         												<a href="#" class="label label-danger button-drop-keyword" data-id="<?php echo $key['id']; ?>"><i class="fa fa-trash-o fa-fw"></i> Drop</a>
                                                     </small>
                                                 </div>
+                                                <p><small><strong class="label label-primary">KATEGORI:</strong> <?php echo htmlentities($key['kategori']); ?></small></p>
                                                 <p><small><strong class="label label-success">KETERANGAN:</strong> <?php echo htmlentities($key['description']); ?></small></p>
                                                 <p><small><strong class="label label-info">FORMAT SMS:</strong> <?php echo htmlentities($key['format_sms']); ?></small></p>
                                                 <p><small><strong class="label label-info">CONTOH SMS:</strong> <?php echo htmlentities($key['contoh_sms']); ?></small></p>
@@ -425,7 +443,8 @@ function getKwParams()
         kwDesc: $('#kw-description').val(), 
         kwFormat: $('#kw-format').val(), 
         kwSample: $('#kw-sample').val(),
-        kwDefaultAction: $('#kw-reply-sms').is(':checked')
+        kwDefaultAction: $('#kw-reply-sms').is(':checked'),
+        kwKategori: $('#kw-kategori').val()
     };
 }
 $(document).ready(function(){
@@ -441,7 +460,8 @@ $(document).ready(function(){
     });
     $('#cancel-keyword').click(function(e){
         $('#keyword-editor').addClass('hide');
-        $('#kw-keyword').val(''); 
+        $('#kw-keyword').val('');
+        // $('#kw-kategori').val('<?php echo SP_APP_NAME_SHORT;  ?>');  
         $('#kw-description').val(''); 
         $('#kw-format').val('');
         $('#kw-sample').val('');
@@ -493,7 +513,8 @@ $(document).ready(function(){
                 reqdesc: kwParam.kwDesc,
                 reqformat: kwParam.kwFormat,
                 reqsample: kwParam.kwSample,
-                reqaction: kwParam.kwDefaultAction 
+                reqaction: kwParam.kwDefaultAction,
+                reqkategori: kwParam.kwKategori
             },
             function(data){
                 if (data.substr(0,2).toUpperCase()=='OK')

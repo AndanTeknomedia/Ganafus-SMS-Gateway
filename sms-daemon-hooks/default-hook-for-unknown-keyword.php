@@ -24,6 +24,7 @@
  * or process it  - such as database operation, log, etc. and return true 
  * to the daemon to indicate that the SMS has been processed.
  */
+$my_default_kategori = '';
 $my_default_keyword = 'UNKNOWN';
 $my_default_description = 'Ini adalah default hook untuk keyword unknown';
  

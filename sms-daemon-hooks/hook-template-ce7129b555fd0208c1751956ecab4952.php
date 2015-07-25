@@ -1,6 +1,6 @@
 <?php
 /**
- * Hook for keyword %KEYWORD%
+ * Hook for keyword STOK
  */
 
 /**
@@ -15,12 +15,12 @@
  *    ["time_stamp"]=>string(19) "2015-07-15 23:15:57"
  *    ["udh"]=>string(0) ""
  *    ["sender"]=>string(14) "+6282345798006"
- *    ["text"]=>string(4) "%KEYWORD%"
- *    ["keyword"]=>string(4) "%KEYWORD%"
+ *    ["text"]=>string(4) "STOK"
+ *    ["keyword"]=>string(4) "STOK"
  *    ["status"]=>NULL
  *    ["params"]=>array(1) 
  *    {
- *      [0]=>string(4) "%KEYWORD%"
+ *      [0]=>string(4) "STOK"
  *      [1]=>string(4) "Other SMS Part..."
  *    }
  *  }
@@ -32,11 +32,11 @@
  * to the daemon to indicate that the SMS
  * has been processed.
  */
-$my_%keyword%_kategori = '%KEYWORD%_kategori_str';
-$my_%keyword%_keyword = '%KEYWORD%';
-$my_%keyword%_description = '%KEYWORD%_description_str';
-$my_%keyword%_sms_format = '%KEYWORD%_format_str';
-$my_%keyword%_sms_sample = '%KEYWORD%_sample_str';
+$my_stok_kategori = 'Inkubator bayi';
+$my_stok_keyword = 'STOK';
+$my_stok_description = 'Cek stok Inkubator yang tersedia.';
+$my_stok_sms_format = 'STOK';
+$my_stok_sms_sample = 'STOK';
  
 /**
  * Define your hook for specific SMS keyword. 
@@ -45,7 +45,7 @@ $my_%keyword%_sms_sample = '%KEYWORD%_sample_str';
  * Return false will cause the SMS to be 
  * reprocessed infinitely until you return true.
  */
-function my_hook_%keyword%_function($keyword, $params)
+function my_hook_stok_function($keyword, $params)
 {
     global  $nama_modem;
     // Sometime, you don't need to reply SMS from non-user number,
@@ -66,30 +66,30 @@ function my_hook_%keyword%_function($keyword, $params)
         /*
          * return true;
          */
-        %keyword%_action;
+        return sms_send($params['sender'], 'Your SMS has been processed.', $nama_modem);
     }    
 }
 
 /**
- * Register your keyword %keyword% and its hook function to database. 
+ * Register your keyword stok and its hook function to database. 
  * Database registration is not required by SMS daemon, 
  * but is required - by SMS parser in database 
  * - to identify and classify each arriving SMS.  
  */
 keyword_hook_register(
-    $my_%keyword%_keyword, 
-    'my_hook_%keyword%_function', // hook function name.
+    $my_stok_keyword, 
+    'my_hook_stok_function', // hook function name.
     __FILE__, // current file.
-    $my_%keyword%_description, 
-    $my_%keyword%_sms_format, 
-    $my_%keyword%_sms_sample,
-    $my_%keyword%_kategori
+    $my_stok_description, 
+    $my_stok_sms_format, 
+    $my_stok_sms_sample,
+    $my_stok_kategori
 );
 
 /**
  * keyword_hook_unregister(
- *     $my_%keyword%_keyword, 
- *     'my_hook_%keyword%_function'
+ *     $my_stok_keyword, 
+ *     'my_hook_stok_function'
  * );
  */
 ?>

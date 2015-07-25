@@ -32,6 +32,7 @@
  * to the daemon to indicate that the SMS
  * has been processed.
  */
+$my_info_kategori = 'Inkubator';
 $my_info_keyword = 'INFO';
 $my_info_description = 'Meminta info data inkubator';
 $my_info_sms_format = 'INFO*KATAKUNCI';
@@ -131,7 +132,8 @@ keyword_hook_register(
     __FILE__, // current file.
     $my_info_description, 
     $my_info_sms_format, 
-    $my_info_sms_sample
+    $my_info_sms_sample,
+    $my_info_kategori
 );
 
 /**

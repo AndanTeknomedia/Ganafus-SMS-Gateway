@@ -139,9 +139,7 @@ include_once('../gammu/gammu-fetch-sms.php');
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
-                        </li>
-                        */
-                        ?>
+                        </li>                        
                         <li>
                             <a href="tables.html"><i class="fa fa-table fa-fw"></i> Tables</a>
                         </li>
@@ -214,6 +212,8 @@ include_once('../gammu/gammu-fetch-sms.php');
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
+                        */
+                        ?>
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

@@ -559,7 +559,7 @@ CREATE TABLE IF NOT EXISTS `sms_keywords` (
   `format_sms` text,
   `contoh_sms` text,
   `active` enum('Y','N') DEFAULT 'N',
-  `kategori` varchar(100) NOT NULL,
+  `kategori` varchar(100) NOT NULL DEFAULT 'Inbox',
   PRIMARY KEY (`id`),
   UNIQUE KEY `keyword` (`keyword`),
   UNIQUE KEY `function_name` (`function_name`)
@@ -568,9 +568,11 @@ CREATE TABLE IF NOT EXISTS `sms_keywords` (
 -- Dumping data for table freeinkubator.sms_keywords: 3 rows
 /*!40000 ALTER TABLE `sms_keywords` DISABLE KEYS */;
 INSERT INTO `sms_keywords` (`id`, `keyword`, `function_name`, `file_name`, `description`, `format_sms`, `contoh_sms`, `active`, `kategori`) VALUES
-	(24118194654412805, 'UNKNOWN', 'my_hook_default_function', 'C:\\xeroxl\\UniServerZ\\vhosts\\inkubator-local\\sms-daemon-hooks\\default-hook-for-unknown-keyword.php', 'Ini adalah default hook untuk keyword unknown', '', '', 'Y', 'Inbox'),
-	(24118194654412807, 'TEST', 'my_hook_test_function', 'C:\\xeroxl\\UniServerZ\\vhosts\\inkubator-local\\sms-daemon-hooks\\test-hook.php', 'Ini adalah keyword test', 'TEST', 'TEST', 'Y', 'Inkubator'),
-	(24119443047055362, 'INFO', 'my_hook_info_function', 'C:\\xeroxl\\UniServerZ\\vhosts\\inkubator-local\\sms-daemon-hooks\\hook-template-caf9b6b99962bf5c2264824231d7a40c.php', 'Meminta info data inkubator', 'INFO*KATAKUNCI', 'INFO*PINJAM', 'Y', 'Inkubator');
+	(24122596777787400, 'UNKNOWN', 'my_hook_default_function', 'C:\\xeroxl\\UniServerZ\\vhosts\\inkubator-local\\sms-daemon-hooks\\default-hook-for-unknown-keyword.php', 'Ini adalah default hook untuk keyword unknown', '', '', 'N', 'Inbox'),
+	(24122596777787401, 'INFO', 'my_hook_info_function', 'C:\\xeroxl\\UniServerZ\\vhosts\\inkubator-local\\sms-daemon-hooks\\hook-template-caf9b6b99962bf5c2264824231d7a40c.php', 'Meminta info data inkubator', 'INFO*KATAKUNCI', 'INFO*PINJAM', 'N', 'Inkubator Bayi'),
+	(24122596777787402, 'PINJAM', 'my_hook_pinjam_function', 'C:\\xeroxl\\UniServerZ\\vhosts\\inkubator-local\\sms-daemon-hooks\\hook-template-d76630a1a369ff64a5464e247b9b0098.php', 'SMS Peminjaman Inkubator', 'PINJAM*NAMA_BAYI*TGL_LAHIR*TGL_PULANG_RS*CM_PJGLAHIR*KG_BERATLAHIR*<SEHAT/SAKIT>*NAMA_RS*NM_DOKTER/BIDAN*NO_KK*ALAMAT*NAMA_IBU*NAMA_AYAH', 'PINJAM*DIAN KHAMSAWARNI*21/09/2015*23/09/2015*28*3,2*SEHAT*RSU Wahidin*Dr. Marhamah, Sp.OG*9288299288*BTN Hamzy E8/A*RINA MAWARNI*ARIFIN ADINEGORO', 'N', 'Inkubator Bayi'),
+	(24122596777787403, 'TEST', 'my_hook_test_function', 'C:\\xeroxl\\UniServerZ\\vhosts\\inkubator-local\\sms-daemon-hooks\\test-hook.php', 'Ini adalah keyword test', 'TEST', 'TEST', 'N', 'Inkubator Bayi'),
+	(24122596777787404, 'STOK', 'my_hook_stok_function', 'C:\\xeroxl\\UniServerZ\\vhosts\\inkubator-local\\sms-daemon-hooks\\hook-template-ce7129b555fd0208c1751956ecab4952.php', 'Cek stok Inkubator yang tersedia.', 'STOK', 'STOK', 'N', 'Inkubator bayi');
 /*!40000 ALTER TABLE `sms_keywords` ENABLE KEYS */;
 
 

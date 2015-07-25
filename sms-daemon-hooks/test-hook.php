@@ -23,6 +23,7 @@
  * or process it  - such as database operation, log, etc. and return true 
  * to the daemon to indicate that the SMS has been processed.
  */
+$my_test_kategori = 'Inkubator';
 $my_test_keyword = 'TEST';
 $my_test_description = 'Ini adalah keyword test';
 $my_info_sms_format = 'TEST';
@@ -47,7 +48,13 @@ function my_hook_test_function($keyword, $params)
     }
 }
 
-keyword_hook_register($my_test_keyword, 'my_hook_test_function', __FILE__, $my_test_description, $my_info_sms_format, $my_info_sms_sample);
+keyword_hook_register($my_test_keyword, 
+    'my_hook_test_function', 
+    __FILE__, 
+    $my_test_description, 
+    $my_info_sms_format, 
+    $my_info_sms_sample, 
+    $my_test_kategori);
 // keyword_hook_unregister($my_test_keyword, 'my_hook_test_function');
 
 ?>
