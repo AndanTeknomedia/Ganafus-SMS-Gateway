@@ -40,7 +40,7 @@ include "_head.php";
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header"><?php echo $page_name; ?>
-                    <small><?php echo $_SESSION['current_skpd_kode'] . ' '. $_SESSION['current_skpd_name']; ?></small></h1>
+                   </h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -174,7 +174,7 @@ include "_head.php";
                                         <li class="divider"></li>
                                         <li><a href="#">Separated link</a>
                                         </li>
-                                    </ul>
+                                    </ul>                                    
                                 </div>
                             </div>
                         </div>

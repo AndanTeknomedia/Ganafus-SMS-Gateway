@@ -85,4 +85,11 @@ function force_404($page_404)
     include($page_404);
     die();
 }
+
+function pre($var)
+{
+    echo '<pre>';
+    var_dump($var);
+    echo '</pre>';
+}
 ?>

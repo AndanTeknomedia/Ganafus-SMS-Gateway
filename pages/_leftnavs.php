@@ -1,3 +1,6 @@
+<?php
+include_once('../gammu/gammu-fetch-sms.php');
+?>
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
@@ -77,20 +80,20 @@
                             
                         </li>
                         <li class="sidebar-divider"></li>
+                                              
                         <!-- SMS Manager -->
                         <li>
                             <a href="#"><i class="fa fa-envelope-o fa-fw"></i> SMS Manager<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li><a href="sms-inbox.php">SMS Masuk</a></li>
+                                <li><a href="sms-inbox.php">SMS Masuk</a></li>                                                             
                                 <li><a href="sms-outbox.php">SMS Sedang Dikirim</a></li>    
                                 <li><a href="sms-sent.php">SMS Terkirim</a></li>
                                 <?php if (USE_GAMMU) { ?>
-                                <li class="divider"></li>
+                                <li class="divider sidebar-divider"></li>
                                 <li><a href="#" class="send-recv-sms" jenis="kirim" id="btn-send-sms"><i class="fa fa-upload fa-fw"></i> Kirim SMS</a></li>
                                 <li><a href="#" class="send-recv-sms" jenis="terima" id="btn-recv-sms"><i class="fa fa-download fa-fw"></i> Simulasi Terima SMS</a></li>
                                 <?php } ?>
-                            </ul>
-                            
+                            </ul>                            
                         </li>
                         <li class="sidebar-divider"></li>
                         <?php if (USE_GAMMU) { ?>

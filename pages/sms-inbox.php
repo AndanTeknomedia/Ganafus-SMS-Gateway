@@ -15,7 +15,12 @@ if (!$ajax) {
         }
     }
 }
+
+$sms_inbox_keyword = get_var('keyword','');
+
 include_once('../gammu/gammu-fetch-sms.php');
+error_reporting(E_ALL);
+
 /**
  * If this page is is being loaded using Ajax call,
  * fetch the requested data and skip the rest of the page:
@@ -41,7 +46,10 @@ if ($ajax)
         from sms_valid sv" 
         . (!empty($sms_keyword)? " where upper(sv.jenis) = upper('$sms_keyword')" :"" ) .
         " order by sv.waktu_terima $sms_sort_order, sv.id $sms_sort_order limit $sms_offset,$sms_limit";
-    // echo $sql;
+    /*
+    echo $sql;
+    echo '<hr>'.$sms_count;
+    */
     if ($sms_count == 0)
     {
     ?>
@@ -172,27 +180,87 @@ include "_head.php";
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <ul class="chat" id="data-container">
-                            <!-- Will be filled by Ajax call. -->
-                            <!-- Just load this page using $.post({..., ajax: true})-->
-                            <!-- Temporary display: -->                            
-                                <li class="left clearfix">
-                                    <span class="chat-img pull-left">
-                                        <img id="img-ajax" src="img/ajax-loaders/ajax-loader-fan.gif" title="img/ajax-loaders/ajax-loader-fan.gif" />
-                                    </span>
-                                    <div class="chat-body clearfix">
-                                        <div class="header">
-                                            <strong class="primary-font">Mempersiapkan data</strong>
-                                            <small class="pull-right text-muted">
-                                                <i class="fa fa-clock-o fa-fw"></i> Tunggu...
-                                            </small>
-                                        </div>
-                                        <p>
-                                            Data sedang diproses oleh server...
-                                        </p>
+                            <div class="row">
+                                <div class="col-lg-12">   
+                                <?php
+                                $kats = keyword_fetch_kategori();       
+                                $kats_kosong = count($kats)==0;                         
+                                ?>  
+                                    <div class="col-lg-4">
+                                        <span class="fa fa-info-circle"></span>
+                                        <?php if ($kats_kosong) { ?>
+                                        <strong>Belum Ada Keyword Poling SMS</strong>.<br />
+                                        <span class="small">Gunakan menu Setup Pooling SMS untuk membuat keyword baru.</span>
+                                        <?php } else { ?>
+                                        <strong>Kategori dan Keyword Pooling SMS</strong>.<br />
+                                        <span class="small">Gunakan <em class="label label-success">keyword</em> untuk menyaring data.</span>
+                                        <?php } ?>
                                     </div>
-                                </li>
-                            </ul>
+                                    <div class="col-lg-8">
+                                        <div class="btn-group pull-right">
+                                            <?php if ($kats_kosong) { ?>
+                                            <a href="sms-pooling-setup.php" class="btn btn-md btn-primary"><span class="fa fa-pencil"></span> Buat Keyword Baru</a>
+                                            <?php
+                                            }
+                                            else
+                                            {         
+                                                echo '<a href="'.$_SERVER['PHP_SELF'].'" class="btn btn-default btn-sm">Show All</a>';
+                                                $kat_idx = 0;
+                                                foreach ($kats as $kat)
+                                                {
+                                                    $kat_idx++;
+                                                    echo '<div class="btn-group">';
+                                                    echo '<button type="button" class="btn btn-default btn-sm">'.ucfirst(strtolower($kat)).'</button>';
+                                                    echo '<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>';
+                                                    echo '<ul class="dropdown-menu pull-right" role="menu">';
+                                                    $menu_keys = keyword_fetch_all($kat);                                                                
+                                                    foreach($menu_keys as $i => $menu_key)
+                                                    {
+                                                        echo '<li>';
+                                                        echo '<a href="sms-inbox.php?kategori='.strtolower($menu_key['kategori']).'&keyword='.strtolower($menu_key['keyword']).'">';
+                                                        echo ucfirst(strtolower($menu_key['keyword'])).'</a>';
+                                                        echo '</li>';
+                                                    }
+                                                    
+                                                    echo '</ul>';
+                                                    echo '</div>';
+                                                }                                          
+                                            }
+                                            ?>                                    
+                                        </div>
+                                    </div>                                     
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <hr />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <ul class="chat" id="data-container">
+                                    <!-- Will be filled by Ajax call. -->
+                                    <!-- Just load this page using $.post({..., ajax: true})-->
+                                    <!-- Temporary display: -->                            
+                                        <li class="left clearfix">
+                                            <span class="chat-img pull-left">
+                                                <img id="img-ajax" src="img/ajax-loaders/ajax-loader-fan.gif" title="img/ajax-loaders/ajax-loader-fan.gif" />
+                                            </span>
+                                            <div class="chat-body clearfix">
+                                                <div class="header">
+                                                    <strong class="primary-font">Mempersiapkan data</strong>
+                                                    <small class="pull-right text-muted">
+                                                        <i class="fa fa-clock-o fa-fw"></i> Tunggu...
+                                                    </small>
+                                                </div>
+                                                <p>
+                                                    Data sedang diproses oleh server...
+                                                </p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                         <!-- /.panel-body -->
                         <div class="panel-footer">
@@ -214,18 +282,22 @@ include "_head.php";
                                         <option value="100">100</option>
                                     </select>
                                     &nbsp;&nbsp;
-                                    <?php                                    
-                                    $keywords = keyword_fetch_from_db();
-                                    // var_dump($keywords);
-                                    echo '<select id="data-keyword" class="form-control input-sm pull-right" style="width: 200px;">';
-                                    echo '<option value="">Not Filtered</option>';
-                                    if (count($keywords)>0){                                        
-                                        foreach($keywords as $kwd) 
-                                        {
-                                            echo '<option value="'.$kwd.'">Keyword '.strtoupper($kwd).'</option>';
-                                        }                                   
+                                    <?php     
+                                    /*
+                                    if (empty($sms_inbox_keyword)) {                               
+                                        $keywords = keyword_fetch_from_db();
+                                        // var_dump($keywords);
+                                        echo '<select id="data-keyword" class="form-control input-sm pull-right" style="width: 200px;">';
+                                        echo '<option value="">Not Filtered</option>';
+                                        if (count($keywords)>0){                                        
+                                            foreach($keywords as $kwd) 
+                                            {
+                                                echo '<option value="'.$kwd.'">Keyword '.strtoupper($kwd).'</option>';
+                                            }                                   
+                                        }
+                                        echo '</select>';   
                                     }
-                                    echo '</select>';   
+                                    */
                                     ?>                
                                 </div>               
                             </span>
@@ -244,9 +316,13 @@ include "_head.php";
     <!-- /#wrapper -->
 
 <script>
-$(document).ready(function(){    
+$(document).ready(function(){
+    <?php     
+    echo "var sms_inbox_keyword = '".(empty($sms_inbox_keyword)?'':$sms_inbox_keyword)."'";
+    ?>
     /* ajax params */
-    var sms_offset      = parseInt(getCookie('sms_offset') || "0",10);    
+    //var sms_offset      = parseInt(getCookie('sms_offset') || "0",10);
+    var sms_offset      = 0;    
     var sms_limit       = parseInt(getCookie('sms_limit') || "10",10);
     var sms_keyword     = getCookie('sms_keyword') || '';
     var sms_sortorder   = getCookie('sms_sortorder') || 'desc';
@@ -283,7 +359,7 @@ $(document).ready(function(){
         $('#data-container').load(url, {
             sms_offset : offset,
             sms_limit : limit, 
-            sms_keyword : keyword,
+            sms_keyword : (sms_inbox_keyword==''?keyword:sms_inbox_keyword),
             sms_sortorder : sortorder,
             ajax : ajax,
             r: Math.random()    

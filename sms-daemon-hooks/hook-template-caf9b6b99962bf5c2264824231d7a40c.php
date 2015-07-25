@@ -56,10 +56,12 @@ function my_hook_info_function($keyword, $params)
     else
     {
         $c = count($param); 
+        $sql_kunci = "select k.keyword from sms_keywords k where (not (upper(k.keyword) in ('UNKNOWN',upper('$my_info_keyword')) ))
+                     and (k.kategori in (select s.kategori from sms_keywords s where s.keyword = '$my_info_keyword')) order by k.keyword asc";
         if ($c!=2)
         {
             $pesan1 = 'Terimakasih. Ketik '.strtoupper($my_info_keyword).DELIMITER.'KATAKUNCI untuk bantuan.';
-            $kunci  = fetch_query("select keyword from sms_keywords where not (upper(keyword) in ('UNKNOWN',upper('$my_info_keyword'))) order by keyword asc");
+            $kunci  = fetch_query($sql_kunci);
             $pesan2 = '';            
             foreach($kunci as $i=>$item){
                 $pesan2.=','.$item['keyword'];
@@ -74,7 +76,7 @@ function my_hook_info_function($keyword, $params)
             if (count($kirim)==0)
             {
                 $pesan1 = 'Kata kunci '.strtoupper($info_kw).' tidak ditemukan. Ketik '.strtoupper($my_info_keyword).' untuk bantuan.';
-                $kunci  = fetch_query("select keyword from sms_keywords where not (upper(keyword) in ('UNKNOWN',upper('$my_info_keyword'))) order by keyword asc");
+                $kunci  = fetch_query($sql_kunci);
                 $pesan2 = '';            
                 foreach($kunci as $i=>$item){
                     $pesan2.=','.$item['keyword'];
@@ -98,6 +100,24 @@ function my_hook_info_function($keyword, $params)
         return ($ok1 && $ok2);
     }       
 }
+
+/**
+ * Init function:
+ *  single param: keyword
+ */
+/*
+function keyword_info_init($keyword)
+{
+    echo "Initializing of keyword ".$keyword."\n";
+    // return false;
+    exec_query("create table if not exists sms_inbox_keyword_info(
+        id int(8) not null auto_increment, 
+        sms_time timestamp not null default current_timestamp,
+        sms_text text null,
+       	primary key (id)
+        ) engine=MyISAM");
+}
+*/
 
 /**
  * Register your keyword info and its hook function to database. 
