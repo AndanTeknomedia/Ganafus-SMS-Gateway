@@ -565,7 +565,7 @@ CREATE TABLE IF NOT EXISTS `sms_keywords` (
   UNIQUE KEY `function_name` (`function_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Dumping data for table freeinkubator.sms_keywords: 3 rows
+-- Dumping data for table freeinkubator.sms_keywords: 5 rows
 /*!40000 ALTER TABLE `sms_keywords` DISABLE KEYS */;
 INSERT INTO `sms_keywords` (`id`, `keyword`, `function_name`, `file_name`, `description`, `format_sms`, `contoh_sms`, `active`, `kategori`) VALUES
 	(24122596777787400, 'UNKNOWN', 'my_hook_default_function', 'C:\\xeroxl\\UniServerZ\\vhosts\\inkubator-local\\sms-daemon-hooks\\default-hook-for-unknown-keyword.php', 'Ini adalah default hook untuk keyword unknown', '', '', 'N', 'Inbox'),
