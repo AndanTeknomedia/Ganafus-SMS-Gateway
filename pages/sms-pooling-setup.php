@@ -163,13 +163,26 @@ if ($ajax && ($req_type!=NULL))
             $req_id = post_var('reqid');
             try
             {
+                $kw_data = fetch_query("select keyword, function_name, file_name from sms_keywords where id = '$req_id'");
+                /*
                 $kw_file = fetch_one_value("select file_name from sms_keywords where id = '$req_id'");
+                $kw_keyword = fetch_one_value("select keyword from sms_keywords where id = '$req_id'");
+                */
+                $kw_keyword = $kw_data[0]['keyword'];
+                $kw_function = $kw_data[0]['function_name'];
+                $kw_file = $kw_data[0]['file_name'];                
                 $kw_file = str_replace("\\","/", realpath('../sms-daemon-hooks')).'/'.basename($kw_file);
+                unset($kw_data);                
                 if (file_exists($kw_file))
                 {
                     unlink($kw_file);
                 }
-                if (exec_query("delete from sms_keywords where id = '$req_id'")) 
+                // panassa'i / ensure / pastikan:
+                $res = keyword_hook_unregister($kw_keyword, $kw_function); 
+                if (
+                    /* exec_query("delete from sms_keywords where id = '$req_id'") */
+                    ($res == ERROR_KEYWORD_NOT_REGISTERED) || ($res == ERROR_KEYWORD_SUCCESS)                
+                ) 
                 {
                     echo 'OKKeyword telah dihapus';
                 }
@@ -184,7 +197,14 @@ if ($ajax && ($req_type!=NULL))
             }
             break;
         case 'fetch':            
-            $keywords = fetch_query("select * from sms_keywords order by id asc");
+            $kategori_keyword = post_var('currkat', '');
+            // pre($kategori_keyword);
+            $keywords = keyword_fetch_all($kategori_keyword);
+            /*
+            $fetch_kw_sql = "select * from sms_keywords ".(empty($kategori_keyword)?"":" where upper(kategori) = upper('$kategori_keyword') ")." order by id asc";
+            $keywords = fetch_query($fetch_kw_sql);
+            echo $fetch_kw_sql ;
+            */
             $c = count($keywords);
             if ($c==0)
             {
@@ -210,8 +230,8 @@ if ($ajax && ($req_type!=NULL))
                     </div>
                     <p><small><strong class="label label-primary">KATEGORI:</strong> <?php echo htmlentities($key['kategori']); ?></small></p>
                     <p><small><strong class="label label-success">KETERANGAN:</strong> <?php echo htmlentities($key['description']); ?></small></p>
-                    <p><small><strong class="label label-info">FORMAT SMS:</strong> <?php echo htmlentities($key['format_sms']); ?></small></p>
-                    <p><small><strong class="label label-info">CONTOH SMS:</strong> <?php echo htmlentities($key['contoh_sms']); ?></small></p>
+                    <p><small><strong class="label label-info">FORMAT SMS:</strong> <?php echo htmlentities($key['sms_format']); ?></small></p>
+                    <p><small><strong class="label label-info">CONTOH SMS:</strong> <?php echo htmlentities($key['sms_sample']); ?></small></p>
                 </div>
             </li>            
             <?php 
@@ -379,6 +399,9 @@ include "_head.php";
                                                 menjadi <small><span class="label label-warning"><i class="fa fa-times fa-fw"></i> Disabled</a></small>
                                                 <br />
                                                 <span class="text-danger">Jika tidak, Anda dapat <strong>merusak sistem!</strong></span>
+                                                <br />
+                                                SMS dengan keyword <small><span class="label label-warning"><i class="fa fa-times fa-fw"></i> Disabled</a></small> tidak akan diproses,
+                                                tapi ditandai dengan status <strong>Dibalas</strong>.
                                             </div>         
                                         </div>
                                         <div class="col-lg-1" style="margin-top: 15px;" >
@@ -393,11 +416,49 @@ include "_head.php";
                             <!-- Keyword List: -->
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <ul class="chat" id="data-container">
-                                        <?php                                        
-                                        echo $default_list;                                        
-                                        ?>
-                                    </ul>                                       
+                                    <!-- Kategori -->
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="btn-group pull-left">
+                                                <?php 
+                                                $kats = keyword_fetch_kategori();       
+                                                $kats_kosong = count($kats)==0;
+                                                if ($kats_kosong) { ?>
+                                                <a href="#" class="btn btn-sm btn-primary new-keyword"><span class="fa fa-pencil"></span> Keyword Baru</a>
+                                                <?php
+                                                }
+                                                else
+                                                {         
+                                                    echo '<a href="#" class="btn disabled btn-success btn-sm"><strong>Kategori</strong></a>';
+                                                    echo '<div class="btn-group">';
+                                                    echo '<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>';                                                    
+                                                    echo '<ul class="dropdown-menu pull-left" role="menu">';                                                
+                                                    foreach ($kats as $kat)
+                                                    {
+                                                        echo '<li>';
+                                                        // echo '<a href="'.$_SERVER['PHP_SELF'].'?kwkat='.urlencode(strtolower($kat)).'">';
+                                                        echo '<a href="#" data-category="'.$kat.'" class="filter-by-kategori">';
+                                                        echo ucfirst(strtolower($kat)).'</a>';
+                                                        echo '</li>';
+                                                    }                                                    
+                                                    echo '</ul>';
+                                                    echo '</div>';                                                                                       
+                                                }
+                                                ?>                                    
+                                            </div>                                                                                  
+                                        </div>
+                                    </div>
+                                    <!-- List -->
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <hr />
+                                            <ul class="chat" id="data-container">
+                                                <?php                                        
+                                                echo $default_list;                                        
+                                                ?>
+                                            </ul>                                       
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <!-- Keyword Editor -->
@@ -544,6 +605,7 @@ var smsDelimiter    = '<?php echo DELIMITER; ?>';
 var uri             = '<?php echo $_SERVER['PHP_SELF'];?>';
 var kwTester        = /^[a-z0-9]+$/i /* /^[a-z0-9\-\s]+$/i */;
 var currentKeyword  = '';
+var currentKategori = '';
 function keywordValid(keyword)
 {
     return (keyword!='') && kwTester.test(keyword);
@@ -567,20 +629,32 @@ $(document).ready(function(){
     $(document).ajaxStop(function(){$("#ajax-indicator").removeClass('fa-spin');}); 
     
     var timerRefetchData;
-    var refetchData = function(currKeyword)
+    var refetchData = function(currKat)
     {
+        // alert(currKat);
         $('#data-container').load(uri, {
             ajax:true, 
             r: Math.random(), 
             reqtype: 'fetch',
-            reqkw: currKeyword    
+            // reqkw: currKeyword
+            currkat: currKat                
         });  
         clearTimeout(timerRefetchData);
         timerRefetchData = setTimeout(function(){
-            refetchData(currentKeyword);
+            refetchData(currentKategori);
         }, 10000); // refresh keyword after 10 seconds       
     };
-    refetchData(currentKeyword);
+    refetchData(currentKategori);
+    
+    /**
+     * Filter by kategori:
+     */
+    $('.filter-by-kategori').click(function(e){
+        e.preventDefault();
+        var filterKat = $(this).attr('data-category');
+        currentKategori = filterKat;        
+        refetchData(currentKategori);  
+    });
     
     // var editMode = $('#keyword-edit-mode').val();
     $('.new-keyword').click(function(e){

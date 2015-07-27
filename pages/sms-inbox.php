@@ -204,6 +204,7 @@ include "_head.php";
                                             }
                                             else
                                             {         
+                                                echo '<a href="#" class="btn disabled btn-success btn-sm"><strong>Keywords:</strong></a>';
                                                 echo '<a href="'.$_SERVER['PHP_SELF'].'" class="btn btn-default btn-sm">Show All</a>';
                                                 $kat_idx = 0;
                                                 foreach ($kats as $kat)

@@ -51,6 +51,7 @@ function get_var($var_name, $default = NULL)
 
 function common_var($var_name, $default = NULL)
 {
+    /*
     return 
         (isset($_POST[$var_name]) 
         ? $_POST[$var_name] 
@@ -58,6 +59,9 @@ function common_var($var_name, $default = NULL)
             ? $_GET[$var_name] 
             : $default)
         );
+    */
+    $var = post_var($var_name);
+    return (!is_null($var)? $var : get_var($var_name, $default));
 }
 
 function dump_variable($the_var)

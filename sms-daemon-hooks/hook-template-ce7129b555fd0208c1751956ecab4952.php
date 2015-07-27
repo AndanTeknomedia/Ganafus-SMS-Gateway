@@ -66,7 +66,8 @@ function my_hook_stok_function($keyword, $params)
         /*
          * return true;
          */
-        return sms_send($params['sender'], 'Your SMS has been processed.', $nama_modem);
+        $tersedia = fetch_one_value("select sum(stok_inkubator) from vw_inkubator_tersedia");
+        return sms_send($params['sender'], 'Inkubator tersedia: '.$tersedia.' buah.', $nama_modem);
     }    
 }
 
