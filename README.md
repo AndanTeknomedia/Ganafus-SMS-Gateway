@@ -25,9 +25,19 @@ Ganafus SMS Gateway requires Windows (7 or above) to run. Linux and Macintosh cu
 * MySQL 5.4/MariaDB 10.0 or newer (must support trigger)
 * PHP 5.4 or newer, with MySQL support (mysqli extension)
 
-We recommend to use Uniform Server from http://www.uniformserver.com, a repackaged Apache, PHP and MySQL that support GUI based virtual host creation.
+We recommend to use Uniform Server from http://www.uniformserver.com, a repackaged Apache, PHP and MySQL that support GUI-based virtual host creation. Ganafus was
+tested using Uniform Server Zero XI (UniServer Zero XI 11.7.2 and UniController XI V1.2.0)
+
+Before Ganafus SMS Gateway installation, do server environment setup to support PHP with MySQL access capability.
 
 # Installation
+
+* Optional: Create virtual host for Ganafus SMS Gateway.
+* Run Apache. Test your server environment and make sure PHP run well and can connect to MySQL using mysqli extension.
+* Download and copy Ganafus SMS Gateway files to your Apache document root folder (or in it's sub directory) or to your virtual host document root.
+* Use browser to navigate to your http URL.
+
+
 
 # Setting Up Modem/Phone
 
