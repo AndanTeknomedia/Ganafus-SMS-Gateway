@@ -82,7 +82,7 @@ include_once('../gammu/gammu-fetch-sms.php');
                         <li class="sidebar-divider"></li>
                                               
                         <!-- SMS Manager -->
-                        <li>
+                        <li class="success">
                             <a href="#"><i class="fa fa-envelope-o fa-fw"></i> SMS Manager<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li><a href="sms-inbox.php">SMS Masuk</a></li>                                                             
@@ -117,6 +117,13 @@ include_once('../gammu/gammu-fetch-sms.php');
                                 <li><a href="user-settings.php?id=<?php echo $user_data['user_id']; ?>"><i class="fa fa-gear fa-fw"></i> Settings</a></li>
                                 -->
                                 <li><a href="../cores/logout.php"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>                              
+                            </ul>                            
+                        </li>
+                        <!-- Plugins -->
+                        <li>
+                            <a href="#"><i class="fa fa-sliders fa-fw"></i> Plugins<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li><a href="plugin-manager.php"><i class="fa fa-magic fa-fw"></i> Manage Plugins</a></li>                              
                             </ul>                            
                         </li>
                         <!-- Utils -->

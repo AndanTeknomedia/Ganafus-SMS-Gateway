@@ -36,18 +36,19 @@ include_once(str_replace("\\", "/", dirname(dirname(__FILE__))."/cores/definitio
 include_once(str_replace("\\", "/", dirname(dirname(__FILE__))."/gammu/gammu-cores.php"));
 include_once(str_replace("\\", "/", dirname(dirname(__FILE__))."/gammu/gammu-fetch-sms.php"));
 
-error_reporting(E_ALL ^ E_NOTICE);
+// error_reporting(E_ALL ^ E_NOTICE);
 
 if (!USE_GAMMU) {die('Not supported on this server. Gammu is not used.'); }
 
 $app_name       = SP_APP_NAME_SHORT;
 $app_version    = SP_APP_VERSION;
 $gammu_id       = GAMMU_CREATOR_ID;
-
+$_SMS_PROCESSOR_DAEMON_HOOKS = keyword_fetch_all();
 
 /**
  * This daemon will look for hook files in this directory and load them to processor engine: 
  */
+/*
 $hook_dir = str_replace("\\", "/", dirname(dirname(__FILE__)))."/sms-daemon-hooks";
 $hd = opendir($hook_dir);
 if (!($hd===false))
@@ -76,18 +77,25 @@ if (!($hd===false))
     }   
     closedir($hd);
 }
+*/
 
+/**
+ * Include hook files:
+ */
+
+foreach ($_SMS_PROCESSOR_DAEMON_HOOKS as $keyword)
+{
+    if (file_exists($keyword['file_name']))
+    {
+        include_once($keyword['file_name']);
+    } 
+} 
 $data_count_to_process  = 10; // execute 10 data every minute - as this task run
 $nama_modem             = fetch_one_value("select coalesce((select nama_modem from modem_gateway order by id desc limit 0,1),'')");
 $last_id                = fetch_one_value("select coalesce((select config_value from configs where config_name = '".LAST_ID_CONFIG_NAME."'),0)");
 // create keyword state cache:
 $keyword_states         = keyword_fetch_states_from_db();
-/*
-$sms_query  = 
-    "select sv.id, sv.udh, sv.waktu_terima, sv.pengirim, sv.sms, sv.jenis, sv.param_count, sv.diproses
-    from sms_valid sv where sv.id > $last_id and sv.diproses = 'Ditunda'
-    order by sv.waktu_terima asc, sv.id asc limit 0, $data_count_to_process";
-*/
+
 $sms_query  = 
     "select sv.id from sms_valid sv where sv.id > $last_id and sv.diproses = 'Ditunda' 
     order by sv.waktu_terima asc, sv.id asc limit 0, $data_count_to_process";
@@ -110,15 +118,17 @@ else
         $last_processed_id = $sms['id'];
         $sms_item          = sms_fetch_item($last_processed_id);        
         $sms_keyword       = strtoupper($sms_item['params'][0]);
-        foreach ($_SMS_PROCESSOR_DAEMON_HOOKS as $keyword => $hook_function)
+        foreach ($_SMS_PROCESSOR_DAEMON_HOOKS as $keyword)
         {
-            if ($sms_keyword == strtoupper($keyword))
+            if ($sms_keyword == strtoupper($keyword['keyword']))
             {
-                if // only process active keyword:
-                (array_key_exists($keyword, $keyword_states) && ($keyword_states[$keyword] == 'Y'))
+                /*
+                pre($keyword['active']);
+                pre('Y');
+                */
+                if (strtoupper($keyword['active']) == 'Y')
                 {
-                    // echo $last_processed_id.'- '.$keyword.'<br>';
-                    $result = call_user_func($_SMS_PROCESSOR_DAEMON_HOOKS[$keyword], $keyword, $sms_item);
+                    $result = call_user_func($keyword['function_name'], $keyword['keyword'], $sms_item);
                     /**
                      * If keyword hook returned true,
                      * mark it's status as 'Dibalas'
@@ -135,7 +145,8 @@ else
                 else
                 {
                     // keyword tidak aktif, langsung tangani:
-                    sms_status_dibalas($last_processed_id);
+                    // sms_status_dibalas($last_processed_id);
+                    sms_status_diproses($last_processed_id);
                     sms_set_last_processed_id($last_processed_id);    
                     $cnt++;
                 }

@@ -32,6 +32,13 @@
  * to the daemon to indicate that the SMS
  * has been processed.
  */
+ 
+/**
+ * 
+ * WARNING!
+ * DO NOT CHANGE SYSTEM GENERATED VARIABLE & FUNCTION NAMES!
+ * 
+ */
 $my_%keyword%_kategori = '%KEYWORD%_kategori_str';
 $my_%keyword%_keyword = '%KEYWORD%';
 $my_%keyword%_description = '%KEYWORD%_description_str';
@@ -47,7 +54,7 @@ $my_%keyword%_sms_sample = '%KEYWORD%_sample_str';
  */
 function my_hook_%keyword%_function($keyword, $params)
 {
-    global  $nama_modem;
+    global $app_name, $app_version, $nama_modem;
     // Sometime, you don't need to reply SMS from non-user number,
     // such as SMS from Service Center, message center, 
     // or promotional SMS:
@@ -71,11 +78,60 @@ function my_hook_%keyword%_function($keyword, $params)
 }
 
 /**
+ * Callback for register event:
+ *  - Keyword: your keyword.
+ */
+function my_hook_%keyword%_register_callback_function($keyword)
+{
+    // create your table here, etc., and...
+    return true;    
+}
+
+/**
+ * Callback for unregister event:
+ *  - Keyword: your keyword.
+ */
+function my_hook_%keyword%_unregister_callback_function($keyword)
+{
+    // drop your table here, etc., and...
+    return true;    
+}
+
+/**
+ * Callback for activation event:
+ *  - Keyword: your keyword.
+ */
+function my_hook_%keyword%_activation_callback_function($keyword)
+{
+    // create your table here, etc., and...
+    // exec_query('create table if not exists `unknown_sms_data`(id int(10) not null auto_increment, primary key(id)) engine=MyISAM');
+    return true;    
+}
+
+/**
+ * Callback for deactivation event:
+ *  - Keyword: your keyword.
+ */
+function my_hook_%keyword%_deactivation_callback_function($keyword)
+{
+    // drop your table here, etc., and...
+    // exec_query('drop table if exists `unknown_sms_data`');
+    // you can leave your database entries for next time your hook reactivated.
+    return true;    
+}
+
+
+/**
  * Register your keyword %keyword% and its hook function to database. 
  * Database registration is not required by SMS daemon, 
  * but is required - by SMS parser in database 
  * - to identify and classify each arriving SMS.  
  */
+/**
+ * You are not needed to execute two following functions.
+ * System will do it for you!
+ */
+/*
 keyword_hook_register(
     $my_%keyword%_keyword, 
     'my_hook_%keyword%_function', // hook function name.
@@ -85,7 +141,7 @@ keyword_hook_register(
     $my_%keyword%_sms_sample,
     $my_%keyword%_kategori
 );
-
+*/
 /**
  * keyword_hook_unregister(
  *     $my_%keyword%_keyword, 

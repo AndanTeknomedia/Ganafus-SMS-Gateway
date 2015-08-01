@@ -12,6 +12,8 @@ include_once('../cores/definition.php');
 include_once('../cores/db.php');
 include_once('gammu-cores.php');
 
+error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
+
 $nama_modem = post_var('nama_modem');
 $nama_port =  strtolower(post_var('nama_port'));
 $mode = post_var('mode');
@@ -61,9 +63,9 @@ else
     $log = $path.'\gammu-log.log';
     $smsdlog=$path.'\smsd-log.log';
     $cfg = $path.'\gammu-config.cfg';
-    unlink($log);
-    unlink($smsdlog);
-    unlink($cfg);
+    if (file_exists($log)) {unlink($log);}
+    if (file_exists($smsdlog)) {unlink($smsdlog);}
+    if (file_exists($cfg)) {unlink($cfg);}
     $sql =  "insert into modem_gateway (
         nama_modem,
         nama_port,
@@ -103,6 +105,9 @@ else
         die ('ERROR: Gagal mengupdate SMS Gateway.');
     }
     // setup config files:
+    $ror_file = dirname(__FILE__).'\sms-processor-daemon.php';
+    $php_ini_cli = dirname(__FILE__).'\php-cli.php';
+    $run_on_receive = ''.str_replace("\\","/",$php).'/php.exe "'.$php_ini_cli.'" "'.$ror_file.'"';
     $cfgs = "[gammu]\n".
         "Device=$nama_port\n".
         "Connection=$mode$baudrate\n".    
@@ -119,7 +124,8 @@ else
         "PhoneID=$nama_modem\n".
         ($uselog ? "" : ";").
         "LogFile=".($smsdlog)."\n".        
-        ";RunOnReceive=".str_replace("\\","/", PHP_BINARY)." ".str_replace("\\","/",dirname(__FILE__))."/run-on-receive.php". "\n".
+        // ";RunOnReceive=".str_replace("\\","/", PHP_BINARY)." ".str_replace("\\","/",dirname(__FILE__))."/run-on-receive.php". "\n".
+        ";RunOnReceive=".$run_on_receive. "\n".
         ";RunOnFailure=\n".        
         "User=".DB_USER."\n".
         "Password=".DB_PASSWORD."\n".
@@ -127,8 +133,12 @@ else
         "Database=".DB_DATABASE."\n".      
         "DebugLevel=1\n".        
         "[sql]\n";
+    if (file_exists($cfg)) {unlink($cfg);}
+    /*
     unlink($path.'\gammu-config.cfg');
     $f = fopen($path.'\gammu-config.cfg', 'w');
+    */
+    $f = fopen($cfg, 'w');
     fputs($f, $cfgs);
     fclose($f);
     if (!file_exists($path.'\gammu-config.cfg'))

@@ -56,20 +56,20 @@ function waktu() { echo date('H:i:s'); }
                         </div>
                         <div class="list-group" id="list-progress">
                             <a href="#" class="list-group-item text-info" id="progress-0">
-                                <i class="fa fa-gear fa-fw"></i> Initializing <img src="img/ajax-loaders/ajax-loader-1.gif">
+                                <i class="fa fa-gear fa-fw"></i> Initializing 
                                 <span class="pull-right text-muted small"><em>Wait...</em></span>
                             </a>
                             <!-- Windows Task Scheduler -->
                             <a href="#" class="list-group-item text-info" id="progress-1" ajax-uri="uninstallprocessor">
-                                <i class="fa fa-gear fa-fw"></i> Menghapus tugas otomatis <img src="img/ajax-loaders/ajax-loader-1.gif">
+                                <i class="fa fa-gear fa-fw"></i> Menghapus tugas otomatis 
                                 <span class="pull-right text-muted small"><em>Wait...</em></span>
                             </a>
                             <a href="#" class="list-group-item text-info" id="progress-2" ajax-uri="installprocessor">
-                                <i class="fa fa-gear fa-fw"></i> Membuat entri Windows Task Scheduler <img src="img/ajax-loaders/ajax-loader-1.gif">
+                                <i class="fa fa-gear fa-fw"></i> Membuat entri Windows Task Scheduler 
                                 <span class="pull-right text-muted small"><em>Wait...</em></span>
                             </a>
                             <a href="#" class="list-group-item text-success" id="progress-3" ajax-uri="queryprocessor">
-                                <i class="fa fa-gear fa-fw"></i> Memeriksa status tugas <img src="img/ajax-loaders/ajax-loader-1.gif">
+                                <i class="fa fa-gear fa-fw"></i> Memeriksa status tugas 
                                 <span class="pull-right text-muted small"><em>Wait...</em></span>
                             </a>
                         </div>                        
@@ -106,18 +106,27 @@ function waktu() { echo date('H:i:s'); }
             */ 
             $('#run-sms-daemon').click(function(e){    
                 e.preventDefault;
-                // $('#list-progress').removeClass('hide');
-                // $('#list-control').addClass('hide');
                 var currentItem = 0;
                 var allOK = true;
+                for (var i =0; i<4; i++)
+                {
+                    $('#progress-'+(i).toString()).find('i')
+                        .removeClass('fa-spin')
+                        .removeClass('fa-check')
+                        .removeClass('fa-warning')
+                        .addClass('fa-gear');    
+                }
                 var executeAndNext = function(i, success, data){                
                     if (i>3) { return; }                
-                    var command = $('#progress-'+(i+1).toString()).attr('ajax-uri');
+                    var el = $('#progress-'+(i+1).toString());
+                    $('#progress-'+(i).toString()).find('i').removeClass('fa-spin');
+                    $(el).find('i').addClass('fa-spin');      
+                    var command = $(el).attr('ajax-uri');
+                    // var command = $('#progress-'+(i+1).toString()).attr('ajax-uri');
                     // var uri = 'gammu-'+$('#progress-'+(i+1).toString()).attr('ajax-uri')+'.php';                
                     // alert((i+1)+'->>'+command);
                     allOK = allOK & success;
-                    if (!success) {                    
-                        $('#progress-'+i+' img').hide();
+                    if (!success) {        
                         $('#progress-'+i+' i').removeClass('fa-gear').addClass('fa-warning');
                         $('#progress-'+i+' em').text(data);
                         /*
@@ -128,8 +137,6 @@ function waktu() { echo date('H:i:s'); }
                     }
                     else
                     {
-                        // alert(i.toString() +':'+data);
-                        $('#progress-'+i+' img').hide();
                         $('#progress-'+i+' i').removeClass('fa-gear').addClass('fa-check');
                         $('#progress-'+i+' em').text(data);     
                         

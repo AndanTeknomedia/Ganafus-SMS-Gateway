@@ -52,10 +52,12 @@ switch ($command)
         break; 
     case 'start':
         $command = $modem['gammu_path'].'\gammu-smsd.exe -c "'.$modem['gammu_config_file'].'" -s -n '.$modem['service_name'];
+        
         if (!exec($command, $res, $ret))
         {
             die('Gagal.');
-        }        
+        }
+                
         echo 'OK';
         break;
     case 'stop':

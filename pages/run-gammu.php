@@ -60,28 +60,28 @@ function waktu() { echo date('H:i:s'); }
                         </div>
                         <div class="list-group" id="list-progress">
                             <a href="#" class="list-group-item text-info" id="progress-0">
-                                <i class="fa fa-gear fa-fw"></i> Initializing <img src="img/ajax-loaders/ajax-loader-1.gif">
+                                <i class="fa fa-gear fa-fw"></i> Initializing 
                                 <span class="pull-right text-muted small"><em>Wait...</em></span>
                             </a>                            
                             <!-- Windows service -->
                             <a href="#" class="list-group-item text-success" id="progress-1" ajax-uri="stop">
-                                <i class="fa fa-gear fa-fw"></i> Mematikan service <img src="img/ajax-loaders/ajax-loader-1.gif">
+                                <i class="fa fa-gear fa-fw"></i> Mematikan service 
                                 <span class="pull-right text-muted small"><em>Wait...</em></span>
                             </a>                                                         
                             <a href="#" class="list-group-item text-success" id="progress-2" ajax-uri="uninstall">
-                                <i class="fa fa-gear fa-fw"></i> Menghapus service <img src="img/ajax-loaders/ajax-loader-1.gif">
+                                <i class="fa fa-gear fa-fw"></i> Menghapus service 
                                 <span class="pull-right text-muted small"><em>Wait...</em></span>
                             </a>
                             <a href="#" class="list-group-item text-success" id="progress-3" ajax-uri="install">
-                                <i class="fa fa-gear fa-fw"></i> Memasang service baru <img src="img/ajax-loaders/ajax-loader-1.gif">
+                                <i class="fa fa-gear fa-fw"></i> Memasang service baru 
                                 <span class="pull-right text-muted small"><em>Wait...</em></span>
                             </a>
                             <a href="#" class="list-group-item text-success" id="progress-4" ajax-uri="start">
-                                <i class="fa fa-gear fa-fw"></i> Menjalankan service <img src="img/ajax-loaders/ajax-loader-1.gif">
+                                <i class="fa fa-gear fa-fw"></i> Menjalankan service 
                                 <span class="pull-right text-muted small"><em>Wait...</em></span>
                             </a>
                             <a href="#" class="list-group-item text-danger" id="progress-5" ajax-uri="check">
-                                <i class="fa fa-gear fa-fw"></i> Mengetes service <img src="img/ajax-loaders/ajax-loader-1.gif">
+                                <i class="fa fa-gear fa-fw"></i> Mengetes service 
                                 <span class="pull-right text-muted small"><em>Wait...</em></span>
                             </a>
                         </div>                        
@@ -120,14 +120,24 @@ function waktu() { echo date('H:i:s'); }
                 e.preventDefault;            
                 var currentItem = 0;
                 var allOK = true;
+                for (var i =0; i<6; i++)
+                {
+                    $('#progress-'+(i).toString()).find('i')
+                        .removeClass('fa-spin')
+                        .removeClass('fa-check')
+                        .removeClass('fa-warning')
+                        .addClass('fa-gear');    
+                }
                 var executeAndNext = function(i, success, data){                
-                    if (i>5) { return; }                
-                    var command = $('#progress-'+(i+1).toString()).attr('ajax-uri');
+                    if (i>5) { return; }          
+                    var el = $('#progress-'+(i+1).toString());
+                    $('#progress-'+(i).toString()).find('i').removeClass('fa-spin');
+                    $(el).find('i').addClass('fa-spin');      
+                    var command = $(el).attr('ajax-uri');
                     // var uri = 'gammu-'+$('#progress-'+(i+1).toString()).attr('ajax-uri')+'.php';                
                     // alert((i+1)+'->>'+command);
                     allOK = allOK & success;
                     if (!success) {                    
-                        $('#progress-'+i+' img').hide();
                         $('#progress-'+i+' i').removeClass('fa-gear').addClass('fa-warning');
                         $('#progress-'+i+' em').text(data);
                         /*
@@ -139,7 +149,6 @@ function waktu() { echo date('H:i:s'); }
                     else
                     {
                         // alert(i.toString() +':'+data);
-                        $('#progress-'+i+' img').hide();
                         $('#progress-'+i+' i').removeClass('fa-gear').addClass('fa-check');
                         $('#progress-'+i+' em').text(data);     
                         

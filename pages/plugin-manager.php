@@ -1,8 +1,9 @@
 <?php
-$page_name = 'Pooling SMS Manager';
+$page_name = 'Plugin Manager';
 include_once('../cores/definition.php'); 
 $ajax = post_var('ajax');
 $req_type = post_var('reqtype');
+/*
 if (!$ajax) {
     if (USE_GAMMU){
         require_once('../gammu/gammu-cores.php');
@@ -13,6 +14,7 @@ if (!$ajax) {
         }
     }
 }
+*/
 require_once('../cores/db.php'); 
 include_once('../cores/session.php');
 include_once('../gammu/gammu-fetch-sms.php');
@@ -25,7 +27,7 @@ include_once('../gammu/gammu-fetch-sms.php');
 
 $default_list = '<li class="left clearfix">'.
                 '<span class="chat-img pull-left">'.
-                '    <img id="img-ajax" src="img/front-end/sms-keyword.jpg" class="img-circle" />'.
+                '    <img id="img-ajax" src="img/front-end/plugin-icon.png" class="img-circle" />'.
                 '</span>'.
                 '<div class="chat-body clearfix">'.
                 '    <div class="header">'.
@@ -98,45 +100,10 @@ if ($ajax && ($req_type!=NULL))
                     }
                 }
             }
-            break;        
-        case 'checkkeyword':
-            $req_kw = post_var('reqkw');
-            if (keyword_hook_registered($req_kw)!==false)
-            {
-                echo 'ERKeyword telah digunakan sebelumnya.<br>Silahkan gunakan keyword lain.';
-            }
-            else
-            {
-                echo 'OKKeyword dapat digunakan';
-            }
-            break;
-        case 'changestate':
-            $req_id = post_var('reqid');
-            $req_state = post_var('reqstate');
-            $req_kw = post_var('reqkw');            
-            try
-            {
-                $state = keyword_hook_change_state($req_kw);
-                /*
-                $state = exec_query("update sms_keywords set active = (case when active='Y' then 'N' else 'Y' end) where id = '$req_id';");
-                $state = fetch_one_value("select upper(active) from sms_keywords where id = '$req_id'");
-                */
-                echo 'OK'.($state=='Y'?'active':'disabled');    
-            }
-            catch (Exception $e)
-            {
-               echo 'ER'.$req_state; 
-            }
             break;
         case 'savetemplate':
             $req_file = post_var('reqfile','');
             $req_kw = post_var('reqkw');
-            $req_desc = post_var('reqdesc');
-            $req_format = post_var('reqformat');
-            $req_sample = post_var('reqsample');
-            $req_reply = strtolower(post_var('reqaction')) == 'true';
-            $req_kategori = ucfirst(strtolower(post_var('reqkategori','')));
-            $req_function = 'my_hook_'.strtolower($req_kw).'_function';
             /*
             if (keyword_hook_registered($req_kw)!==false)
             {
@@ -151,22 +118,13 @@ if ($ajax && ($req_type!=NULL))
                 } 
                 else
                 {
-                    $tpl_file = str_replace("\\","/", realpath('../sms-daemon-hooks')).'/hook-template-'.md5(strtolower($req_kw)).'.php';  
+                    $tpl_file = str_replace("\\","/", realpath('../sms-daemon-hooks')).'/hook-template-'.md5($req_kw).'.php';  
     				//echo $tpl_file;    				
                     try {
     					$tpf = fopen($tpl_file, 'w');
     					fputs($tpf, $req_file);
     					fclose($tpf);
-                        include_once($tpl_file);
     					echo 'OKFile hook template sudah dibuat.';
-                        $res = keyword_hook_register($req_kw, $req_function, $tpl_file, $req_desc, $req_format, $req_sample, $req_kategori);
-                        if ($res == ERROR_KEYWORD_SUCCESS){
-                            echo '<br>Keyword sudah didaftarkan ke sistem.';
-                        }
-                        else
-                        {
-                            echo '<br>Keyword gagal didaftarkan ke sistem.';
-                        }
     				}
     				catch (Exception $e)
     				{
@@ -178,29 +136,56 @@ if ($ajax && ($req_type!=NULL))
             }
             */
             break;
-        case 'dropkeyword':
+        case 'checkkeyword':
             $req_kw = post_var('reqkw');
-            $req_fn = post_var('reqfn');
+            if (keyword_hook_registered($req_kw)!==false)
+            {
+                echo 'ERKeyword telah digunakan sebelumnya.<br>Silahkan gunakan keyword lain.';
+            }
+            else
+            {
+                echo 'OKKeyword dapat digunakan';
+            }
+            break;
+        case 'changestate':
+            $req_id = post_var('reqid');
+            $req_state = post_var('reqstate');
             try
             {
+                exec_query("update sms_keywords set active = (case when active='Y' then 'N' else 'Y' end) where id = '$req_id';");
+                $state = fetch_one_value("select upper(active) from sms_keywords where id = '$req_id'");
+                echo 'OK'.($state=='Y'?'active':'disabled');    
+            }
+            catch (Exception $e)
+            {
+               echo 'ER'.$req_state; 
+            }
+            break;
+        case 'dropkeyword':
+            $req_id = post_var('reqid');
+            try
+            {
+                $kw_data = fetch_query("select keyword, function_name, file_name from sms_keywords where id = '$req_id'");
                 /*
-                $kw_data = fetch_query("select * from sms_keywords where id = '$req_id'");
-                
+                $kw_file = fetch_one_value("select file_name from sms_keywords where id = '$req_id'");
+                $kw_keyword = fetch_one_value("select keyword from sms_keywords where id = '$req_id'");
+                */
                 $kw_keyword = $kw_data[0]['keyword'];
                 $kw_function = $kw_data[0]['function_name'];
-                $kw_reg_callback = $kw_data[0]['register_callback'];
-                $kw_unreg_callback = $kw_data[0]['unregister_callback'];
                 $kw_file = $kw_data[0]['file_name'];                
                 $kw_file = str_replace("\\","/", realpath('../sms-daemon-hooks')).'/'.basename($kw_file);
                 unset($kw_data);                
-                */
+                if (file_exists($kw_file))
+                {
+                    unlink($kw_file);
+                }
                 // panassa'i / ensure / pastikan:
-                $res = keyword_hook_unregister($req_kw, $req_fn); 
+                $res = keyword_hook_unregister($kw_keyword, $kw_function); 
                 if (
                     /* exec_query("delete from sms_keywords where id = '$req_id'") */
                     ($res == ERROR_KEYWORD_NOT_REGISTERED) || ($res == ERROR_KEYWORD_SUCCESS)                
                 ) 
-                {                    
+                {
                     echo 'OKKeyword telah dihapus';
                 }
                 else
@@ -213,19 +198,18 @@ if ($ajax && ($req_type!=NULL))
                echo 'ERGagal menghapus keyword: '.$e->getMessage(); 
             }
             break;
-        case 'fetch':
-                        
+        case 'fetch':        
+            
             $kategori_keyword = post_var('currkat', '');
             // pre($kategori_keyword);
             $keywords = keyword_fetch_all($kategori_keyword);
-            // pre($keywords);
             /*
             $fetch_kw_sql = "select * from sms_keywords ".(empty($kategori_keyword)?"":" where upper(kategori) = upper('$kategori_keyword') ")." order by id asc";
             $keywords = fetch_query($fetch_kw_sql);
             echo $fetch_kw_sql ;
             */
             $c = count($keywords);
-            if (($keywords==FALSE)||($c==0 ))
+            if ($c==0)
             {
                 echo $default_list;    
             }
@@ -236,15 +220,15 @@ if ($ajax && ($req_type!=NULL))
             ?>                    
             <li class="left clearfix keyword" id="<?php echo $key['id']; ?>">
                 <span class="chat-img pull-left">
-                    <img id="img-ajax" src="img/front-end/sms-keyword.jpg" class="img-circle" />
+                    <img id="img-ajax" src="img/front-end/plugin-icon.png" class="img-circle" />
                 </span>
                 <div class="chat-body clearfix">
                     <div class="header">
                         <strong class="primary-font"><?php echo $key['keyword']; ?></strong>
                         <small class="pull-right text-muted">
-                            <a href="#" class="label label-success button-test" data-id="<?php echo $key['id']; ?>" data-sms="<?php echo $key['sms_sample']; ?>"><i class="fa fa-chevron-right fa-fw"></i> Test SMS</a>
-                            <a href="#" class="label label-<?php echo ($key['active']=='Y'?'success':'warning') ?> button-edit-keyword-state" data-id="<?php echo /* $key['id'] */ $key['keyword']; ?>" data-state="<?php echo ($key['active']=='Y'?'active':'disabled') ?>"><i class="fa fa-<?php echo ($key['active']=='Y'?'check':'times') ?> fa-fw" id="fa-state-<?php echo $key['id']; ?>"></i> <?php echo ($key['active']=='Y'?'Active':'Disabled') ?></a>
-							<a href="#" class="label label-danger button-drop-keyword" data-id="<?php echo $key['keyword']; ?>" data-fn="<?php echo $key['function_name']; ?>"><i class="fa fa-trash-o fa-fw"></i> Drop</a>
+                            <a href="#" class="label label-success button-test" data-id="<?php echo $key['id']; ?>" data-sms="<?php echo $key['contoh_sms']; ?>"><i class="fa fa-chevron-right fa-fw"></i> Test SMS</a>
+                            <a href="#" class="label label-<?php echo ($key['active']=='Y'?'success':'warning') ?> button-edit-keyword-state" data-id="<?php echo $key['id']; ?>" data-state="<?php echo ($key['active']=='Y'?'active':'disabled') ?>"><i class="fa fa-<?php echo ($key['active']=='Y'?'check':'times') ?> fa-fw" id="fa-state-<?php echo $key['id']; ?>"></i> <?php echo ($key['active']=='Y'?'Active':'Disabled') ?></a>
+							<a href="#" class="label label-danger button-drop-keyword" data-id="<?php echo $key['id']; ?>"><i class="fa fa-trash-o fa-fw"></i> Drop</a>
                         </small>
                     </div>
                     <p><small><strong class="label label-primary">KATEGORI:</strong> <?php echo htmlentities($key['kategori']); ?></small></p>
@@ -276,7 +260,6 @@ if ($ajax && ($req_type!=NULL))
                     r: Math.random(), 
                     reqtype: 'changestate',
                     reqid: $(el).attr('data-id'),
-                    reqkw: $(el).attr('data-id'),
                     reqstate: elState
                 },
                 function(data){
@@ -313,8 +296,7 @@ if ($ajax && ($req_type!=NULL))
                             ajax:true, 
                             r: Math.random(), 
                             reqtype: 'dropkeyword',
-                            reqkw: $(el).attr('data-id'),
-                            reqfn: $(el).attr('data-fn'),
+                            reqid: $(el).attr('data-id')
                         },
                         function(data){
                             if (data.substr(0,2).toUpperCase()=='OK')
@@ -398,11 +380,11 @@ include "_head.php";
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-gear fa-fw"></i> Daftar Keyword Pooling SMS
+                            <i class="fa fa-sliders fa-fw"></i> Daftar Plugin
                             <div class="pull-right">
                                 <div class="btn-group">
                                     <button type="button" class="new-keyword btn btn-default btn-xs first">
-                                        <i class="fa fa-tag"></i> Buat Keyword Baru                                        
+                                        <i class="fa fa-file-text"></i> Pasang Plugin...                                        
                                     </button>
                                 </div>
                             </div>
@@ -424,7 +406,7 @@ include "_head.php";
                                                 SMS dengan keyword <small><span class="label label-warning"><i class="fa fa-times fa-fw"></i> Disabled</a></small> tidak akan diproses,
                                                 tapi ditandai dengan status <strong>Dibalas</strong>.
                                             </div>         
-                                        </div>                                        
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -636,7 +618,8 @@ function getKwParams()
         kwKategori: $('#kw-kategori').val()
     };
 }
-$(document).ready(function(){    
+$(document).ready(function(){
+    
     var timerRefetchData;
     var refetchData = function(currKat)
     {
@@ -685,7 +668,7 @@ $(document).ready(function(){
         $('#kw-format').val('');
         $('#kw-sample').val('');
         $('#kw-reply-sms').prop('checked','checked');
-        $('#kw-hook-template')/*.addClass('hide')*/.val('');
+        $('#kw-hook-template').addClass('hide').val('');
     });
     $('#kw-keyword').change(function(){
         var kwParam = getKwParams();
@@ -801,17 +784,12 @@ $(document).ready(function(){
                         r: Math.random(), 
                         reqtype: 'savetemplate',
                         reqfile: $('#kw-hook-template').val(),
-                        reqkw: kwParam.kwKeyword.toLowerCase(),
-                        reqdesc: kwParam.kwDesc,
-                        reqformat: kwParam.kwFormat,
-                        reqsample: kwParam.kwSample,
-                        reqaction: kwParam.kwDefaultAction,
-                        reqkategori: kwParam.kwKategori
+                        reqkw: kwParam.kwKeyword.toLowerCase()
                     },
                     function(data){
                         if (data.substr(0,2).toUpperCase()=='OK')
                         {
-                            msgBox('Sukses','Hook template telah disimpan<br>Hook akan aktif beberapa saat lagi.<br>'+data.substr(2));
+                            msgBox('Sukses','Hook template telah disimpan<br>Hook akan aktif beberapa saat lagi.');
                             // $('#cancel-keyword').click();
                             // location.reload();
                         }

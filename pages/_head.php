@@ -113,6 +113,9 @@ $query_string = get_query_string();
     <script src="../dist/js/jsHash.js"></script>
     <script src="../dist/js/slowaescrypt.js"></script>        
     
+    
+    <script src="../dist/js/ajax-overlay.js"></script>
+    
     <script src="../dist/js/head-utils.js"></script>
 
 </head>

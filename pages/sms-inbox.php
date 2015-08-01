@@ -16,7 +16,7 @@ if (!$ajax) {
     }
 }
 
-$sms_inbox_keyword = get_var('keyword','');
+$sms_inbox_keyword = urldecode(get_var('keyword',''));
 
 include_once('../gammu/gammu-fetch-sms.php');
 error_reporting(E_ALL);
@@ -32,8 +32,9 @@ if ($ajax)
     $sms_offset     = post_var('sms_offset', 0);  // default offset of first item to fetch.
     $sms_limit      = post_var('sms_limit', 10); // default item count per page.
     $sms_keyword    = post_var('sms_keyword', ''); // default SMS with this keyword to display.
+    // pre($sms_keyword);
     $sms_sort_order = post_var('sms_sortorder','asc'); // default SMS will be sorted ascending way. Only SMS timestamp supported.
-    $sms_count      = fetch_one_value("select count(id) from sms_valid". (!empty($sms_keyword)? " where upper(jenis) = upper('$sms_keyword')" :"" ) );
+    $sms_count      = fetch_one_value("select count(id) from sms_valid". ((!empty($sms_keyword)) && ($sms_keyword!='*')? " where upper(jenis) = upper('$sms_keyword')" :"" ) );
     // $sms_count = 0;
     if ($sms_offset==-1) {
         $sms_offset = $sms_count-$sms_limit;
@@ -44,7 +45,7 @@ if ($ajax)
     
     $sql = "select sv.id, sv.udh, sv.waktu_terima, sv.pengirim, sv.sms, sv.jenis, sv.param_count, sv.diproses
         from sms_valid sv" 
-        . (!empty($sms_keyword)? " where upper(sv.jenis) = upper('$sms_keyword')" :"" ) .
+        . ((!empty($sms_keyword)) && ($sms_keyword!='*')? " where upper(sv.jenis) = upper('$sms_keyword')" :"" ) .
         " order by sv.waktu_terima $sms_sort_order, sv.id $sms_sort_order limit $sms_offset,$sms_limit";
     /*
     echo $sql;
@@ -205,7 +206,7 @@ include "_head.php";
                                             else
                                             {         
                                                 echo '<a href="#" class="btn disabled btn-success btn-sm"><strong>Keywords:</strong></a>';
-                                                echo '<a href="'.$_SERVER['PHP_SELF'].'" class="btn btn-default btn-sm">Show All</a>';
+                                                echo '<a href="'.$_SERVER['PHP_SELF'].'?kategori='.urlencode('*').'&keyword='.urlencode('*').'" class="btn btn-default btn-sm">Show All</a>';
                                                 $kat_idx = 0;
                                                 foreach ($kats as $kat)
                                                 {
