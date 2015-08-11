@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS `configs` (
 -- Dumping data for table freeinkubator.configs: 1 rows
 /*!40000 ALTER TABLE `configs` DISABLE KEYS */;
 INSERT INTO `configs` (`config_name`, `config_value`) VALUES
-	('last_processed_valid_sms_id', '24132448392577043');
+	('last_processed_valid_sms_id', '24138317649936463'),
+	('sms_to_process_per_minute', '50');
 /*!40000 ALTER TABLE `configs` ENABLE KEYS */;
 
 
@@ -130,9 +131,9 @@ CREATE TABLE IF NOT EXISTS `inbox` (
   `RecipientID` text NOT NULL,
   `Processed` enum('false','true') NOT NULL DEFAULT 'false',
   PRIMARY KEY (`ID`)
-) ENGINE=MyISAM AUTO_INCREMENT=4016 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=4020 DEFAULT CHARSET=utf8;
 
--- Dumping data for table freeinkubator.inbox: 17 rows
+-- Dumping data for table freeinkubator.inbox: 21 rows
 /*!40000 ALTER TABLE `inbox` DISABLE KEYS */;
 INSERT INTO `inbox` (`UpdatedInDB`, `ReceivingDateTime`, `Text`, `SenderNumber`, `Coding`, `UDH`, `SMSCNumber`, `Class`, `TextDecoded`, `ID`, `RecipientID`, `Processed`) VALUES
 	('2015-08-01 15:19:46', '2015-08-01 14:19:36', '0049006E0066006F002A00730074006F006B', '+6282345798006', 'Default_No_Compression', '', '+6281100000', -1, 'Info*stok', 4013, 'ZTE MF636', 'false'),
@@ -151,7 +152,11 @@ INSERT INTO `inbox` (`UpdatedInDB`, `ReceivingDateTime`, `Text`, `SenderNumber`,
 	('2015-08-01 14:27:06', '2015-08-01 13:26:56', '0054006500730074', '+6282345798006', 'Default_No_Compression', '', '+6281100000', -1, 'Test', 4002, 'ZTE MF636', 'false'),
 	('2015-08-01 13:49:36', '2015-08-01 12:49:26', '0054006500730074', '+6282345798006', 'Default_No_Compression', '', '+6281100000', -1, 'Test', 3999, 'ZTE MF636', 'false'),
 	('2015-08-01 14:08:31', '2015-08-01 13:08:21', '005400650073002000730061006A0061', '+6282345798006', 'Default_No_Compression', '', '+6281100000', -1, 'Tes saja', 4000, 'ZTE MF636', 'false'),
-	('2015-08-01 15:44:23', '2015-08-01 14:44:14', '0054006500730074', '+6282345798006', 'Default_No_Compression', '', '+6281100000', -1, 'Test', 4015, 'ZTE MF636', 'false');
+	('2015-08-01 15:44:23', '2015-08-01 14:44:14', '0054006500730074', '+6282345798006', 'Default_No_Compression', '', '+6281100000', -1, 'Test', 4015, 'ZTE MF636', 'false'),
+	('2015-08-02 23:06:01', '2015-08-02 22:05:58', '0054006500730074', '+6282345798006', 'Default_No_Compression', '', '+6281100000', -1, 'Test', 4016, 'ZTE MF636', 'false'),
+	('2015-08-05 15:53:58', '2015-08-05 14:53:54', '00500069006E006A0061006D002A0074006500730074', '+6282345798006', 'Default_No_Compression', '', '+6281100000', -1, 'Pinjam*test', 4017, 'ZTE MF636', 'false'),
+	('2015-08-05 16:11:31', '2015-08-05 15:11:26', '00500069006E006A0061006D002A0074006500730074', '+6282345798006', 'Default_No_Compression', '', '+6281100000', -1, 'Pinjam*test', 4018, 'ZTE MF636', 'false'),
+	('2015-08-05 16:13:28', '2015-08-05 16:13:28', '00700069006E006A0061006D002A006C006100670069', '+6282345798006', 'Default_No_Compression', '', '+6289644000001', -1, 'pinjam*lagi', 4019, 'ZTE MF636', 'false');
 /*!40000 ALTER TABLE `inbox` ENABLE KEYS */;
 
 
@@ -202,7 +207,7 @@ INSERT INTO `inkubator_master` (`id`, `nama`, `jumlah`, `panjang`, `lebar`, `tin
 -- Dumping structure for table freeinkubator.inkubator_monitoring
 DROP TABLE IF EXISTS `inkubator_monitoring`;
 CREATE TABLE IF NOT EXISTS `inkubator_monitoring` (
-  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `id` int(20) NOT NULL,
   `kode_pinjam` varchar(20) NOT NULL DEFAULT '',
   `tgl_input` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `panjang_bayi` decimal(10,2) NOT NULL DEFAULT '0.00',
@@ -211,7 +216,7 @@ CREATE TABLE IF NOT EXISTS `inkubator_monitoring` (
   `skor` decimal(10,2) NOT NULL DEFAULT '0.00',
   `keterangan` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- Dumping data for table freeinkubator.inkubator_monitoring: 0 rows
 /*!40000 ALTER TABLE `inkubator_monitoring` DISABLE KEYS */;
@@ -406,7 +411,7 @@ CREATE TABLE IF NOT EXISTS `outbox` (
   PRIMARY KEY (`ID`),
   KEY `outbox_date` (`SendingDateTime`,`SendingTimeOut`),
   KEY `outbox_sender` (`SenderID`)
-) ENGINE=MyISAM AUTO_INCREMENT=213 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=219 DEFAULT CHARSET=utf8;
 
 -- Dumping data for table freeinkubator.outbox: 0 rows
 /*!40000 ALTER TABLE `outbox` DISABLE KEYS */;
@@ -442,9 +447,9 @@ CREATE TABLE IF NOT EXISTS `outbox_tmp` (
   `Text` text,
   PRIMARY KEY (`id`),
   KEY `outbox_sender` (`SenderID`)
-) ENGINE=MyISAM AUTO_INCREMENT=164 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=170 DEFAULT CHARSET=utf8;
 
--- Dumping data for table freeinkubator.outbox_tmp: 25 rows
+-- Dumping data for table freeinkubator.outbox_tmp: 31 rows
 /*!40000 ALTER TABLE `outbox_tmp` DISABLE KEYS */;
 INSERT INTO `outbox_tmp` (`id`, `DestinationNumber`, `TextDecoded`, `SenderID`, `CreatorID`, `Text`) VALUES
 	(157, '+6282345798006', 'Format SMS: ', 'ZTE MF636', 'Gammu 1.32.0', '0046006F0072006D0061007400200053004D0053003A0020'),
@@ -471,7 +476,13 @@ INSERT INTO `outbox_tmp` (`id`, `DestinationNumber`, `TextDecoded`, `SenderID`, 
 	(160, '+6282345798006', 'Contoh SMS: STOK', 'ZTE MF636', 'Gammu 1.32.0', '0043006F006E0074006F006800200053004D0053003A002000530054004F004B'),
 	(161, '+6282345798006', 'Format SMS: TEST', 'ZTE MF636', 'Gammu 1.32.0', '0046006F0072006D0061007400200053004D0053003A00200054004500530054'),
 	(162, '+6282345798006', 'Contoh SMS: TEST', 'ZTE MF636', 'Gammu 1.32.0', '0043006F006E0074006F006800200053004D0053003A00200054004500530054'),
-	(163, '+6282345798006', 'Test OK. Inkubator Bayi v.1.0.0 siap.', 'ZTE MF636', 'Gammu 1.32.0', '00540065007300740020004F004B002E00200049006E006B0075006200610074006F00720020004200610079006900200076002E0031002E0030002E003000200073006900610070002E');
+	(163, '+6282345798006', 'Test OK. Inkubator Bayi v.1.0.0 siap.', 'ZTE MF636', 'Gammu 1.32.0', '00540065007300740020004F004B002E00200049006E006B0075006200610074006F00720020004200610079006900200076002E0031002E0030002E003000200073006900610070002E'),
+	(164, '+6282345798006', 'Test OK. Inkubator Bayi v.1.0.0 siap.', 'ZTE MF636', 'Gammu 1.32.0', '00540065007300740020004F004B002E00200049006E006B0075006200610074006F00720020004200610079006900200076002E0031002E0030002E003000200073006900610070002E'),
+	(165, '+6282345798006', '1/2. SMS tidak valid. Jumlah parameter data harus 13.', 'ZTE MF636', 'Gammu 1.32.0', '0031002F0032002E00200053004D005300200074006900640061006B002000760061006C00690064002E0020004A0075006D006C0061006800200070006100720061006D006500740065007200200064006100740061002000680061007200750073002000310033002E'),
+	(166, '+6282345798006', '2/2. Contoh SMS: PINJAM*DIAN KHAMSAWARNI*21/09/2015*23/09/2015*28*3,2*SEHAT*RSU Wahidin*Dr. Marhamah, Sp.OG*9288299288*BTN Hamzy E8/A*RINA MAWARNI*ARIFIN ADINEGORO', 'ZTE MF636', 'Gammu 1.32.0', '0032002F0032002E00200043006F006E0074006F006800200053004D0053003A002000500049004E004A0041004D002A004400490041004E0020004B00480041004D00530041005700410052004E0049002A00320031002F00300039002F0032003000310035002A00320033002F00300039002F0032003000310035002A00320038002A0033002C0032002A00530045004800410054002A0052005300550020005700610068006900640069006E002A00440072002E0020004D0061007200680061006D00610068002C002000530070002E004F0047002A0039003200380038003200390039003200380038002A00420054004E002000480061006D007A0079002000450038002F0041002A00520049004E00410020004D0041005700410052004E0049002A00410052004900460049004E0020004100440049004E00450047004F0052004F'),
+	(167, '+6282345798006', 'Peminjaman sedang diproses. Kode Pinjam: 323431-333833-33', 'ZTE MF636', 'Gammu 1.32.0', '00500065006D0069006E006A0061006D0061006E00200073006500640061006E006700200064006900700072006F007300650073002E0020004B006F00640065002000500069006E006A0061006D003A0020003300320033003400330031002D003300330033003800330033002D00330033'),
+	(168, '+6282345798006', 'Peminjaman sedang diproses. Kode Pinjam: 323431-333833-34', 'ZTE MF636', 'Gammu 1.32.0', '00500065006D0069006E006A0061006D0061006E00200073006500640061006E006700200064006900700072006F007300650073002E0020004B006F00640065002000500069006E006A0061006D003A0020003300320033003400330031002D003300330033003800330033002D00330034'),
+	(169, '+6282345798006', 'testing', 'ZTE MF636', 'Gammu 1.32.0', '00740065007300740069006E0067');
 /*!40000 ALTER TABLE `outbox_tmp` ENABLE KEYS */;
 
 
@@ -525,7 +536,7 @@ CREATE TABLE IF NOT EXISTS `phones` (
 /*!40000 ALTER TABLE `phones` DISABLE KEYS */;
 INSERT INTO `phones` (`ID`, `UpdatedInDB`, `InsertIntoDB`, `TimeOut`, `Send`, `Receive`, `IMEI`, `Client`, `Battery`, `Signal`, `Sent`, `Received`) VALUES
 	('Samsung GT-S3353', '2015-06-24 22:32:17', '2015-06-24 22:32:17', '2015-06-24 22:32:27', 'yes', 'yes', '354769041007590', 'Gammu 1.32.0, Windows Server 2007 SP1, GCC 4.7, MinGW 3.11', -1, -1, 0, 0),
-	('ZTE MF636', '2015-08-01 16:37:45', '2015-08-01 15:45:59', '2015-08-01 16:37:55', 'yes', 'yes', '353924031116068', 'Gammu 1.32.0, Windows Server 2007 SP1, GCC 4.7, MinGW 3.11', 100, 51, 0, 0),
+	('ZTE MF636', '2015-08-05 16:15:50', '2015-08-05 15:53:18', '2015-08-05 16:16:00', 'yes', 'yes', '353924031116068', 'Gammu 1.32.0, Windows Server 2007 SP1, GCC 4.7, MinGW 3.11', 100, 51, 6, 2),
 	('ZTE MF636', '2015-07-09 00:58:06', '2015-07-09 00:56:46', '2015-07-09 00:58:16', 'yes', 'yes', '354828044983746', 'Gammu 1.32.0, Windows Server 2007 SP1, GCC 4.7, MinGW 3.11', 64, 30, 0, 0);
 /*!40000 ALTER TABLE `phones` ENABLE KEYS */;
 
@@ -559,10 +570,10 @@ CREATE TABLE IF NOT EXISTS `sentitems` (
   KEY `sentitems_sender` (`SenderID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Dumping data for table freeinkubator.sentitems: 25 rows
+-- Dumping data for table freeinkubator.sentitems: 32 rows
 /*!40000 ALTER TABLE `sentitems` DISABLE KEYS */;
 INSERT INTO `sentitems` (`UpdatedInDB`, `InsertIntoDB`, `SendingDateTime`, `DeliveryDateTime`, `Text`, `DestinationNumber`, `Coding`, `UDH`, `SMSCNumber`, `Class`, `TextDecoded`, `ID`, `SenderID`, `SequencePosition`, `Status`, `StatusError`, `TPMR`, `RelativeValidity`, `CreatorID`) VALUES
-	('2015-08-01 13:48:46', '2015-08-01 13:48:38', '2015-08-01 13:48:46', NULL, '007400650073002000730061006A0061', '+6282345798006', 'Default_No_Compression', '', '+62818445009', -1, 'tes saja', 188, 'ZTE MF636', 1, 'SendingOKNoReport', -1, 2, 255, 'Gammu 1.32.0'),
+	('2015-07-01 13:48:46', '2015-08-01 13:48:38', '2015-08-01 13:48:46', NULL, '007400650073002000730061006A0061', '+6282345798006', 'Default_No_Compression', '', '+62818445009', -1, 'tes saja', 188, 'ZTE MF636', 1, 'SendingOKNoReport', -1, 2, 255, 'Gammu 1.32.0'),
 	('2015-08-01 14:09:23', '2015-08-01 14:09:01', '2015-08-01 14:09:23', NULL, '0059006F0075007200200053004D005300200068006100730020006200650065006E002000700072006F006300650073007300650064002E', '+6282345798006', 'Default_No_Compression', '', '+62818445009', -1, 'Your SMS has been processed.', 189, 'ZTE MF636', 1, 'SendingOKNoReport', -1, 3, 255, 'Gammu 1.32.0'),
 	('2015-08-01 14:28:29', '2015-08-01 14:28:01', '2015-08-01 14:28:29', NULL, '00540065007300740020004F004B002E002000200076002E00200073006900610070002E', '+6282345798006', 'Default_No_Compression', '', '+62818445009', -1, 'Test OK.  v. siap.', 190, 'ZTE MF636', 1, 'SendingOKNoReport', -1, 4, 255, 'Gammu 1.32.0'),
 	('2015-08-01 14:33:34', '2015-08-01 14:33:01', '2015-08-01 14:33:34', NULL, '00540065007300740020004F004B002E00200049006E006B0075006200610074006F00720020004200610079006900200076002E0031002E0030002E003000200073006900610070002E', '+6282345798006', 'Default_No_Compression', '', '+62818445009', -1, 'Test OK. Inkubator Bayi v.1.0.0 siap.', 191, 'ZTE MF636', 1, 'SendingOKNoReport', -1, 5, 255, 'Gammu 1.32.0'),
@@ -586,7 +597,14 @@ INSERT INTO `sentitems` (`UpdatedInDB`, `InsertIntoDB`, `SendingDateTime`, `Deli
 	('2015-08-01 15:20:10', '2015-08-01 15:20:01', '2015-08-01 15:20:10', NULL, '0046006F0072006D0061007400200053004D0053003A002000530054004F004B', '+6282345798006', 'Default_No_Compression', '', '+62818445009', -1, 'Format SMS: STOK', 208, 'ZTE MF636', 1, 'SendingOKNoReport', -1, 23, 255, 'Gammu 1.32.0'),
 	('2015-08-01 15:43:15', '2015-08-01 15:43:01', '2015-08-01 15:43:15', NULL, '0043006F006E0074006F006800200053004D0053003A00200054004500530054', '+6282345798006', 'Default_No_Compression', '', '+62818445009', -1, 'Contoh SMS: TEST', 211, 'ZTE MF636', 1, 'SendingOKNoReport', -1, 24, 255, 'Gammu 1.32.0'),
 	('2015-08-01 15:43:20', '2015-08-01 15:43:01', '2015-08-01 15:43:20', NULL, '0046006F0072006D0061007400200053004D0053003A00200054004500530054', '+6282345798006', 'Default_No_Compression', '', '+62818445009', -1, 'Format SMS: TEST', 210, 'ZTE MF636', 1, 'SendingOKNoReport', -1, 25, 255, 'Gammu 1.32.0'),
-	('2015-08-01 15:45:09', '2015-08-01 15:45:01', '2015-08-01 15:45:09', NULL, '00540065007300740020004F004B002E00200049006E006B0075006200610074006F00720020004200610079006900200076002E0031002E0030002E003000200073006900610070002E', '+6282345798006', 'Default_No_Compression', '', '+62818445009', -1, 'Test OK. Inkubator Bayi v.1.0.0 siap.', 212, 'ZTE MF636', 1, 'SendingOKNoReport', -1, 26, 255, 'Gammu 1.32.0');
+	('2015-08-01 15:45:09', '2015-08-01 15:45:01', '2015-08-01 15:45:09', NULL, '00540065007300740020004F004B002E00200049006E006B0075006200610074006F00720020004200610079006900200076002E0031002E0030002E003000200073006900610070002E', '+6282345798006', 'Default_No_Compression', '', '+62818445009', -1, 'Test OK. Inkubator Bayi v.1.0.0 siap.', 212, 'ZTE MF636', 1, 'SendingOKNoReport', -1, 26, 255, 'Gammu 1.32.0'),
+	('2015-08-02 23:07:20', '2015-08-02 23:07:01', '2015-08-02 23:07:20', NULL, '00540065007300740020004F004B002E00200049006E006B0075006200610074006F00720020004200610079006900200076002E0031002E0030002E003000200073006900610070002E', '+6282345798006', 'Default_No_Compression', '', '+62818445009', -1, 'Test OK. Inkubator Bayi v.1.0.0 siap.', 213, 'ZTE MF636', 1, 'SendingOKNoReport', -1, 27, 255, 'Gammu 1.32.0'),
+	('2015-08-05 15:54:24', '2015-08-05 15:54:02', '2015-08-05 15:54:24', NULL, '0032002F0032002E00200043006F006E0074006F006800200053004D0053003A002000500049004E004A0041004D002A004400490041004E0020004B00480041004D00530041005700410052004E0049002A00320031002F00300039002F0032003000310035002A00320033002F00300039002F0032003000310035002A00320038002A0033002C0032002A00530045004800410054002A0052005300550020005700610068006900640069006E002A00440072002E0020004D0061007200680061006D00610068002C002000530070002E004F0047002A0039003200380038003200390039003200380038002A00420054004E002000480061006D007A0079002000450038002F0041002A00520049004E00410020004D0041005700410052004E0049002A00410052004900460049004E', '+6282345798006', 'Default_No_Compression', '0500030A0201', '+62818445009', -1, '2/2. Contoh SMS: PINJAM*DIAN KHAMSAWARNI*21/09/2015*23/09/2015*28*3,2*SEHAT*RSU Wahidin*Dr. Marhamah, Sp.OG*9288299288*BTN Hamzy E8/A*RINA MAWARNI*ARIFIN', 215, 'ZTE MF636', 1, 'SendingOKNoReport', -1, 28, 255, 'Gammu 1.32.0'),
+	('2015-08-05 15:54:27', '2015-08-05 15:54:02', '2015-08-05 15:54:27', NULL, '0020004100440049004E00450047004F0052004F', '+6282345798006', 'Default_No_Compression', '0500030A0202', '+62818445009', -1, ' ADINEGORO', 215, 'ZTE MF636', 2, 'SendingOKNoReport', -1, 29, 255, 'Gammu 1.32.0'),
+	('2015-08-05 15:54:32', '2015-08-05 15:54:02', '2015-08-05 15:54:32', NULL, '0031002F0032002E00200053004D005300200074006900640061006B002000760061006C00690064002E0020004A0075006D006C0061006800200070006100720061006D006500740065007200200064006100740061002000680061007200750073002000310033002E', '+6282345798006', 'Default_No_Compression', '', '+62818445009', -1, '1/2. SMS tidak valid. Jumlah parameter data harus 13.', 214, 'ZTE MF636', 1, 'SendingOKNoReport', -1, 30, 255, 'Gammu 1.32.0'),
+	('2015-08-05 16:12:33', '2015-08-05 16:12:01', '2015-08-05 16:12:33', NULL, '00500065006D0069006E006A0061006D0061006E00200073006500640061006E006700200064006900700072006F007300650073002E0020004B006F00640065002000500069006E006A0061006D003A0020003300320033003400330031002D003300330033003800330033002D00330033', '+6282345798006', 'Default_No_Compression', '', '+62818445009', -1, 'Peminjaman sedang diproses. Kode Pinjam: 323431-333833-33', 216, 'ZTE MF636', 1, 'SendingError', -1, -1, 255, 'Gammu 1.32.0'),
+	('2015-08-05 16:14:34', '2015-08-05 16:14:01', '2015-08-05 16:14:34', NULL, '00500065006D0069006E006A0061006D0061006E00200073006500640061006E006700200064006900700072006F007300650073002E0020004B006F00640065002000500069006E006A0061006D003A0020003300320033003400330031002D003300330033003800330033002D00330034', '+6282345798006', 'Default_No_Compression', '', '+62818445009', -1, 'Peminjaman sedang diproses. Kode Pinjam: 323431-333833-34', 217, 'ZTE MF636', 1, 'SendingError', -1, -1, 255, 'Gammu 1.32.0'),
+	('2015-08-02 23:07:20', '2015-08-05 16:15:01', '2015-08-05 16:15:35', NULL, '00740065007300740069006E0067', '+6282345798006', 'Default_No_Compression', '', '+62818445009', -1, 'testing', 218, 'ZTE MF636', 1, 'SendingError', -1, -1, 255, 'Gammu 1.32.0');
 /*!40000 ALTER TABLE `sentitems` ENABLE KEYS */;
 
 
@@ -602,18 +620,20 @@ CREATE TABLE IF NOT EXISTS `sms_keywords` (
   `contoh_sms` text,
   `active` enum('Y','N') DEFAULT 'N',
   `kategori` varchar(100) NOT NULL DEFAULT 'Inbox',
+  `candidates` text COMMENT 'JSON',
   PRIMARY KEY (`id`),
   UNIQUE KEY `keyword` (`keyword`),
   UNIQUE KEY `function_name` (`function_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Dumping data for table freeinkubator.sms_keywords: 4 rows
+-- Dumping data for table freeinkubator.sms_keywords: 5 rows
 /*!40000 ALTER TABLE `sms_keywords` DISABLE KEYS */;
-INSERT INTO `sms_keywords` (`id`, `keyword`, `function_name`, `file_name`, `description`, `format_sms`, `contoh_sms`, `active`, `kategori`) VALUES
-	(24129571183919111, 'UNKNOWN', 'my_hook_unknown_function', 'C:/xeroxl/UniServerZ/vhosts/inkubator-local/sms-daemon-hooks/hook-template-ad921d60486366258809553a3db49a4a.php', 'SMS Tidak Valid', '', '', 'Y', 'Inbox'),
-	(24132448392577026, 'TEST', 'my_hook_test_function', 'C:/xeroxl/UniServerZ/vhosts/inkubator-local/sms-daemon-hooks/hook-template-098f6bcd4621d373cade4e832627b4f6.php', 'System Test', 'TEST', 'TEST', 'Y', 'Inkubator bayi'),
-	(24132448392577030, 'STOK', 'my_hook_stok_function', 'C:/xeroxl/UniServerZ/vhosts/inkubator-local/sms-daemon-hooks/hook-template-ce7129b555fd0208c1751956ecab4952.php', 'Cek stok inkubator yang tersedia.', 'STOK', 'STOK', 'Y', 'Inkubator bayi'),
-	(24132448392577033, 'INFO', 'my_hook_info_function', 'C:/xeroxl/UniServerZ/vhosts/inkubator-local/sms-daemon-hooks/hook-template-caf9b6b99962bf5c2264824231d7a40c.php', 'Informasi peminjaman inkubator', 'INFO*KATAKUNCI', 'INFO*STOK', 'Y', 'Inkubator bayi');
+INSERT INTO `sms_keywords` (`id`, `keyword`, `function_name`, `file_name`, `description`, `format_sms`, `contoh_sms`, `active`, `kategori`, `candidates`) VALUES
+	(24129571183919111, 'UNKNOWN', 'my_hook_unknown_function', 'C:/xeroxl/UniServerZ/vhosts/inkubator-local/sms-daemon-hooks/hook-template-ad921d60486366258809553a3db49a4a.php', 'SMS Tidak Valid', '', '', 'Y', 'Inbox', NULL),
+	(24132448392577026, 'TEST', 'my_hook_test_function', 'C:/xeroxl/UniServerZ/vhosts/inkubator-local/sms-daemon-hooks/hook-template-098f6bcd4621d373cade4e832627b4f6.php', 'System Test', 'TEST', 'TEST', 'Y', 'Inkubator bayi', NULL),
+	(24132448392577030, 'STOK', 'my_hook_stok_function', 'C:/xeroxl/UniServerZ/vhosts/inkubator-local/sms-daemon-hooks/hook-template-ce7129b555fd0208c1751956ecab4952.php', 'Cek stok inkubator yang tersedia.', 'STOK', 'STOK', 'Y', 'Inkubator bayi', NULL),
+	(24132448392577033, 'INFO', 'my_hook_info_function', 'C:/xeroxl/UniServerZ/vhosts/inkubator-local/sms-daemon-hooks/hook-template-caf9b6b99962bf5c2264824231d7a40c.php', 'Informasi peminjaman inkubator', 'INFO*KATAKUNCI', 'INFO*STOK', 'Y', 'Inkubator bayi', NULL),
+	(24134418943705089, 'PINJAM', 'my_hook_pinjam_function', 'C:/xeroxl/UniServerZ/vhosts/inkubator-local/sms-daemon-hooks/hook-template-d76630a1a369ff64a5464e247b9b0098.php', 'SMS Peminjaman Inkubator', 'PINJAM*NAMA_BAYI*TGL_LAHIR*TGL_PULANG_RS*CM_PJGLAHIR*KG_BERATLAHIR*<SEHAT/SAKIT>*NAMA_RS*NM_DOKTER/BIDAN*NO_KK*ALAMAT*NAMA_IBU*NAMA_AYAH', 'PINJAM*DIAN KHAMSAWARNI*21/09/2015*23/09/2015*28*3,2*SEHAT*RSU Wahidin*Dr. Marhamah, Sp.OG*9288299288*BTN Hamzy E8/A*RINA MAWARNI*ARIFIN ADINEGORO', 'Y', 'Inkubator bayi', NULL);
 /*!40000 ALTER TABLE `sms_keywords` ENABLE KEYS */;
 
 
@@ -631,7 +651,7 @@ CREATE TABLE IF NOT EXISTS `sms_valid` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
--- Dumping data for table freeinkubator.sms_valid: 17 rows
+-- Dumping data for table freeinkubator.sms_valid: 21 rows
 /*!40000 ALTER TABLE `sms_valid` DISABLE KEYS */;
 INSERT INTO `sms_valid` (`id`, `udh`, `waktu_terima`, `pengirim`, `sms`, `jenis`, `param_count`, `diproses`) VALUES
 	(24132448392577029, '', '2015-08-01 14:32:37', '+6282345798006', 'Test', 'TEST', 0, 'Dibalas'),
@@ -650,7 +670,11 @@ INSERT INTO `sms_valid` (`id`, `udh`, `waktu_terima`, `pengirim`, `sms`, `jenis`
 	(24132448392577027, '', '2015-08-01 14:25:40', '+6282345798006', 'Test', 'TEST', 0, 'Diproses'),
 	(24132448392577025, '', '2015-08-01 14:08:31', '+6282345798006', 'Tes saja', 'UNKNOWN', 0, 'Dibalas'),
 	(24132448392577024, '', '2015-08-01 13:49:36', '+6282345798006', 'Test', 'UNKNOWN', 0, 'Dibalas'),
-	(24132448392577043, '', '2015-08-01 15:44:23', '+6282345798006', 'Test', 'TEST', 0, 'Dibalas');
+	(24132448392577043, '', '2015-08-01 15:44:23', '+6282345798006', 'Test', 'TEST', 0, 'Dibalas'),
+	(24134418943705088, '', '2015-08-02 23:06:01', '+6282345798006', 'Test', 'TEST', 0, 'Dibalas'),
+	(24138317649936384, '', '2015-08-05 15:53:58', '+6282345798006', 'Pinjam*test', 'PINJAM', 0, 'Dibalas'),
+	(24138317649936452, '', '2015-08-05 16:11:31', '+6282345798006', 'Pinjam*test', 'PINJAM', 0, 'Dibalas'),
+	(24138317649936463, '', '2015-08-05 16:13:28', '+6282345798006', 'pinjam*lagi', 'PINJAM', 0, 'Dibalas');
 /*!40000 ALTER TABLE `sms_valid` ENABLE KEYS */;
 
 
@@ -734,7 +758,7 @@ CREATE TABLE `vw_inkubator_perkembangan` (
 	`konfirmasi` ENUM('Y','N') NOT NULL COLLATE 'utf8_general_ci',
 	`jumlah_data_monitor` BIGINT(21) NOT NULL,
 	`jumlah_skor_monitor` DECIMAL(32,2) NULL,
-	`perkembangan` VARCHAR(7) NULL COLLATE 'utf8mb4_general_ci'
+	`perkembangan` VARCHAR(7) NULL COLLATE 'utf8_general_ci'
 ) ENGINE=MyISAM;
 
 
@@ -1001,11 +1025,23 @@ DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 
+-- Dumping structure for trigger freeinkubator.inkubator_monitoring_after_insert
+DROP TRIGGER IF EXISTS `inkubator_monitoring_after_insert`;
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `inkubator_monitoring_after_insert` AFTER INSERT ON `inkubator_monitoring` FOR EACH ROW BEGIN
+        	set @xid = UUID_SHORT();        	
+        END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+
 -- Dumping structure for trigger freeinkubator.inkubator_monitoring_before_insert
 DROP TRIGGER IF EXISTS `inkubator_monitoring_before_insert`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `inkubator_monitoring_before_insert` BEFORE INSERT ON `inkubator_monitoring` FOR EACH ROW BEGIN
+	set NEW.id = UUID_SHORT();
 	case when NEW.kondisi = 'SEHAT' then
 		set NEW.skor = 1;
 	else
@@ -1021,6 +1057,7 @@ DROP TRIGGER IF EXISTS `inkubator_monitoring_before_update`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `inkubator_monitoring_before_update` BEFORE UPDATE ON `inkubator_monitoring` FOR EACH ROW BEGIN
+	set NEW.id = UUID_SHORT();
 	case when NEW.kondisi = 'SEHAT' then
 		set NEW.skor = 1;
 	else
@@ -1266,45 +1303,45 @@ DROP VIEW IF EXISTS `vw_inkubator_perkembangan`;
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `vw_inkubator_perkembangan`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`inkubator`@`localhost` VIEW `vw_inkubator_perkembangan` AS select 
-	p.id,
-	i.nama,
-	p.kode_pinjam,
-	p.id_inkubator,
-	p.tgl_pinjam,
-	p.nama_bayi,
-	p.kembar,
-	p.tgl_lahir,
-	p.berat_lahir,
-	p.panjang_lahir,
-	p.kondisi,
-	p.rumah_sakit,
-	p.nama_dokter,
-	p.tgl_pulang,
-	p.no_kk,
-	p.alamat,
-	p.nama_ibu,
-	p.hp_ibu,
-	p.email_ibu,
-	p.nama_ayah,
-	p.hp_ayah,
-	p.email_ayah,
-	p.jumlah_pinjam,
-	p.status_pinjam,
-	p.tgl_update_status_pinjam,
-	p.keterangan_status_pinjam,
-	p.konfirmasi,
-	coalesce(count(m.id),0) as jumlah_data_monitor,
-	coalesce(sum(coalesce(m.skor,0)),0) as jumlah_skor_monitor,
-	(case 
-		when (coalesce(sum(coalesce(m.skor,0)),0) - coalesce(count(m.id),0) ) >= 0 then 
-			'Positif'
-		else 
-			'Negatif'	
-	end) as perkembangan
-from inkubator_pinjam p
-inner join inkubator_master i on i.id = p.id_inkubator
-left join inkubator_monitoring m on m.kode_pinjam = p.kode_pinjam 
-group by p.kode_pinjam ;
+        	p.id,
+        	i.nama,
+        	p.kode_pinjam,
+        	p.id_inkubator,
+        	p.tgl_pinjam,
+        	p.nama_bayi,
+        	p.kembar,
+        	p.tgl_lahir,
+        	p.berat_lahir,
+        	p.panjang_lahir,
+        	p.kondisi,
+        	p.rumah_sakit,
+        	p.nama_dokter,
+        	p.tgl_pulang,
+        	p.no_kk,
+        	p.alamat,
+        	p.nama_ibu,
+        	p.hp_ibu,
+        	p.email_ibu,
+        	p.nama_ayah,
+        	p.hp_ayah,
+        	p.email_ayah,
+        	p.jumlah_pinjam,
+        	p.status_pinjam,
+        	p.tgl_update_status_pinjam,
+        	p.keterangan_status_pinjam,
+        	p.konfirmasi,
+        	coalesce(count(m.id),0) as jumlah_data_monitor,
+        	coalesce(sum(coalesce(m.skor,0)),0) as jumlah_skor_monitor,
+        	(case 
+        		when (coalesce(sum(coalesce(m.skor,0)),0) - coalesce(count(m.id),0) ) >= 0 then 
+        			'Positif'
+        		else 
+        			'Negatif'	
+        	end) as perkembangan
+        from inkubator_pinjam p
+        inner join inkubator_master i on i.id = p.id_inkubator
+        left join inkubator_monitoring m on m.kode_pinjam = p.kode_pinjam 
+        group by p.kode_pinjam ; ;
 
 
 -- Dumping structure for view freeinkubator.vw_inkubator_pinjam
@@ -1312,45 +1349,45 @@ DROP VIEW IF EXISTS `vw_inkubator_pinjam`;
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `vw_inkubator_pinjam`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`inkubator`@`localhost` VIEW `vw_inkubator_pinjam` AS select 
-	p.id,
-	i.nama,
-	p.kode_pinjam,
-	p.id_inkubator,
-	p.tgl_pinjam,
-	p.nama_bayi,
-	p.kembar,
-	p.tgl_lahir,
-	p.berat_lahir,
-	p.panjang_lahir,
-	p.kondisi,
-	p.rumah_sakit,
-	p.nama_dokter,
-	p.tgl_pulang,
-	p.no_kk,
-	p.alamat,
-	p.nama_ibu,
-	p.hp_ibu,
-	p.email_ibu,
-	p.nama_ayah,
-	p.hp_ayah,
-	p.email_ayah,
-	p.jumlah_pinjam,
-	p.status_pinjam,
-	p.tgl_update_status_pinjam,
-	p.keterangan_status_pinjam,
-	p.konfirmasi,
-	k.tgl_kembali,
-	k.berat_kembali,
-	k.panjang_kembali,
-	k.kondisi_kembali,
-	k.jumlah_kembali,
-	k.status_kembali,
-	k.tgl_update_status_kembali,
-	k.keterangan_status_kembali
-	
-from inkubator_pinjam p
-inner join inkubator_master i on i.id = p.id_inkubator
-left join inkubator_kembali k on k.kode_pinjam = p.kode_pinjam ;
+        	p.id,
+        	i.nama,
+        	p.kode_pinjam,
+        	p.id_inkubator,
+        	p.tgl_pinjam,
+        	p.nama_bayi,
+        	p.kembar,
+        	p.tgl_lahir,
+        	p.berat_lahir,
+        	p.panjang_lahir,
+        	p.kondisi,
+        	p.rumah_sakit,
+        	p.nama_dokter,
+        	p.tgl_pulang,
+        	p.no_kk,
+        	p.alamat,
+        	p.nama_ibu,
+        	p.hp_ibu,
+        	p.email_ibu,
+        	p.nama_ayah,
+        	p.hp_ayah,
+        	p.email_ayah,
+        	p.jumlah_pinjam,
+        	p.status_pinjam,
+        	p.tgl_update_status_pinjam,
+        	p.keterangan_status_pinjam,
+        	p.konfirmasi,
+        	k.tgl_kembali,
+        	k.berat_kembali,
+        	k.panjang_kembali,
+        	k.kondisi_kembali,
+        	k.jumlah_kembali,
+        	k.status_kembali,
+        	k.tgl_update_status_kembali,
+        	k.keterangan_status_kembali
+        	
+        from inkubator_pinjam p
+        inner join inkubator_master i on i.id = p.id_inkubator
+        left join inkubator_kembali k on k.kode_pinjam = p.kode_pinjam ; ;
 
 
 -- Dumping structure for view freeinkubator.vw_inkubator_tersedia
@@ -1358,18 +1395,18 @@ DROP VIEW IF EXISTS `vw_inkubator_tersedia`;
 -- Removing temporary table and create final VIEW structure
 DROP TABLE IF EXISTS `vw_inkubator_tersedia`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`inkubator`@`localhost` VIEW `vw_inkubator_tersedia` AS select 
-	i.id,
-	i.nama,
-	i.panjang,
-	i.lebar,
-	i.tinggi,
-	i.berat,
-	i.tipe,
-	(i.jumlah - sum(coalesce(p.jumlah_pinjam,0)) + sum(coalesce(k.jumlah_kembali,0)) ) as stok_inkubator
-from inkubator_master i
-left join inkubator_pinjam p on p.id_inkubator = i.id and p.status_pinjam = 'Disetujui'
-left join inkubator_kembali k on k.id_inkubator = i.id and k.status_kembali = 'Diterima'
-group by i.id ;
+        	i.id,
+        	i.nama,
+        	i.panjang,
+        	i.lebar,
+        	i.tinggi,
+        	i.berat,
+        	i.tipe,
+        	(i.jumlah - sum(coalesce(p.jumlah_pinjam,0)) + sum(coalesce(k.jumlah_kembali,0)) ) as stok_inkubator
+        from inkubator_master i
+        left join inkubator_pinjam p on p.id_inkubator = i.id and p.status_pinjam = 'Disetujui'
+        left join inkubator_kembali k on k.id_inkubator = i.id and k.status_kembali = 'Diterima'
+        group by i.id ;
 
 
 -- Dumping structure for view freeinkubator.vw_user_login

@@ -112,7 +112,7 @@ function fetch_one_value($sql)
 {
     global $_mysqli;
 	
-	$result = array();
+	$result = false;
     $q = $_mysqli->query($sql);	
 	if ($q)
 	{		           
@@ -134,6 +134,43 @@ function exec_query($sql)
 	{
 		return false;
 	}
+}
+
+function set_system_config($cfg_name, $cfg_value)
+{
+    return exec_query("insert into configs (config_name, config_value) values ('$cfg_name', '$cfg_value')
+                   on duplicate key update config_value = values(config_value)"); 
+}
+
+function get_system_config($cfg_name, $default = false)
+{
+    $v = fetch_one_value("select config_value from configs where config_name = '$cfg_name'");
+    if ( ($v===false) || ($v==false) || (!$v) || empty($v))
+    {
+        return $default;
+    }
+    else
+    {
+        return $v;
+    }
+    
+}
+
+/**
+ * Execute multiple queries at once: 
+ */
+function exec_queries($queries)
+{
+   global $_mysqli;	
+	if ($_mysqli->multi_query($queries) === TRUE)
+	{
+		while ($_mysqli->next_result()) {;}
+        return true;
+	}
+	else
+	{
+		return false;
+	} 
 }
 
 function drop_user_tables($exceptions = array())

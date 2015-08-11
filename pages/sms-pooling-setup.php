@@ -415,11 +415,7 @@ include "_head.php";
                                     <div class="row">                                
                                         <div class="col-lg-12">
                                             <div class="alert alert-warning">
-                                                Sebelum mengedit file-file Hooking Template, pastikan Anda telah mematikan keywordnya terlebih dulu.
-                                                <small><span class="label label-success"><i class="fa fa-check fa-fw"></i> Active</a></small>
-                                                menjadi <small><span class="label label-warning"><i class="fa fa-times fa-fw"></i> Disabled</a></small>
-                                                <br />
-                                                <span class="text-danger">Jika tidak, Anda dapat <strong>merusak sistem!</strong></span>
+                                                <strong>Matikan SMS Processor Daemon sebelum mengedit file-file Keyword Hook.</strong>
                                                 <br />
                                                 SMS dengan keyword <small><span class="label label-warning"><i class="fa fa-times fa-fw"></i> Disabled</a></small> tidak akan diproses,
                                                 tapi ditandai dengan status <strong>Dibalas</strong>.

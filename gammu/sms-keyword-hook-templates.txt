@@ -51,6 +51,8 @@ $my_%keyword%_sms_sample = '%KEYWORD%_sample_str';
  * will be passed on next processing.
  * Return false will cause the SMS to be 
  * reprocessed infinitely until you return true.
+ * 
+ * AVOID HEAVY LONG PROCESS HERE. Database initializations are better be done on activation callback.
  */
 function my_hook_%keyword%_function($keyword, $params)
 {

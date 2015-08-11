@@ -88,6 +88,7 @@ include_once('../gammu/gammu-fetch-sms.php');
                                 <li><a href="sms-inbox.php">SMS Masuk</a></li>                                                             
                                 <li><a href="sms-outbox.php">SMS Sedang Dikirim</a></li>    
                                 <li><a href="sms-sent.php">SMS Terkirim</a></li>
+                                <li class="warning"><a href="sms-stats.php"><i class="fa fa-bar-chart-o fa-fw"></i> Statistik </a></li>
                                 <?php if (USE_GAMMU) { ?>
                                 <li class="divider sidebar-divider"></li>
                                 <li><a href="#" class="send-recv-sms" jenis="kirim" id="btn-send-sms"><i class="fa fa-upload fa-fw"></i> Kirim SMS</a></li>
@@ -102,7 +103,7 @@ include_once('../gammu/gammu-fetch-sms.php');
                             <a href="#"><i class="fa fa-gears fa-fw"></i> SMS Gateway<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li><a href="run-gammu.php">Restart SMS Gateway</a></li>                        
-                                <li><a href="run-task-scheduler.php">Periksa SMS Processor</a></li>
+                                <li><a href="run-task-scheduler.php">Restart SMS Processor</a></li>
                                 <li><a href="setup-gammu.php">Setting SMS Gateway</a></li>
                                 <li><a href="sms-pooling-setup.php">Setup Pooling SMS</a></li>                                
                             </ul>                            

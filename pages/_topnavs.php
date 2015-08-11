@@ -1,4 +1,30 @@
             <ul class="nav navbar-top-links navbar-right">
+                <?php if (USE_GAMMU) { ?>
+                <li>
+                    <a href="#" class="checksvc" id="statussvc" data-toggle="dropdown" href="#" title="SMS Gateway Service">
+                        <i class="fa fa-play fa-fw"></i> <small>Gammu</small> <span class="fa fa-caret-down"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-gammu-smsd">                        
+                        <li><a href="#" class="control control-svc start"><i class="fa fa-play fa-fw"></i> Start </a></li>                        
+                        <li><a href="#" class="control control-svc stop"><i class="fa fa-stop fa-fw"></i> Stop </a></li>
+                        <li class="divider"></li>
+                        <li><a href="run-gammu.php"><i class="fa fa-refresh fa-fw"></i> Reinstall </a></li>
+                        <li><a href="setup-gammu.php"><i class="fa fa-gear fa-fw"></i> Setting </a></li>                        
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="checksvc" id="statusproc" data-toggle="dropdown" href="#" title="SMS Processor Service">
+                        <i class="fa fa-play fa-fw"></i> <small>SMSProc</small> <span class="fa fa-caret-down"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-sms-processor">                        
+                        <li><a href="#" class="control control-proc start"><i class="fa fa-check fa-fw"></i> Enable </a></li>                        
+                        <li><a href="#" class="control control-proc stop"><i class="fa fa-times fa-fw"></i> Disable </a></li>
+                        <li class="divider"></li>
+                        <li><a href="run-task-scheduler.php"><i class="fa fa-tasks fa-fw"></i> Restart SMS Processor</a></li>                        
+                        <li class="disabled"><a href="#"><i class="fa fa-gear fa-fw"></i> Setting </a></li>                            
+                    </ul>
+                </li>
+                <?php } ?>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" title="SMS Manager">
                         <i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>
@@ -11,24 +37,11 @@
                         <li class="divider"></li>
                         <li><a href="#" class="send-recv-sms" jenis="kirim" id="btn-send-sms"><i class="fa fa-upload fa-fw"></i> Kirim SMS</a></li>
                         <li><a href="#" class="send-recv-sms" jenis="terima" id="btn-recv-sms"><i class="fa fa-download fa-fw"></i> Simulasi Terima SMS</a></li>
+                        <li class="divider"></li>
+                        <li><a href="sms-pooling-setup.php"><i class="fa fa-th-list fa-fw"></i> Setup Pooling SMS</a></li>
                         <?php } ?>
                     </ul>
-                </li>
-                <?php if (USE_GAMMU) { ?>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" title="Gateway Manager">
-                        <i class="fa fa-cogs fa-fw"></i>  <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-gateway">                        
-                        <li><a href="run-gammu.php"><i class="fa fa-repeat fa-fw"></i> Restart SMS Gateway</a></li>                        
-                        <li><a href="run-task-scheduler.php"><i class="fa fa-tasks fa-fw"></i> Periksa SMS Processor</a></li>
-                        <li class="divider"></li>
-                        <li><a href="setup-gammu.php"><i class="fa fa-gear fa-fw"></i> Setting SMS Gateway</a></li>
-                        <li><a href="sms-pooling-setup.php"><i class="fa fa-th-list fa-fw"></i> Setup Pooling SMS</a></li>
-                    </ul>
-                </li>                
-                <!-- /.dropdown -->
-                 <?php } ?>
+                </li>               
                 
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">

@@ -3,3 +3,67 @@ TODO:
 * Chart -> Moris Ajax
 * SMS Processor: Redefine. Cek kemungkinan dua processor per 30 detik.
 * Setup pooling SMS
+
+
+* START/STOP GAMMU SERVICE
+* START/STOP SMS Processor
+* Lanjut database inits on PINJAM hook (associative arrays).
+    - Lanjut dengan VIEWs dan DROPs
+        # MULTIPLE QUERY: TRIGGER CREATION NOT SUPPORTED! Karena ada penggantian delimiter yang tidak disupport oleh PHP.
+        
+* Candidates on SMS Pooling
+    - Register Keyword with Candidates input option
+        # Keyword with Candidates /* can only have one Parameter */ 
+        will disable manual input on SMS format and SMS Sample, 
+        as they will be generated automatically by using parameter candidates.
+            ^ sample with one parameter:
+            Sample: USELECTION2015*CANDIDATENAME
+                    USELECTION2015*<OBAMA/CLINTON/ETC>
+                    
+            ^ sample with two parameters:
+            Sample: USELECTION2015*CANDIDATENAME*VOTERORIGIN
+                    USELECTION2015*<OBAMA/CLINTON/ETC>*<WISCONSIN/WESTVIRGINIA>
+    - Candidates will have special stat (pie chart) represents candidates election voting.
+    - Candidates are stored as JSON in table sms_keyword
+            ^ sample Candidates JSON for keyword with one parameter:
+            [
+                {
+                    "name":"CANDIDATENAME",
+                    "candidates":
+                        ["OBAMA","CLINTON","ETC"]
+                }
+            ]
+            
+            ^ sample Candidates JSON for keyword with two parameters:
+            [
+                {
+                    "name":"CANDIDATENAME",
+                    "candidates":
+                        ["OBAMA","CLINTON","ETC"]
+                },
+                {
+                    "name":"VOTERORIGIN",
+                    "candidates":
+                        ["OKLAHOMA","WISCONSIN","NEWYORK"]
+                }
+            ]
+            
+
+* Stats for SMS, per category and keyword, with date range as param.
+    - You can always create your own stats using your plugin code.
+    
+    
+    
+* ADA ERROR DI SMS-INBOX , pada COL-LG-12 setelah button group
+
+Morris.Area({ // CARI LAGI, MASIH ERROR
+                element: 'sms-stat-area-chart',
+                data: o.data,
+                xkey: o.xkey,
+                ykeys: o.ykeys,
+                labels: o.labels,
+                pointSize: o.pointSize,
+                hideHover: o.hideHover,
+                resize: o.resize,
+                xLabels:o.xLabels
+            });

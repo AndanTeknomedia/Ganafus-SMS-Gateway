@@ -129,6 +129,83 @@ switch ($command)
             echo 'OKTugas otomatis telah siap.'; 
         }  
         break;
+    case 'enable':
+        $command = 'schtasks.exe /change /TN "'.$modem['service_name'].'" /ENABLE';    
+        $hasil = exec($command, $res, $ret);
+        $pesan = implode(',', $res);
+        $found = strpos(strtoupper($pesan),'SUCCESS');        
+        if ($found===false) {
+            echo 'OKTugas otomatis belum siap.';
+        }
+        else
+        {
+            echo 'OKTugas otomatis telah siap.'; 
+        }  
+        break;
+    case 'disable':
+        $command = 'schtasks.exe /change /TN "'.$modem['service_name'].'" /DISABLE';    
+        $hasil = exec($command, $res, $ret);
+        $pesan = implode(',', $res);
+        $found = strpos(strtoupper($pesan),'SUCCESS');        
+        if ($found===false) {
+            echo 'OKTugas otomatis belum siap.';
+        }
+        else
+        {
+            echo 'OKTugas otomatis telah siap.'; 
+        }  
+        break;
+    case 'checkall':
+        $command1 = 'sc.exe query '.$modem['service_name'];
+        $command2 = 'schtasks.exe /query /TN "'.$modem['service_name'].'"';
+        $hasil = exec($command1, $res, $ret);
+        $found = false;
+        $data1 = '';
+        $status1 = '';
+        $p1 = strtolower(implode(' ',$res));
+        if (strpos($p1,'does not exist')!==false)
+        {
+            $data1 = 'Gammu Service belum terpasang';
+            $status1 = 'ER'; 
+        }
+        else
+        if (strpos($p1,'stopped')!==false)
+        {
+            $data1 = 'Gammu Service sedang dimatikan';
+            $status1 = 'ER'; 
+        }
+        else
+        if (strpos($p1,'running')!==false)
+        {
+            $data1 = 'Gammu Service sedang berjalan';
+            $status1 = 'OK'; 
+        }
+        else
+        {
+            $data1 = 'Gammu Service tidak terdeteksi';
+            $status1 = 'ER';    
+        }
+        
+        unset($res);    
+        $hasil = exec($command2, $res, $ret);
+        $p2 = implode(' ', $res);
+        $found = strpos(strtoupper($p2),'READY') || strpos(strtoupper($p2),'RUNNING');        
+        if ($found===false) {
+            $data2 = 'SMS Processor Daemon belum siap';
+            $status2 = 'ER'; 
+        }
+        else
+        {
+            $data2 = 'SMS Processor Daemon telah siap';
+            $status2 = 'OK';
+        }
+        echo json_encode(array(
+            'statussvc'=>$status1,
+            'datasvc'=>$data1,
+            'statusproc'=>$status2,
+            'dataproc'=>$data2
+        ));
+        break;        
     default:
         echo 'ERUnknown parameters.';
 }

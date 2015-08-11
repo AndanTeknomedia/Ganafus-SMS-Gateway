@@ -90,7 +90,7 @@ foreach ($_SMS_PROCESSOR_DAEMON_HOOKS as $keyword)
         include_once($keyword['file_name']);
     } 
 } 
-$data_count_to_process  = 10; // execute 10 data every minute - as this task run
+$data_count_to_process  = get_system_config('sms_to_process_per_minute', 10); // execute 10 data every minute - as this task run
 $nama_modem             = fetch_one_value("select coalesce((select nama_modem from modem_gateway order by id desc limit 0,1),'')");
 $last_id                = fetch_one_value("select coalesce((select config_value from configs where config_name = '".LAST_ID_CONFIG_NAME."'),0)");
 // create keyword state cache:
