@@ -3,7 +3,7 @@ Ganafus PHP-Based SMS Gateway
 
 This repo is not ready yet.
 
-Project homepage: http://andanteknomedia.github.io/Ganafus-SMS-Gateway/
+Project homepage: http://ganafus.ga/
 
 # About
 
