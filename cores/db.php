@@ -11,24 +11,6 @@ $_mysqli = new mysqli(
 	DB_DATABASE
 );
 
-/*
-$_CLEANABLE_TABLES =  array(
-    // 'tablename' => 'condition'
-    'sentitems'             => "",
-    'outbox'                => "",
-    'outbox_multipart'      => "",
-    'outbox_tmp'            => "",
-    'inbox'                 => "",
-    'sms_valid'             => "",          
-    'inkubator_pinjam'      => "",
-    'inkubator_monitoring'  => "",
-    'inkubator_kembali'     => "",
-    'configs'               => "where config_name = 'last_processed_valid_sms_id'",
-    'sms_keywords'          => ""
-    // ,
-    // 'sms_keyword_columns'   => ""
-);
-*/
 $_CLEANABLE_TABLES =  array(
     // 'name' => array('tablename','conditions','description')
     'SMS Terkirim'                      => array('sentitems', "", 'Data SMS terkirim.'),
@@ -39,9 +21,9 @@ $_CLEANABLE_TABLES =  array(
     'SMS Masuk yang Telah Diproses'     => array('sms_valid', "", 'Data SMS masuk yang telah diproses dan ditandai berdasarkan keyword.'),          
     'Data Peminjaman Inkubator'         => array('inkubator_pinjam', "", 'Data transaksi peminjaman inkubator.'),
     'Data Monitoring Inkubator'         => array('inkubator_monitoring', "", 'Data monitoring perkembangan bayi pengguna inkubator.'),
-    'Data Pengembalian Inkubator'       => array('inkubator_kembali', "", 'Data taransaksi pengembalian inkubator yang dipinjam.'),
-    'Data Konfigurasi Sistem'           => array('configs', "where config_name = 'last_processed_valid_sms_id'", 'Data-data konfigurasi sistem dan Gammu Server.'),
-    'Data Keyword Pooling SMS'          => array('sms_keywords', "", 'Data keyword dan hook function yang memproses SMS yang masuk.')
+    'Data Pengembalian Inkubator'       => array('inkubator_kembali', "", 'Data taransaksi pengembalian inkubator yang dipinjam.')
+    // 'Data Konfigurasi Sistem'           => array('configs', "where config_name = 'last_processed_valid_sms_id'", 'Data-data konfigurasi sistem dan Gammu Server.'),
+    // 'Data Keyword Pooling SMS'          => array('sms_keywords', "", 'Data keyword dan hook function yang memproses SMS yang masuk.')
 );
 
 if ($_mysqli->connect_errno)

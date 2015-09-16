@@ -14,10 +14,11 @@ require_once('../cores/functions.php');
 $skip_morris = true;
 
 /* UI */
-require_once('../cores/ui/fetch.php'); 
-require_once('../cores/ui/ui-helper.php'); 
 
-$r = ( isset($_GET['r']) && (!empty($_GET['r'])) ? $_GET['r'] : 'index.php');
+$r = urldecode(get_var('r','index.php'));
+$title = urldecode(get_var('title','Error!'));
+$msg = urldecode(get_var('msg','An error has occurred.'));
+$btn = urldecode(get_var('btn','Dashboard'));
 
 ?>
 <!DOCTYPE html>
@@ -104,14 +105,14 @@ $r = ( isset($_GET['r']) && (!empty($_GET['r'])) ? $_GET['r'] : 'index.php');
                     </div>
                     <div class="panel-body">
                         <div id="error-box" class="alert alert-danger">
-                            
-                            <span><?php echo $error_msg; ?></span>
+                            <label><?php echo $title; ?></label>
+                            <div><?php echo $msg; ?></div>
                             <!-- <a href="#" class="alert-link">Alert Link</a>. -->
                         </div>
                         <div>
                                 <!-- Change this to a button or input when using this as a form -->
                                 <a id="login-submit" href="<?php echo $r; ?>" class="btn btn-success">
-                                    <i class="fa fa-chevron-left" style="width:12px;"></i> Coba lagi?
+                                    <i class="fa fa-chevron-left" style="width:12px;"></i> <?php echo $btn; ?>
                                 </a>
                         </div>
                     </div>

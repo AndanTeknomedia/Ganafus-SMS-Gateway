@@ -1,6 +1,6 @@
 <?php
 /**
- * Hook for keyword UNKNOWN
+ * Hook for keyword MARAH
  */
 
 /**
@@ -15,12 +15,12 @@
  *    ["time_stamp"]=>string(19) "2015-07-15 23:15:57"
  *    ["udh"]=>string(0) ""
  *    ["sender"]=>string(14) "+6282345798006"
- *    ["text"]=>string(4) "UNKNOWN"
- *    ["keyword"]=>string(4) "UNKNOWN"
+ *    ["text"]=>string(4) "MARAH"
+ *    ["keyword"]=>string(4) "MARAH"
  *    ["status"]=>NULL
  *    ["params"]=>array(1) 
  *    {
- *      [0]=>string(4) "UNKNOWN"
+ *      [0]=>string(4) "MARAH"
  *      [1]=>string(4) "Other SMS Part..."
  *    }
  *  }
@@ -39,11 +39,11 @@
  * DO NOT CHANGE SYSTEM GENERATED VARIABLE & FUNCTION NAMES!
  * 
  */
-$my_unknown_kategori = 'Inbox';
-$my_unknown_keyword = 'UNKNOWN';
-$my_unknown_description = 'SMS Tidak Valid';
-$my_unknown_sms_format = '';
-$my_unknown_sms_sample = '';
+$my_marah_kategori = 'Inkubator bayi';
+$my_marah_keyword = 'MARAH';
+$my_marah_description = 'sljdplsjdlp';
+$my_marah_sms_format = 'marah*kemarahan';
+$my_marah_sms_sample = 'marah*marah sekali ka';
  
 /**
  * Define your hook for specific SMS keyword. 
@@ -51,8 +51,10 @@ $my_unknown_sms_sample = '';
  * will be passed on next processing.
  * Return false will cause the SMS to be 
  * reprocessed infinitely until you return true.
+ * 
+ * AVOID HEAVY LONG PROCESS HERE. Database initializations are better be done on activation callback.
  */
-function my_hook_unknown_function($keyword, $params)
+function my_hook_marah_function($keyword, $params)
 {
     global $app_name, $app_version, $nama_modem;
     // Sometime, you don't need to reply SMS from non-user number,
@@ -73,7 +75,7 @@ function my_hook_unknown_function($keyword, $params)
         /*
          * return true;
          */
-        return sms_send($params['sender'], 'SMS tidak dikenali. Ketik INFO untuk mendapatkan daftar keyword.', $nama_modem);
+        return sms_send($params['sender'], 'Kemarahan Anda diterima.', $nama_modem);
     }    
 }
 
@@ -81,7 +83,7 @@ function my_hook_unknown_function($keyword, $params)
  * Callback for register event:
  *  - Keyword: your keyword.
  */
-function my_hook_unknown_register_callback_function($keyword)
+function my_hook_marah_register_callback_function($keyword)
 {
     // create your table here, etc., and...
     return true;    
@@ -91,7 +93,7 @@ function my_hook_unknown_register_callback_function($keyword)
  * Callback for unregister event:
  *  - Keyword: your keyword.
  */
-function my_hook_unknown_unregister_callback_function($keyword)
+function my_hook_marah_unregister_callback_function($keyword)
 {
     // drop your table here, etc., and...
     return true;    
@@ -101,7 +103,7 @@ function my_hook_unknown_unregister_callback_function($keyword)
  * Callback for activation event:
  *  - Keyword: your keyword.
  */
-function my_hook_unknown_activation_callback_function($keyword)
+function my_hook_marah_activation_callback_function($keyword)
 {
     // create your table here, etc., and...
     // exec_query('create table if not exists `unknown_sms_data`(id int(10) not null auto_increment, primary key(id)) engine=MyISAM');
@@ -112,7 +114,7 @@ function my_hook_unknown_activation_callback_function($keyword)
  * Callback for deactivation event:
  *  - Keyword: your keyword.
  */
-function my_hook_unknown_deactivation_callback_function($keyword)
+function my_hook_marah_deactivation_callback_function($keyword)
 {
     // drop your table here, etc., and...
     // exec_query('drop table if exists `unknown_sms_data`');
@@ -122,7 +124,7 @@ function my_hook_unknown_deactivation_callback_function($keyword)
 
 
 /**
- * Register your keyword unknown and its hook function to database. 
+ * Register your keyword marah and its hook function to database. 
  * Database registration is not required by SMS daemon, 
  * but is required - by SMS parser in database 
  * - to identify and classify each arriving SMS.  
@@ -133,19 +135,19 @@ function my_hook_unknown_deactivation_callback_function($keyword)
  */
 /*
 keyword_hook_register(
-    $my_unknown_keyword, 
-    'my_hook_unknown_function', // hook function name.
+    $my_marah_keyword, 
+    'my_hook_marah_function', // hook function name.
     __FILE__, // current file.
-    $my_unknown_description, 
-    $my_unknown_sms_format, 
-    $my_unknown_sms_sample,
-    $my_unknown_kategori
+    $my_marah_description, 
+    $my_marah_sms_format, 
+    $my_marah_sms_sample,
+    $my_marah_kategori
 );
 */
 /**
  * keyword_hook_unregister(
- *     $my_unknown_keyword, 
- *     'my_hook_unknown_function'
+ *     $my_marah_keyword, 
+ *     'my_hook_marah_function'
  * );
  */
 ?>

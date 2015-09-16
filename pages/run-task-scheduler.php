@@ -30,6 +30,7 @@ if($ajax=='ajax')
 }
 
 require_login(); 
+require_admin('index.php','Pooling SMS Settings', 'Anda tidak memiliki hak akses ke halaman ini.', 'Dashboard');
 
 $sms_count_per_min = get_system_config('sms_to_process_per_minute', 20);
 

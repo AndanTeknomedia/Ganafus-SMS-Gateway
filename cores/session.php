@@ -99,12 +99,16 @@ function require_login($target_page = 'login.php')
 	}
 }
 
-function require_admin($fallback_url = 'index.php'){
-    session_start();
+function require_admin($fallback_url = 'index.php', $title='Error', $msg='An error has occurred.', $btn_title='Dashboard'){
+    $sessid = session_id();
+    if (empty($sessid)) {
+        session_start();
+    }
     if (!is_admin($_SESSION['user_group_id']))
     {
         $_SESSION['error_message'] = 'Anda tidak dapat mengakses halaman ini.';
-        header ('location:error.php?r='.urlencode($fallback_url));
+        
+        header ('location:error.php?r='.urlencode($fallback_url).'&title='.urlencode($title).'&msg='.urlencode($msg).'&btn='.urlencode($btn_title));
         // die('hello');
     }
 }

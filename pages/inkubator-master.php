@@ -1,6 +1,7 @@
 <?php
 $page_name = 'Master Data Inkubator';
 include_once('../cores/definition.php'); 
+require_once('../cores/db.php'); 
 if (USE_GAMMU){
     require_once('../gammu/gammu-cores.php');
     if (!is_gammu_ok())
@@ -12,6 +13,73 @@ if (USE_GAMMU){
 
 include_once('../cores/session.php');
 // require_login('post.php?show/newest');
+
+$ajax = post_var('ajax','');
+if ($ajax == 'add-inkubator')
+{
+    $nama       = post_var('nama','');
+    $tipe       = post_var('tipe','');
+    $panjang    = post_var('panjang',0);
+    $lebar      = post_var('lebar',0);
+    $tinggi     = post_var('tinggi',0);
+    $berat      = post_var('berat',0.00);
+    $jumlah     = post_var('jumlah',0);
+    $path       = post_var('path','img/front-end/tentang-inkubator-gratis.jpg');
+    $er = '';
+    if ($nama=='')
+    {
+        $er .= 'Nama Inkubator tidak boleh kosong.<br>';
+    }
+    if ($panjang==0)
+    {
+        $er .= 'Panjang Inkubator tidak boleh kosong.<br>';
+    }
+    if ($lebar==0)
+    {
+        $er .= 'Lebar Inkubator tidak boleh kosong.<br>';
+    }
+    if ($tinggi==0)
+    {
+        $er .= 'Tinggi Inkubator tidak boleh kosong.<br>';
+    }
+    if ($berat==0)
+    {
+        $er .= 'Berat Inkubator tidak boleh kosong.<br>';
+    }
+    /*
+    if ($jumlah==0)
+    {
+        $er .= 'Panjang Inkubator tidak boleh kosong.<br>';
+    }
+    */
+    if ($er!='')
+    {
+        die('ER'.$er);
+    }
+    $sql =  "insert into inkubator_master ( id, nama, jumlah, panjang, lebar, tinggi, berat, tipe, img_path) 
+            values ( 
+                UUID_SHORT(),
+                '$nama',
+                '$jumlah',
+                '$panjang',
+                '$lebar',
+                '$tinggi',
+                '$berat',
+                '$tipe',
+                '$path'
+            )"; 
+    // echo $sql;
+    if (exec_query($sql))
+    {
+        echo 'OKData Inkubator telah disimpan.';
+    }
+    else
+    {
+        echo 'ERData Inkubator gagal disimpan.';
+    }
+    die();       
+}
+
 require_login();
 
 $skip_morris = true;
@@ -131,13 +199,25 @@ include "_head.php";
                                 </div>
                             </div>
                             <!-- /form-add-inkubator -->
+                            <div class="panel panel-green">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col col-md-12">
+                                            Klik salah satu inkubator untuk melihat data peminjam.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="list-group">
                             <?php
                             $inkubators = fetch_query(
                                 "select it.*,
+                                i.img_path,
                                 count(p.id) jumlah_dipinjam
                                 from vw_inkubator_tersedia it 
+                                inner join inkubator_master i on i.id = it.id
                                 left join vw_inkubator_pinjam p on p.id_inkubator = it.id  and coalesce(p.status_kembali,'Ditunda') = 'Ditunda'
+                                
                                 group by (it.id)
                                 order by it.id asc");
                             foreach($inkubators as $inkubator)
@@ -147,21 +227,37 @@ include "_head.php";
                                         $inkubator['tinggi'].'cm x '.
                                         $inkubator['berat'].'kg.';
                             ?>                                
-                                <a href="inkubator-detail.php?id=<?php echo $inkubator['id'];?>" class="list-group-item" id="inkubator-<?php echo $inkubator['id'];?>" style="height: 60px;">
-                                    <i class="fa fa-tasks fa-fw"></i> <strong><?php echo $inkubator['nama'];?></strong>
-                                    <?php if (!empty($inkubator['tipe'])) {
-                                        echo '<span class="text-info small">'.$inkubator['tipe'].'</span>';                                        
-                                    }
-                                    ?>
-                                    <span class="pull-right text-muted small">
-                                        <em><?php echo $spec;?></em></span><br />
-                                    <span class="pull-right">
-                                        <span class="label label-warning"><?php echo $inkubator['stok_inkubator'];?> buah</span> 
-                                        <span class="label label-success"><?php echo $inkubator['jumlah_dipinjam'];?> dipinjam</span> 
-                                        <span class="label label-info"><?php echo ($inkubator['stok_inkubator'] - $inkubator['jumlah_dipinjam']);?> tersedia</span>
-                                    </span>
-                                    
-                                </a>                            
+                                <div  class="list-group-item" id="inkubator-<?php echo $inkubator['id'];?>" style="height: 120px;">
+                                    <div class="row">
+                                        <div class="col-lg-2">
+                                            <a href="inkubator-data-peminjam.php?id=<?php echo $inkubator['id'];?>">
+                                                <img src="<?php echo $inkubator['img_path'];?>" class="img-thumbnail" width="100" />
+                                            </a>
+                                        </div>
+                                        <div class="col-lg-6">                                            
+                                            <a href="inkubator-data-peminjam.php?id=<?php echo $inkubator['id'];?>">
+                                                <strong><?php echo $inkubator['nama'];?></strong>
+                                            </a>
+                                            <button class="btn btn-danger btn-xs btn-link delete-inkubator" id="<?php echo $inkubator['id'];?>">
+                                                <i class="fa fa-trash-o fa-fw"></i>
+                                            </button>
+                                            <?php if (!empty($inkubator['tipe'])) 
+                                            {
+                                                echo '<br /><span class="text-info small">'.$inkubator['tipe'].'</span>';                                        
+                                            }
+                                            ?>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <span class="pull-right text-muted small">
+                                                <em><?php echo $spec;?></em></span><br />
+                                            <span class="pull-right">
+                                                <span class="label label-warning"><?php echo $inkubator['stok_inkubator'];?> buah</span> 
+                                                <span class="label label-success"><?php echo $inkubator['jumlah_dipinjam'];?> dipinjam</span> 
+                                                <span class="label label-info"><?php echo ($inkubator['stok_inkubator'] - $inkubator['jumlah_dipinjam']);?> tersedia</span>
+                                            </span>
+                                        </div>
+                                    </div> 
+                                </div>                            
                             <?php
                             }
                             unset($inkubators);
@@ -182,6 +278,7 @@ include "_head.php";
 
 <script>
 $(document).ready(function(){
+    var selfURL = '<?php echo $_SERVER['PHP_SELF']; ?>';
     $('#btn-tambah').click(function(e){
         e.preventDefault();
         $('#form-add-inkubator').removeClass('hide');
@@ -193,6 +290,15 @@ $(document).ready(function(){
         $('#form-add-inkubator').addClass('hide');
         return false;
     });
+    
+    $('.delete-inkubator').click(function(e){
+        e.preventDefault();
+        var id = $(this).prop('id');
+        alert(id);
+        return false;
+        
+    });
+    
     $('#btn-exec-add').click(function(e){
         e.preventDefault();        
                
@@ -203,6 +309,7 @@ $(document).ready(function(){
         var itinggi = $('#itinggi').val();
         var iberat = $('#iberat').val();
         var ijumlah = $('#ijumlah').val();
+        var ipath   = $('#ipath').val();
         
         var er = '';
         if (inama==''){er += 'Nama jangan kosong.<br>'; }
@@ -218,22 +325,39 @@ $(document).ready(function(){
             return false;
         }
         $('#img-ajax').show();
-        return false;
-        /*
-        $.post('../cores/ajax-add-inkubator.php',
+        
+        
+        
+        $.post(selfURL,
     	{
-    		notujuan: no,
-    		pesan: pesan,
-            // use: 'CMD',
-            use: 'SQL',
+    		ajax: 'add-inkubator',
+            nama: inama,
+            tipe: itipe,
+            panjang: ipanjang,
+            lebar: ilebar,
+            tinggi: itinggi,
+            berat: iberat,
+            jumlah: ijumlah,
+            path: ipath,
             r: Math.random()
     	},
     	function(data)
     	{
-    		var result = data.substr(0,2);
-            location.reload();                    
+    		
+            var result = data.substr(0,2).toUpperCase();
+            if (result == 'OK')
+            {
+                // msgBox('Sukses','Inkubator telah ditambahkan.');
+                location.reload();
+            }
+            else
+            {
+                msgBox('Error',data.substr(2));
+                $('#inama').focus();
+            }
     	});
-        */
+
+        return false;
     });     
 });
 </script>   

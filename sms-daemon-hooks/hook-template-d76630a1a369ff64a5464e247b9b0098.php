@@ -42,8 +42,10 @@
 $my_pinjam_kategori = 'Inkubator bayi';
 $my_pinjam_keyword = 'PINJAM';
 $my_pinjam_description = 'SMS Peminjaman Inkubator';
-$my_pinjam_sms_format = 'PINJAM*NAMA_BAYI*TGL_LAHIR*TGL_PULANG_RS*CM_PJGLAHIR*KG_BERATLAHIR*<SEHAT/SAKIT>*NAMA_RS*NM_DOKTER/BIDAN*NO_KK*ALAMAT*NAMA_IBU*NAMA_AYAH';
-$my_pinjam_sms_sample = 'PINJAM*DIAN KHAMSAWARNI*21/09/2015*23/09/2015*28*3,2*SEHAT*RSU Wahidin*Dr. Marhamah, Sp.OG*9288299288*BTN Hamzy E8/A*RINA MAWARNI*ARIFIN ADINEGORO';
+$my_pinjam_sms_format = 'PINJAM*NAMA_BAYI*<LAKI-LAKI/PEREMPUAN>*TGL_LAHIR*TGL_PULANG_RS/TGL_LAHIR*CM_PJGLAHIR*KG_BERATLAHIR*<SEHAT/SAKIT>*NAMA_RS/KLINIK/RUMAH*NM_DOKTER/BIDAN*NO_KK*ALAMAT*NAMA_IBU*NO_KTP_IBU*NAMA_AYAH*NO_KTP_AYAH';
+// $my_pinjam_sms_format = 'PINJAM*NAMA_BAYI*TGL_LAHIR*TGL_PULANG_RS*CM_PJGLAHIR*KG_BERATLAHIR*<SEHAT/SAKIT>*NAMA_RS*NM_DOKTER/BIDAN*NO_KK*ALAMAT*NAMA_IBU*NAMA_AYAH';
+$my_pinjam_sms_sample = 'PINJAM*DIAN KHAMSAWARNI*PEREMPUAN*21/09/2015*23/09/2015*28*3,2*SEHAT*RSU Wahidin*Dr. Marhamah, Sp.OG*9288299288*BTN Hamzy E8/A*RINA MAWARNI*7316052504930001*ARIFIN ADINEGORO*7316051905900001';
+// $my_pinjam_sms_sample = 'PINJAM*DIAN KHAMSAWARNI*21/09/2015*23/09/2015*28*3,2*SEHAT*RSU Wahidin*Dr. Marhamah, Sp.OG*9288299288*BTN Hamzy E8/A*RINA MAWARNI*ARIFIN ADINEGORO';
 
 /**
  * Let's declare database initialization:
@@ -114,16 +116,13 @@ function my_pinjam_init_db($is_installing)
         	`tgl_update_status_pinjam` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         	`keterangan_status_pinjam` VARCHAR(200) NOT NULL DEFAULT '',
         	`konfirmasi` ENUM('Y','N') NOT NULL DEFAULT 'N',
+            `ktp_ibu` VARCHAR(16) NOT NULL DEFAULT '',
+	        `ktp_ayah` VARCHAR(16) NOT NULL DEFAULT '',
+            `jenis_kelamin` ENUM('Laki-Laki','Perempuan') NOT NULL DEFAULT 'Laki-Laki',
         	PRIMARY KEY (`id`)
         )
         COLLATE='utf8_general_ci'
         ENGINE=MyISAM;";
-    $triggers['inkubator_pinjam_after_delete'] = "CREATE  TRIGGER `inkubator_pinjam_after_delete` AFTER DELETE ON `inkubator_pinjam` FOR EACH ROW 
-        BEGIN
-        	delete from inkubator_monitoring  where kode_pinjam = OLD.kode_pinjam;
-        	delete from inkubator_kembali  where kode_pinjam = OLD.kode_pinjam;
-        END";
-    
     // pengembalian
     $tables['inkubator_kembali'] = "CREATE TABLE if not exists `inkubator_kembali` 
         (
@@ -142,20 +141,11 @@ function my_pinjam_init_db($is_installing)
         )
         COLLATE='utf8_general_ci'
         ENGINE=MyISAM;"; 
-    $triggers['inkubator_kembali_after_insert'] = "CREATE TRIGGER `inkubator_kembali_after_insert` AFTER INSERT ON `inkubator_kembali` FOR EACH ROW 
-        BEGIN
-        	declare bayi varchar(100);
-        	set bayi = (select p.nama_bayi from inkubator_pinjam p where p.kode_pinjam = NEW.kode_pinjam);
-        	insert into inkubator_monitoring 
-        		(kode_pinjam, tgl_input, panjang_bayi, berat_bayi, kondisi, keterangan)
-        	values
-        		(NEW.kode_pinjam, curent_timestamp, NEW.panjang_kembali, NEW.berat_kembali, NEW.kondisi_kembali, concat('Status akhir ', bayi));
-        END";
     
     // monitoring
     $tables['inkubator_monitoring'] = "CREATE TABLE if not exists `inkubator_monitoring` 
          (
-        	`id` INT(20) NOT NULL,
+        	`id` BIGINT(20) NOT NULL,
         	`kode_pinjam` VARCHAR(20) NOT NULL DEFAULT '',
         	`tgl_input` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         	`panjang_bayi` DECIMAL(10,2) NOT NULL DEFAULT '0.00',
@@ -167,29 +157,6 @@ function my_pinjam_init_db($is_installing)
         )
         COLLATE='utf8_general_ci'
         ENGINE=MyISAM;";
-    $triggers['inkubator_monitoring_before_insert']="CREATE TRIGGER `inkubator_monitoring_before_insert` BEFORE INSERT ON `inkubator_monitoring` FOR EACH ROW 
-        BEGIN
-        	set NEW.id = UUID_SHORT();
-        	case when NEW.kondisi = 'SEHAT' then
-        		set NEW.skor = 1;
-        	else
-        		set NEW.skor = 0;
-        	end case;
-        END";
-    // Test-----------------
-    $triggers['inkubator_monitoring_after_insert']="CREATE TRIGGER `inkubator_monitoring_after_insert` AFTER INSERT ON `inkubator_monitoring` FOR EACH ROW 
-        BEGIN
-        	set @xid = UUID_SHORT();        	
-        END";
-    // ./Test-----------------
-    $triggers['inkubator_monitoring_before_update'] = "CREATE TRIGGER `inkubator_monitoring_before_update` BEFORE UPDATE ON `inkubator_monitoring` FOR EACH ROW BEGIN
-        	set NEW.id = UUID_SHORT();
-        	case when NEW.kondisi = 'SEHAT' then
-        		set NEW.skor = 1;
-        	else
-        		set NEW.skor = 0;
-        	end case;
-        END";
     
     // Views:
     $views['vw_inkubator_perkembangan'] = "create or replace view `vw_inkubator_perkembangan` as select 
@@ -294,6 +261,7 @@ function my_pinjam_init_db($is_installing)
     $trg_query = "";
     if ($is_installing)
     {
+        // $f = fopen('d:/test-query.txt','w');
         // create database items:
         foreach($views as $view=>$query)
         {
@@ -311,7 +279,7 @@ function my_pinjam_init_db($is_installing)
         {
             $multi_query .= $query .(substr($query, strlen($query)-1)!=";"?";":"")."\n";
         }
-        
+        // debug: fputs($f, $multi_query);
         exec_queries($multi_query);
         
         //
@@ -338,11 +306,13 @@ function my_pinjam_init_db($is_installing)
         {
             if (!in_array(strtolower($trigger), $check_triggers))
             {                
+                // debug: fputs($f, $query .(substr($query, strlen($query)-1)!=";"?";":""));
                 exec_query($query .(substr($query, strlen($query)-1)!=";"?";":""));
             }
         }
         unset($old_triggers);
-        // indicate sucess:  
+        // indicate sucess: 
+        // debug: fclose($f);
         return true;      
     }
     else
@@ -367,28 +337,150 @@ function my_hook_pinjam_function($keyword, $params)
     // Sometime, you don't need to reply SMS from non-user number,
     // such as SMS from Service Center, message center, 
     // or promotional SMS:
-    $valid_param_count = 13;
+    $valid_param_count = 16;
+    // pre( $params);
+    // return true;
     if (strlen($params['sender'])<=6) {
         return true;
     }
     else
     {
-        if (count($params['param']!=$valid_param_count)){
-        /*    sms_send($params['sender'], '1/2. SMS tidak valid. Jumlah parameter data harus 13.', $nama_modem);
-            sms_send($params['sender'], '2/2. Contoh SMS: '.$my_pinjam_sms_sample, $nama_modem);
+        if (count($params['params'])!=$valid_param_count){
+            sms_send($params['sender'], '1/2. SMS tidak valid. Jumlah parameter data harus '.$valid_param_count.'.', $nama_modem);
+            sms_send($params['sender'], '2/2. Format SMS: '.$my_pinjam_sms_format, $nama_modem);
+            sms_send($params['sender'], '3/2. Contoh SMS: '.$my_pinjam_sms_sample, $nama_modem);
         }
         else
         {
-        */    // dapatkan ID dan KODE peminjaman:
-            $sql_pinjam = "select (@idx:=UUID_SHORT()) id, /*hex(@idx) kode, */ concat(left(hex(@idx),6),'-',substr(hex(@idx),7,6),'-',right(hex(@idx),2)) kode limit 0,1";
+            // dapatkan ID dan KODE peminjaman:
+            $sql_pinjam = "select (@idx:=UUID_SHORT()) id, /*hex(@idx) kode, */ concat(left(hex(@idx),6),'-',substr(hex(@idx),7,6),'-',right(hex(@idx),2)) kode limit 0,1";            
+            // pre( $params);
             $meta_pinjam = fetch_query($sql_pinjam);
             $id_pinjam = $meta_pinjam[0]['id'];
             $kode_pinjam = $meta_pinjam[0]['kode'];
-            // proses SMS dan insert ke table `pinjam`:
+            // proses SMS dan insert ke table `inkubator_pinjam`:
+            // Format: PINJAM*NAMA_BAYI*TGL_LAHIR*TGL_PULANG_RS*CM_PJGLAHIR*KG_BERATLAHIR*<SEHAT/SAKIT>*NAMA_RS*NM_DOKTER/BIDAN*NO_KK*ALAMAT*NAMA_IBU*NAMA_AYAH
+            // Sample: PINJAM*DIAN KHAMSAWARNI*21/09/2015*23/09/2015*28*3,2*SEHAT*RSU Wahidin*Dr. Marhamah, Sp.OG*9288299288*BTN Hamzy E8/A*RINA MAWARNI*ARIFIN ADINEGORO
+            $p_nama_bayi        = trim($params['params'][ 1]);
+            $p_kelamin          = strtolower(trim($params['params'][ 2]));
+            $p_tgl_lahir        = trim($params['params'][ 3]);
+            $p_tgl_pulang       = trim($params['params'][ 4]);
+            $p_pjg_lahir        = trim($params['params'][ 5]);
+            $p_berat_lahir      = trim($params['params'][ 6]);
+            $p_kondisi          = strtoupper(trim($params['params'][ 7]));
+            $p_rumah_sakit      = trim($params['params'][ 8]);
+            $p_dokter           = trim($params['params'][ 9]);
+            $p_no_kk            = trim($params['params'][10]);
+            $p_alamat           = trim($params['params'][11]);
+            $p_nama_ibu         = trim($params['params'][12]);
+            $p_ktp_ibu          = trim($params['params'][13]);
+            $p_nama_ayah        = trim($params['params'][14]);
+            $p_ktp_ayah         = trim($params['params'][15]);
+            // cek tangal, panjang dan berat apakah formatnya sesuai atau tidak.
+            $p_validate_tgl     = '/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/'; // dd/mm/yyyy
+            $p_validate_pjg     = '/^[0-9]{1,2}+([\,\.][0-9]{1,2})?$/'; // max2digits[.,]max2digits
             
-            // reply SMS:
-            sms_send($params['sender'], 'Peminjaman sedang diproses. Kode Pinjam: '.$kode_pinjam, $nama_modem);
-            
+            if (($p_kelamin!='laki-laki') && ($p_kelamin!='perempuan'))
+            {
+                sms_send($params['sender'], 'Maaf. Jenis Kelamin harus LAKI-LAKI atau PEREMPUAN.', $nama_modem);   
+            }
+            else
+            if (!preg_match($p_validate_tgl, $p_tgl_lahir))
+            {
+                sms_send($params['sender'], 'Maaf. Tgl lahir salah format. Harus berformat dd/mm/yyyy.', $nama_modem);
+            }
+            else
+            if (!preg_match($p_validate_tgl, $p_tgl_pulang))
+            {
+                sms_send($params['sender'], 'Maaf. Tgl pulang dari RS salah format. Harus berformat dd/mm/yyyy.', $nama_modem);
+            }
+            else
+            if (!preg_match($p_validate_pjg, $p_pjg_lahir))
+            {
+                sms_send($params['sender'], 'Maaf. Panjang bayi saat lahir salah. Contoh panjang bayi: 29', $nama_modem);
+            }
+            else
+            if (!preg_match($p_validate_pjg, $p_berat_lahir))
+            {
+                sms_send($params['sender'], 'Maaf. Berat bayi saat lahir salah. Contoh berat bayi: 2,69', $nama_modem);
+            }
+            else
+            if (($p_kondisi!='SEHAT') && ($p_kondisi!='SAKIT'))
+            {
+                sms_send($params['sender'], 'Maaf. Kondisi bayi salah. Harus SEHAT atau SAKIT.', $nama_modem);
+            }
+            else
+            if ((strlen($p_ktp_ibu)!=16))
+            {
+                sms_send($params['sender'], 'Maaf. Nomor KTP ibu harus 16 angka.', $nama_modem);
+            }
+            else
+            if ((strlen($p_ktp_ayah)!=16))
+            {
+                sms_send($params['sender'], 'Maaf. Nomor KTP ayah harus 16 angka.', $nama_modem);
+            }
+            else
+            {
+                // process tgl, berat & panjang:
+                // xx/yy/xxxx
+                // $x = fopen('d:/testjk.txt','w'); fwrite($x, $p_kelamin); fclose($x);
+                if ($p_kelamin=='laki-laki')
+                {
+                    $p_kelamin = 'Laki-Laki';
+                } 
+                else
+                {
+                    $p_kelamin = 'Perempuan';
+                }
+                
+                $p_skor = ($p_kondisi=='SEHAT'?1:0);
+                $p_tgl_lahir = substr($p_tgl_lahir,6,4).'-'.substr($p_tgl_lahir,3,2).'-'.substr($p_tgl_lahir,0,2);
+                $p_tgl_pulang = substr($p_tgl_pulang,6,4).'-'.substr($p_tgl_pulang,3,2).'-'.substr($p_tgl_pulang,0,2);
+                $p_berat_lahir = str_replace(',','.', $p_berat_lahir);
+                $p_pjg_lahir = str_replace(',','.', $p_pjg_lahir);
+                // all set! save it to database.
+                $save_sql = "insert into inkubator_pinjam (
+                    id, kode_pinjam, id_inkubator, tgl_pinjam, nama_bayi, kembar, tgl_lahir, berat_lahir, panjang_lahir, 
+                    kondisi, rumah_sakit, nama_dokter, tgl_pulang, no_kk, alamat, 
+                    nama_ibu, hp_ibu, email_ibu,
+                    nama_ayah, hp_ayah, email_ayah,
+                    jumlah_pinjam, keterangan_status_pinjam, konfirmasi, ktp_ibu, ktp_ayah, jenis_kelamin    
+                ) values (
+                    $id_pinjam, '$kode_pinjam', 0, CURRENT_TIMESTAMP(), '$p_nama_bayi', 'N', '$p_tgl_lahir', $p_berat_lahir, $p_pjg_lahir, 
+                    '$p_kondisi', '$p_rumah_sakit','$p_dokter', '$p_tgl_pulang', '$p_no_kk', '$p_alamat', 
+                    '$p_nama_ibu', '".$params['sender']."', '',
+                    '$p_nama_ayah', '".$params['sender']."', '',
+                    1, 'Ditunda untuk review.', 'Y', '".$p_ktp_ibu."', '".$p_ktp_ayah."','$p_kelamin'
+                )";
+                $sub_mon_sql = "insert into inkubator_monitoring 
+                    (id, kode_pinjam, tgl_input, panjang_bayi, berat_bayi, kondisi, skor, keterangan)
+          	       values
+                    ( UUID_SHORT(), '$kode_pinjam', CURRENT_TIMESTAMP(), $p_pjg_lahir, $p_berat_lahir, '$p_kondisi', $p_skor, 'Status awal $p_nama_bayi')";
+                // $f = fopen('d:/test-.txt','w');
+                /* Debug:
+                fputs($f, $save_sql);
+                fputs($f, $sub_mon_sql);
+                fclose($f);
+                */
+                
+                if (exec_query($save_sql))
+                {
+                    // reply SMS:
+                    if (exec_query($sub_mon_sql))
+                    {
+                        sms_send($params['sender'], 'Peminjaman sedang diproses. Kode Pinjam: '.$kode_pinjam, $nama_modem);
+                    }
+                    else
+                    {
+                        exec_query("delete from inkubator_pinjam where id = $id_pinjam");
+                        sms_send($params['sender'], 'Maaf, server sedang sibuk. Cobalah beberapa saat lagi.', $nama_modem);
+                    }
+                }
+                else
+                {
+                    sms_send($params['sender'], 'Maaf, server sedang sibuk. Cobalah beberapa saat lagi.', $nama_modem);
+                }
+            }            
         }
         return true;
     }    
@@ -422,7 +514,7 @@ function my_hook_pinjam_activation_callback_function($keyword)
 {
     // create your table here, etc., and...
     // exec_query('create table if not exists `unknown_sms_data`(id int(10) not null auto_increment, primary key(id)) engine=MyISAM');
-    my_pinjam_init_db(true);
+    // my_pinjam_init_db(true);
     return true;    
 }
 
@@ -435,7 +527,7 @@ function my_hook_pinjam_deactivation_callback_function($keyword)
     // drop your table here, etc., and...
     // exec_query('drop table if exists `unknown_sms_data`');
     // you can leave your database entries for next time your hook reactivated.
-    my_pinjam_init_db(false);
+    // my_pinjam_init_db(false);
     return true;    
 }
 

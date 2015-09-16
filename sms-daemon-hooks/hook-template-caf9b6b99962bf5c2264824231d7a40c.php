@@ -86,7 +86,7 @@ function my_hook_info_function($keyword, $params)
             foreach($kunci as $i=>$item){
                 $pesan2.=','.$item['keyword'];
             }
-            $pesan2 = 'Kata kunci tersedia: '.substr($pesan2, 1);
+            $pesan2 = 'Format Kata Kunci yang Tersedia: '.substr($pesan2, 1);
             unset($kunci);
         }
         else
@@ -102,7 +102,7 @@ function my_hook_info_function($keyword, $params)
                 foreach($kunci as $i=>$item){
                     $pesan2.=','.$item['keyword'];
                 }
-                $pesan2 = 'Kata kunci tersedia: '.substr($pesan2, 1);
+                $pesan2 = 'Format Kata Kunci yang Tersedia: '.substr($pesan2, 1);
                 unset($kunci);    
             }       
             else

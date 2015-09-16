@@ -1,4 +1,10 @@
 <?php
+// echo realpath('../dbconfig.php');
+if(!file_exists(realpath('../dbconfig.php')))
+{
+    header('location:../install/');
+    die();
+}
 
 $skip_morris = true;
 
@@ -53,11 +59,20 @@ include "../pages/_head.php";
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu pull-right" role="menu">
+                                        <!--
                                         <li><a href="pinjam.php">Peminjaman</a></li>
                                         <li><a href="monitor.php">Input Data Monitoring</a></li>
                                         <li><a href="kembali.php">Pengembalian</a></li>
                                         <li class="divider"></li>
                                         <li><a href="testimoni.php">Pendapat Anda</a></li>
+                                        -->
+                                        <?php if (!user_logged_in()) { ?>
+                                        <li><a href="../pages/login.php">Login</a></li>
+                                        <?php } else { ?>
+                                        <li><a href="../pages/">Dashboard</a></li>                        
+                                        <li class="divider"></li>
+                                        <li><a href="../cores/logout.php">Logout</a></li>
+                                        <?php }?>
                                     </ul>
                                 </div>
                             </div>
@@ -121,10 +136,18 @@ include "../pages/_head.php";
                         <div class="row">
                             <div class="col-md-12">                                
                                 <span class="">
+                                    <!--
                                     <a href="pinjam.php" id="btn-save" class="btn btn-sm btn-info btn-block">Peminjaman</a>
                                     <a href="monitor.php" id="btn-save" class="btn btn-sm btn-success btn-block">Input Data Monitoring</a>
                                     <a href="kembali.php" class="btn btn-sm btn-warning btn-block">Pengembalian</a>
                                     <a href="testimoni.php" class="btn btn-sm btn-danger btn-block">Tuliskan Pendapat Anda</a>
+                                    -->
+                                    <?php if (!user_logged_in()) { ?>
+                                    <a href="../pages/login.php" id="btn-save" class="btn btn-sm btn-info btn-block">Login</a>
+                                    <?php } else { ?>
+                                    <a href="../pages/" id="btn-save" class="btn btn-sm btn-info btn-block">Dashboard</a>
+                                    <a href="../cores/logout.php" id="btn-save" class="btn btn-sm btn-danger btn-block">Logout</a>                                    
+                                    <?php }?>
                                 </span>
                             </div>
                         </div>                    

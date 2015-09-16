@@ -21,7 +21,7 @@ include_once('../cores/session.php');
 
 
 require_login(); 
-
+require_admin('index.php','Pooling SMS Settings', 'Anda tidak memiliki hak akses ke halaman ini.', 'Dashboard');
 
 ?>
 

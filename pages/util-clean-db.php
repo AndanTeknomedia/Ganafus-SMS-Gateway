@@ -38,7 +38,7 @@ include "_head.php";
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-database fa-fw"></i> <strong class="text-danger">Warning!</strong> Ini Akan Menghapus Data SMS dan Keyword.                            
+                            <i class="fa fa-database fa-fw"></i> <strong class="text-danger">Warning!</strong> Ini Akan Menghapus Data SMS dan Data Peminjaman.                            
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body" id="table-names-container">

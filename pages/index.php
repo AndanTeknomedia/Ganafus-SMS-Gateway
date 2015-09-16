@@ -51,9 +51,8 @@ include "_head.php";
             $qry = fetch_query("select 
         	(select sum(stok_inkubator) from vw_inkubator_tersedia) as inkubator_count,        	
             (select count(*) from vw_inkubator_pinjam) as bayi_count,
-        	(select count(*) from vw_inkubator_pinjam where coalesce(status_kembali,'Ditunda') = 'Ditunda') as pinjam_count,        	
+        	(select count(*) from vw_inkubator_pinjam where coalesce(status_kembali,'Ditunda') = 'Ditunda' and status_pinjam = 'Disetujui') as pinjam_count,        	
         	(select count(*) from vw_inkubator_perkembangan where perkembangan = 'Positif') as bayi_sehat_count", false);
-            
             
             
             $badge_data = $qry[0];
@@ -90,11 +89,11 @@ include "_head.php";
                                 </div>
                                 <div class="col-xs-9 text-right">
                                     <div class="huge"><?php echo $badge_data['bayi_count']; ?></div>
-                                    <div>Bayi Pengguna</div>
+                                    <div>Dipinjam</div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="pinjam-data.php">
                             <div class="panel-footer">
                                 <span class="pull-left">Lihat Detail</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -155,28 +154,10 @@ include "_head.php";
             <!-- /.row -->
             <div class="row">
                 <div class="col-lg-8">
-                    <div class="panel panel-default">
+                    <div class="panel panel-red">
                         <div class="panel-heading">
                             <i class="fa fa-info-circle fa-fw"></i> Tentang Inkubator Bayi Gratis
-                            <div class="pull-right">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                        Actions
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu pull-right" role="menu">
-                                        <li><a href="#">Action</a>
-                                        </li>
-                                        <li><a href="#">Another action</a>
-                                        </li>
-                                        <li><a href="#">Something else here</a>
-                                        </li>
-                                        <li class="divider"></li>
-                                        <li><a href="#">Separated link</a>
-                                        </li>
-                                    </ul>                                    
-                                </div>
-                            </div>
+                            
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
@@ -185,7 +166,7 @@ include "_head.php";
                         <!-- /.panel-body -->
                     </div>
                     <!-- /.panel -->
-                    <div class="panel panel-default">
+                    <div class="panel panel-yellow">
                         <div class="panel-heading">
                             <i class="fa fa-book fa-fw"></i> Panduan Peminjaman                            
                         </div>
@@ -199,7 +180,7 @@ include "_head.php";
                         <!-- /.panel-body -->
                     </div>
                     <!-- /.panel -->
-                    <div class="panel panel-default">
+                    <div class="panel panel-green">
                         <div class="panel-heading">
                             <i class="fa fa-lightbulb-o fa-fw"></i> Syarat &amp; Ketentuan
                         </div>
@@ -214,6 +195,7 @@ include "_head.php";
                 <!-- /.col-lg-8 -->
                 <div class="col-lg-4">
                     <!-- Inbox Messages -->
+                    <?php /*
                     <div class="chat-panel panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-comments fa-fw"></i> Testimoni                          
@@ -291,7 +273,7 @@ include "_head.php";
                         <!-- /.panel-footer -->
                     </div>
                     <!-- /.panel .chat-panel -->
-                    
+                    */ ?>
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-bell fa-fw"></i> Pooling SMS

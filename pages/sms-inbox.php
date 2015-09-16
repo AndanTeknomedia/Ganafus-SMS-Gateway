@@ -106,6 +106,7 @@ if ($ajax)
                     </p>
                     <br />
                     <p class="text-muted small">                     
+                        <a href="#" class="label label-danger hapus-sms" onclick="javascript:window.hapusSMS('sms_valid','<?php echo $sms['id']; ?>');"><i class="fa fa-scissors"></i> Hapus</a>
                         <a href="#" class="label label-default balas-sms" onclick="javascript:window.balasSMS('<?php echo $sms['id']; ?>');"><i class="fa fa-reply"></i> Balas</a>
                         <span 
                             class="label label-<?php
@@ -419,23 +420,6 @@ $(document).ready(function(){
         return false;
     });
     
-    // balas SMS:
-    window.balasSMS = function(id){
-        var oln = $('#pengirim-'+id).text();
-        var olt = $('#full-sms-'+id).text();
-        window.oldSMSNumber = oln;
-        window.oldSMSText = olt;
-        var dlgSendSMS = BootstrapDialog.show({
-            size    : BootstrapDialog.SIZE_SMALL,
-            title   : ('Balas SMS'),
-            closable: true,
-            draggable: true,
-            message : $(sendSMSForm(true))
-        });      
-        window.dlgSendSMS = dlgSendSMS;
-        dlgSendSMS.open();
-        return false;
-    };
 });
 </script>   
 <?php include '_footscripts.php'; ?>

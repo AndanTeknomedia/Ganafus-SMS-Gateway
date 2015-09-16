@@ -1,4 +1,16 @@
 <?php
+
+if (!preg_match('/^[0-9]{1,2}+([\,\.][0-9]{1,2})?$/', "1.989"))
+{ 
+  echo "invalid";
+}
+else
+{
+    echo 'OK';
+}
+
+die();
+
 $page_name = 'SMS Statistic';
 include_once('cores/definition.php'); 
 require_once('cores/db.php'); 

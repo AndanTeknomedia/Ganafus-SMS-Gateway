@@ -103,7 +103,9 @@ if ($ajax)
                                     $label  = 'warning';
                                     $fa     = 'warning';   
                             }                
-                            ?><span 
+                            ?>
+                            <a href="#" class="label label-danger hapus-sms" onclick="javascript:window.hapusSMS('sentitems','<?php echo $sms['id']; ?>');"><i class="fa fa-scissors"></i> Hapus</a>
+                            <span 
                             class="label label-<?php echo $label; ?>"><i class="fa fa-<?php echo $fa; ?>"></i> <?php echo $sms['status_kirim'];?></span>                    
                     </p>
                 </div>

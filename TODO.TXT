@@ -2,11 +2,11 @@ TODO:
 
 * Chart -> Moris Ajax
 * SMS Processor: Redefine. Cek kemungkinan dua processor per 30 detik.
-* Setup pooling SMS
+* [OK] Setup pooling SMS
 
 
-* START/STOP GAMMU SERVICE
-* START/STOP SMS Processor
+* [OK] START/STOP GAMMU SERVICE 
+* [OK] START/STOP SMS Processor
 * Lanjut database inits on PINJAM hook (associative arrays).
     - Lanjut dengan VIEWs dan DROPs
         # MULTIPLE QUERY: TRIGGER CREATION NOT SUPPORTED! Karena ada penggantian delimiter yang tidak disupport oleh PHP.
@@ -49,21 +49,15 @@ TODO:
             ]
             
 
-* Stats for SMS, per category and keyword, with date range as param.
-    - You can always create your own stats using your plugin code.
+* [OK] Stats for SMS, per category and keyword, with date range as param.
+    [NOT OK] - You can always create your own stats using your plugin code.
     
     
     
 * ADA ERROR DI SMS-INBOX , pada COL-LG-12 setelah button group
 
-Morris.Area({ // CARI LAGI, MASIH ERROR
-                element: 'sms-stat-area-chart',
-                data: o.data,
-                xkey: o.xkey,
-                ykeys: o.ykeys,
-                labels: o.labels,
-                pointSize: o.pointSize,
-                hideHover: o.hideHover,
-                resize: o.resize,
-                xLabels:o.xLabels
-            });
+* [OK][IN PROGRESS] Remove User defined views and triggers! 
+* NEED To add Overrides in SMS processing sequences. 
+    Function sms_hook_override(...); 
+        Return true to allow sms to be parsed by user defined hooks, 
+        false to immediately change SMS state and abort subsequent processing by user defined hooks.

@@ -46,50 +46,22 @@ $gammu_id       = GAMMU_CREATOR_ID;
 $_SMS_PROCESSOR_DAEMON_HOOKS = keyword_fetch_all();
 
 /**
- * This daemon will look for hook files in this directory and load them to processor engine: 
- */
-/*
-$hook_dir = str_replace("\\", "/", dirname(dirname(__FILE__)))."/sms-daemon-hooks";
-$hd = opendir($hook_dir);
-if (!($hd===false))
-{
-    // Include definitions first (if any exists):
-    rewinddir($hd);
-    while ($hook = readdir($hd))
-    {
-        $hf = $hook_dir."/$hook";
-        if (is_file($hf) && (substr($hook, strlen($hook)-8)=='.inc.php'))
-        {
-            // echo $hf .'<hr>';
-            include_once($hf);
-        }
-    }  
-    // Include hooks:
-    rewinddir($hd);
-    while ($hook = readdir($hd))
-    {
-        $hf = $hook_dir."/$hook";
-        if (is_file($hf) && (substr($hook, strlen($hook)-4)=='.php') && (substr($hook, strlen($hook)-8)!='.inc.php'))
-        {
-            // echo $hf .'<hr>';
-            include_once($hf);
-        }
-    }   
-    closedir($hd);
-}
-*/
-
-/**
  * Include hook files:
  */
 
+// $f = fopen('D:/testtt.txt','w');
 foreach ($_SMS_PROCESSOR_DAEMON_HOOKS as $keyword)
 {
-    if (file_exists($keyword['file_name']))
+    $keyword_file = str_replace("\\","/", dirname(dirname(__FILE__))).'/sms-daemon-hooks/'.basename($keyword['file_name']);
+    // fputs($f, $keyword_file ."\n");
+    if (file_exists($keyword_file))
     {
-        include_once($keyword['file_name']);
+        include_once($keyword_file);
+        // fputs($f, $keyword_file ."\n");
     } 
 } 
+// fclose($f);
+
 $data_count_to_process  = get_system_config('sms_to_process_per_minute', 10); // execute 10 data every minute - as this task run
 $nama_modem             = fetch_one_value("select coalesce((select nama_modem from modem_gateway order by id desc limit 0,1),'')");
 $last_id                = fetch_one_value("select coalesce((select config_value from configs where config_name = '".LAST_ID_CONFIG_NAME."'),0)");

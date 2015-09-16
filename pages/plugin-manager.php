@@ -346,6 +346,7 @@ if ($ajax && ($req_type!=NULL))
 }
 
 require_login();
+require_admin('index.php','Pooling SMS Settings', 'Anda tidak memiliki hak akses ke halaman ini.', 'Dashboard');
 
 $skip_morris = true;
 include "_head.php";

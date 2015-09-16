@@ -14,12 +14,12 @@ include_once('../gammu/gammu-fetch-sms.php');
                                     
                         </li>
                         
-                        <!-- Sample Blank Page -->
+                        <!-- Sample Blank Page
                         <li>
                             <a href="blank.php"><i class="fa fa-laptop fa-fw"></i> Sample Blank Page</a>
                         </li>
                         <li class="sidebar-divider"></li>
-                        
+                        -->
                         <!-- Dashboard -->
                         <li>
                             <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
@@ -32,16 +32,20 @@ include_once('../gammu/gammu-fetch-sms.php');
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="inkubator-master.php">Data Inkubator</a>
-                                </li>                                
+                                </li>
+                                <!--                                
                                 <li>
                                     <a href="inkubator-report.php">Laporan Data Inkubator</a>
                                 </li>
+                                -->
                                 <li>
                                     <a href="inkubator-data-peminjam.php">Data Peminjam</a>
                                 </li>
+                                <!--
                                 <li>
                                     <a href="inkubator-data-bayi.php">Data Bayi</a>
                                 </li>
+                                -->
                             </ul>
                             
                         </li>
@@ -53,11 +57,13 @@ include_once('../gammu/gammu-fetch-sms.php');
                                 <li>
                                     <a href="pinjam-data.php">Data Peminjaman</a>
                                 </li>
+                                <!--
                                 <li>
                                     <a href="pinjam-add.php">Peminjaman Baru</a>
-                                </li>    
+                                </li>
+                                -->    
                                 <li>
-                                    <a href="pinjam-return.php">Pengembalian</a>
+                                    <a href="pinjam-kembali.php">Data Pengembalian</a>
                                 </li>
                             </ul>
                             
@@ -70,12 +76,16 @@ include_once('../gammu/gammu-fetch-sms.php');
                                 <li>
                                     <a href="monitor-bayi.php">Perkembangan Bayi</a>
                                 </li>
+                                <!--
                                 <li>
                                     <a href="monitor-edit.php">Edit Data</a>
-                                </li>    
+                                </li>
+                                --> 
+                                <!--   
                                 <li>
                                     <a href="monitor-laporan.php">Laporan Monitoring</a>
                                 </li>
+                                -->
                             </ul>
                             
                         </li>

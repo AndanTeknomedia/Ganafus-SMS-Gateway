@@ -61,6 +61,29 @@ function generate_time_series($date1, $date2, $kind)
     return $times;
 }
 
+function generate_dates($frequency, $date1, $date2)
+{
+    $result = array($date1, $date2);
+    $d = $date2;
+    switch ($frequency)
+    {
+        case 'd':            
+            break;
+        case 'w':
+            $d = date_create($date1);
+            date_add($d, date_interval_create_from_date_string('7 days'));
+            $d = date_format($d, 'Y-m-d');
+            $result[1] = $d;
+            break;
+        default : //monthly
+            $d = date_create($date1);
+            date_add($d, date_interval_create_from_date_string('1 month'));
+            $d = date_format($d, 'Y-m-d');
+            $result[1] = $d;
+    }
+    return $result;
+}
+
 
 if ($ajax)
 {
@@ -83,25 +106,73 @@ if ($ajax)
     switch ($sms_folder)
     {
         case 'inbox':
+            $dates = generate_dates($stat_freq, $dt1, $dt2);
+            $dt1 = $dates[0];
+            $dt2 = $dates[1];
+            unset($dates);
+            if ($stat_kategori=='all')
+            {
+                // keyword tidak diproses
+                $ibx_sql = "select  concat(date(v.waktu_terima),' ', HOUR(v.waktu_terima),':00') as period, count(*) as jumlah
+                    from sms_valid v
+                    where (v.waktu_terima >= concat('$dt1',' 00:00:00')) and (v.waktu_terima <= concat('$dt2',' 23:59:59'))
+                    group by concat(date(v.waktu_terima),' ', HOUR(v.waktu_terima),':00')";    
+            }
+            else
+            {
+                if ($stat_keyword=='all')
+                {
+                    $ibx_sql = "select  concat(date(v.waktu_terima),' ', HOUR(v.waktu_terima),':00') as period, count(*) as jumlah
+                        from sms_valid v
+                        inner join sms_keywords k on upper(k.keyword) = upper(v.jenis)
+                        where 
+                        upper(k.kategori) = upper('$stat_kategori') and
+                        (v.waktu_terima >= concat('$dt1',' 00:00:00')) and (v.waktu_terima <= concat('$dt2',' 23:59:59'))
+                        group by concat(date(v.waktu_terima),' ', HOUR(v.waktu_terima),':00')";   
+                }
+                else
+                {
+                    $ibx_sql = "select  concat(date(v.waktu_terima),' ', HOUR(v.waktu_terima),':00') as period, count(*) as jumlah
+                        from sms_valid v
+                        inner join sms_keywords k on upper(k.keyword) = upper(v.jenis)
+                        where 
+                        upper(k.kategori) = upper('$stat_kategori') and
+                        upper(k.keyword) = upper('$stat_keyword') and
+                        (v.waktu_terima >= concat('$dt1',' 00:00:00')) and (v.waktu_terima <= concat('$dt2',' 23:59:59'))
+                        group by concat(date(v.waktu_terima),' ', HOUR(v.waktu_terima),':00')";       
+                }
+            }
+            $data = array();
+            $q_count = fetch_query($ibx_sql);
             
+            // refill with real values:
+            foreach($q_count as $i=>$vals)
+            {
+                $data[] =  array('period'=>$vals['period'], 'jumlah'=>$vals['jumlah']);                        
+            }
+            unset($q_count);
+            
+            $json = array(
+                'data' => $data,
+                // metadata:
+                'xkey'      => 'period',
+                'ykeys'     => array('jumlah'),
+                'labels'    => array('Jumlah'),
+                'pointSize' => 2,
+                'lineColors'=> array('#62d8b6'),
+                'hideHover' => 'auto',
+                'resize'    => true,
+                'xLabels'   => 'Time Period'
+            );                
+            echo json_encode($json); 
             break;
         case 'sent':
             // kategori not processed
             // keyword not processed
-            switch ($stat_freq)
-            {
-                case 'd':            
-                    break;
-                case 'w':
-                    $dt2 = date_create($dt1);
-                    date_add($dt2, date_interval_create_from_date_string('7 days'));
-                    $dt2 = date_format($dt2, 'Y-m-d');
-                    break;
-                default : //monthly
-                    $dt2 = date_create($dt1);
-                    date_add($dt2, date_interval_create_from_date_string('1 month'));
-                    $dt2 = date_format($dt2, 'Y-m-d');
-            }             
+            $dates = generate_dates($stat_freq, $dt1, $dt2);
+            $dt1 = $dates[0];
+            $dt2 = $dates[1];
+            unset($dates);
             $data = array();
             $q_count = fetch_query(
                 "select 
@@ -119,6 +190,7 @@ if ($ajax)
                 where ((date(s.UpdatedInDB) >= '$dt1') and (date(s.UpdatedInDB) <= '$dt2'))
                 group by concat(date(s.UpdatedInDB),' ', HOUR(s.UpdatedInDB),':00')
             ");
+            
             // refill with real values:
             foreach($q_count as $i=>$vals)
             {
@@ -143,20 +215,10 @@ if ($ajax)
         default: // assumed as 'all'
             // kategori not processed
             // keyword not processed
-            switch ($stat_freq)
-            {
-                case 'd':            
-                    break;
-                case 'w':
-                    $dt2 = date_create($dt1);
-                    date_add($dt2, date_interval_create_from_date_string('7 days'));
-                    $dt2 = date_format($dt2, 'Y-m-d');
-                    break;
-                default : //monthly
-                    $dt2 = date_create($dt1);
-                    date_add($dt2, date_interval_create_from_date_string('1 month'));
-                    $dt2 = date_format($dt2, 'Y-m-d');
-            }             
+            $dates = generate_dates($stat_freq, $dt1, $dt2);
+            $dt1 = $dates[0];
+            $dt2 = $dates[1];
+            unset($dates);
             $data = array();
             $q_count = fetch_query(
                 "select 
@@ -429,10 +491,11 @@ $(document).ready(function(){
         };       
         $.post(url, postData, function (respData){
             var o = JSON.parse(respData);
+            // console.log(o);
             morrisChart.setData(o.data);
         });          
         clearTimeout(timer);  
-        return;     
+        // return;     
         timer = setTimeout(function(){
             reloadData(stat_folder, stat_kategori, stat_keyword, stat_freq, stat_date1, stat_date2);
         }, 20000); // refresh data after 20 seconds               

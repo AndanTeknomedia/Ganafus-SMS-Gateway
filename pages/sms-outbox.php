@@ -82,7 +82,8 @@ if ($ajax)
                         <i class="fa fa-comment-o"></i> <?php echo implode('<br>',str_split(htmlentities($sms['sms']), 100));?>
                     </p>
                     <br />
-                    <p class="text-muted small">                     
+                    <p class="text-muted small">    
+                        <a href="#" class="label label-danger hapus-sms" onclick="javascript:window.hapusSMS('outbox','<?php echo $sms['id']; ?>');"><i class="fa fa-scissors"></i> Hapus</a>                 
                         <span class="label label-info"><i class="fa fa-spinner fa-spin"></i> Sedang mengantri...</span>                    
                     </p>
                 </div>
