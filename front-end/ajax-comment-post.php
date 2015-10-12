@@ -15,9 +15,9 @@ $nama = addslashes(strip_tags(post_var('nama')));
 $email = addslashes(strip_tags(post_var('email')));
 $url = addslashes(strip_tags(post_var('url')));
 $komentar = addslashes(strip_tags(post_var('komentar')));
-$postid = post_var('postid');
-$table = post_var('table');
-
+$postid = post_var('postid',0);
+$table = post_var('table',0);
+// die($postid.'<br>'.$table);
 
 $data = 'ERKomentar gagal kirim';
 
@@ -27,6 +27,6 @@ if(!exec_query("insert into frontend_comments values (UUID_SHORT(), CURRENT_TIME
 }
 else
 {
-    echo 'OKKomentar terikirim';  
+    echo 'OKKomentar terkirim';  
 }
 ?>

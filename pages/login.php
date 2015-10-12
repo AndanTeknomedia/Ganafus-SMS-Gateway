@@ -25,7 +25,10 @@ include "_head.php";
             <div class="col-md-4 col-md-offset-4">
                 <div class="login-panel panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title"><strong><?php echo SP_APP_NAME_SHORT .' v'. SP_APP_VERSION . PHP_EOL; ?></strong> - Sign In</h3>
+                        <a class="btn btn-info btn-xs" href="../front-end">
+                            <i class="fa fa-fw fa-home"></i>
+                        </a>
+                        <span class="panel-title"><strong><?php echo SP_APP_NAME_SHORT .' v'. SP_APP_VERSION . PHP_EOL; ?></strong> - Sign In</span>
                     </div>
                     <div class="panel-body">
                         <div id="error-box" class="alert alert-danger alert-dismissable"  style="display: none;">

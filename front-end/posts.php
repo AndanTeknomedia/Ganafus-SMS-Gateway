@@ -14,7 +14,7 @@ unset($c);
 
 if (empty($post_id) || empty($count) || ($count==0))
 {
-    force_404('../404.html');
+    force_404('../404.php');
 }
 
 $posts = fetch_query(
@@ -171,9 +171,10 @@ include "../pages/_head.php";
     </div>
     
     <script>
-        $(document).ready(function() { 
+        $(document).ready(function() {            
        	    $("#btn-save-comment").click(function(e){
        	        e.preventDefault();
+            
                 var nama = $('#comment-nama').val();
                 var email = $('#comment-email').val();
                 var url = $('#comment-url').val();
@@ -187,13 +188,15 @@ include "../pages/_head.php";
                     return false;
                 }
                 $('#ajax-comment').show('fast');
+                // alert('<?php echo $post_id; ?>');
+                
                 $.post('ajax-comment-post.php',
     			{
     				nama: nama,
     				email: email,
                     url: url,
                     komentar: komentar,
-                    postid: <?php echo $post_id; ?>,
+                    postid: '<?php echo $post_id; ?>',
                     table: '<?php echo 'frontend_posts'; ?>',
                     r: Math.random()
     			},
@@ -201,10 +204,11 @@ include "../pages/_head.php";
     			{    				
                     // var result = data.substr(0,2);					
                     msgBox('Komentar',data.substr(2));
-                    setTimeout(function(){
-                        $('#ajax-comment').hide('fast');
-                    },1000)                    
+                    if (data.substr(0,2)=='OK') {
+                        location.reload();
+                    }                   
     			});
+                
                 return false;
        	    });    
             $("#btn-clear-comment").click(function(e){

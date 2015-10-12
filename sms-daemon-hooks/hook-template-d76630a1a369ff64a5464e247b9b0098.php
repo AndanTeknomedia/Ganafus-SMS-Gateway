@@ -355,6 +355,7 @@ function my_hook_pinjam_function($keyword, $params)
             // dapatkan ID dan KODE peminjaman:
             $sql_pinjam = "select (@idx:=UUID_SHORT()) id, /*hex(@idx) kode, */ concat(left(hex(@idx),6),'-',substr(hex(@idx),7,6),'-',right(hex(@idx),2)) kode limit 0,1";            
             // pre( $params);
+            fetch_query($sql_pinjam);
             $meta_pinjam = fetch_query($sql_pinjam);
             $id_pinjam = $meta_pinjam[0]['id'];
             $kode_pinjam = $meta_pinjam[0]['kode'];

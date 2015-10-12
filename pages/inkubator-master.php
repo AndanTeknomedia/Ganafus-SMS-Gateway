@@ -79,6 +79,55 @@ if ($ajax == 'add-inkubator')
     }
     die();       
 }
+else
+if ($ajax == 'del-inkubator')
+{
+    $id  = post_var('id',0);
+    if ($id ==0)
+    {
+        echo 'ERID inkubator tidak valid.';
+    }
+    else
+    {
+        if (exec_query("delete from inkubator_master where id = '$id'"))
+        {
+            echo 'OKInkubator terhapus.';
+        }   
+        else
+        {
+            echo 'ERInkubator gagal hapus.';
+        }  
+    }
+    die();
+}
+else
+if ($ajax == 'sto-inkubator')
+{
+    $id  = post_var('id',0);
+    $jumlah  = post_var('jumlah',0);
+    if ($id ==0)
+    {
+        echo 'ERID inkubator tidak valid.';
+    }
+    else
+    if ($jumlah ==0)
+    {
+        echo 'ERJumlah tidak valid.';
+    }
+    else
+    {
+        // die("update inkubator_master set jumlah = '$jumlah' where id = '$id'");
+        if (exec_query("update inkubator_master set jumlah = '$jumlah' where id = '$id'"))
+        {
+            echo 'OKInkubator telah diupdate.';
+        }   
+        else
+        {
+            echo 'ERGagal mengupdate stok inkubator.';
+        }  
+    }
+    die();
+}
 
 require_login();
 
@@ -213,7 +262,8 @@ include "_head.php";
                             $inkubators = fetch_query(
                                 "select it.*,
                                 i.img_path,
-                                count(p.id) jumlah_dipinjam
+                                count(p.id) jumlah_dipinjam,
+                                (select count(*) from inkubator_pinjam where id_inkubator = i.id) as jumlah_pernah_pinjam
                                 from vw_inkubator_tersedia it 
                                 inner join inkubator_master i on i.id = it.id
                                 left join vw_inkubator_pinjam p on p.id_inkubator = it.id  and coalesce(p.status_kembali,'Ditunda') = 'Ditunda'
@@ -238,8 +288,11 @@ include "_head.php";
                                             <a href="inkubator-data-peminjam.php?id=<?php echo $inkubator['id'];?>">
                                                 <strong><?php echo $inkubator['nama'];?></strong>
                                             </a>
-                                            <button class="btn btn-danger btn-xs btn-link delete-inkubator" id="<?php echo $inkubator['id'];?>">
+                                            <button class="btn btn-danger btn-xs btn-link delete-inkubator" id="<?php echo $inkubator['id'];?>" data-jumlah="<?php echo $inkubator['jumlah_pernah_pinjam'];?>">
                                                 <i class="fa fa-trash-o fa-fw"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-xs btn-link edit-stok-inkubator" id="<?php echo $inkubator['id'];?>" data-jumlah="<?php echo $inkubator['stok_inkubator'];?>">
+                                                <i class="fa fa-pencil fa-fw"></i>
                                             </button>
                                             <?php if (!empty($inkubator['tipe'])) 
                                             {
@@ -294,7 +347,69 @@ $(document).ready(function(){
     $('.delete-inkubator').click(function(e){
         e.preventDefault();
         var id = $(this).prop('id');
-        alert(id);
+        var jumlah = parseInt($(this).attr('data-jumlah'));
+        if (jumlah!=0) 
+        {
+            msgBox('Inkubator ini telah digunakan. Tidak dapat dihapus.');
+        }
+        else
+        {
+            $.post(selfURL,
+        	{
+        		ajax: 'del-inkubator',
+                id: id,
+                r: Math.random()
+        	},
+        	function(data)
+        	{
+        		
+                var result = data.substr(0,2).toUpperCase();
+                if (result == 'OK')
+                {
+                    location.reload();
+                }
+                else
+                {
+                    msgBox('Error',data.substr(2));
+                }
+        	});
+         }
+        return false;
+        
+    });
+    
+    $('.edit-stok-inkubator').click(function(e){
+        e.preventDefault();
+        var id = $(this).prop('id');
+        var jumlah = parseInt($(this).attr('data-jumlah'));
+        jumlah = prompt('Masukkan jumlah inkubator:', jumlah, 'Edit Stok');        
+        if (jumlah<=0) 
+        {
+            msgBox('Error','Jumlah tidak boleh 0');
+        }
+        else
+        {
+            $.post(selfURL,
+        	{
+        		ajax: 'sto-inkubator',
+                jumlah: jumlah,
+                id: id,
+                r: Math.random()
+        	},
+        	function(data)
+        	{
+        		
+                var result = data.substr(0,2).toUpperCase();
+                if (result == 'OK')
+                {
+                    location.reload();
+                }
+                else
+                {
+                    msgBox('Error',data.substr(2));
+                }
+        	});
+         }
         return false;
         
     });

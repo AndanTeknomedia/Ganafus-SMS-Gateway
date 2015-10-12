@@ -16,6 +16,8 @@ require_login();
 
 $skip_morris = true;
 $id_inkubator = get_var('id',0);
+$grup = strtolower(urldecode(get_var('grup', ''))); 
+$skor = get_var('skor','');
 
 ?>
 
@@ -53,9 +55,18 @@ include "_head.php";
                             <i class="fa fa-database fa-fw"></i> Peminjaman Inkubator
                             <div class="pull-right">
                                 <div class="btn-group">
-                                    <button type="button"  onclick="javascript:location.reload();" class="btn btn-default btn-xs dropdown-toggle">
+                                    <a href="<?php echo $_SERVER['PHP_SELF'].'?id='.$id_inkubator; ?>" class="btn btn-default btn-xs">
+                                        Semuanya
+                                    </a>
+                                    <a href="<?php echo $_SERVER['PHP_SELF'].'?id='.$id_inkubator.'&grup='.urlencode('Telah Kembali'); ?>" class="btn btn-default btn-xs">
+                                        Telah Kembali                                        
+                                    </a>
+                                    <a href="<?php echo $_SERVER['PHP_SELF'].'?id='.$id_inkubator.'&grup='.urlencode('Belum Kembali'); ?>" class="btn btn-default btn-xs">
+                                        Belum Kembali                                        
+                                    </a>
+                                    <a href="#"  onclick="javascript:location.reload();" class="btn btn-default btn-xs">
                                         <i class="fa fa-refresh"></i> Refresh                                        
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -82,6 +93,7 @@ include "_head.php";
                                             <th>Kode</th>
                                             <th>Nama Peminjam</th>                                                    
                                             <th>Nama Bayi</th>
+                                            <th>Kondisi Rata-Rata</th>
                                             <th>Tanggal Pinjam</th>
                                             <th>Tanggal Kembali</th>
                                             <th>Tindakan</th>
@@ -89,13 +101,29 @@ include "_head.php";
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $pinjams = fetch_query
-                                        (
-                                            "select p.*, k.tgl_kembali, k.status_kembali from inkubator_pinjam p
+                                        $prm_grup = "";
+                                        switch ($grup)
+                                        {
+                                            case 'telah kembali':
+                                                $prm_grup = " and (coalesce(k.status_kembali,'') = 'Diterima') ";
+                                                break;
+                                            case 'belum kembali':
+                                                $prm_grup = " and (coalesce(k.status_kembali,'') <> 'Diterima') ";
+                                                break;
+                                            default:
+                                                $prm_grup = "";
+                                        }
+                                        $prm_grup = "select p.*, k.tgl_kembali, k.status_kembali,
+                                            (select avg(skor) from inkubator_monitoring where kode_pinjam = p.kode_pinjam) as kond
+                                            from inkubator_pinjam p
                                             left join inkubator_kembali k on p.kode_pinjam = k.kode_pinjam ".
-                                            (($id_inkubator==0 ? "" : " where p.id_inkubator = '".$id_inkubator."'")).                                            
-                                            " order by p.tgl_pinjam asc, p.id asc"
-                                        );
+                                            " where (p.status_pinjam = 'Disetujui') ".
+                                            (($id_inkubator==0 ? "" : " and p.id_inkubator = '".$id_inkubator."'")).
+                                            $prm_grup.                                            
+                                            " order by p.tgl_pinjam asc, p.id asc";
+                                        // pre($prm_grup);
+                                        $pinjams = fetch_query($prm_grup);
+                                        
                                         $c = count($pinjams);
                                         if ($c==0)
                                         {
@@ -130,6 +158,7 @@ include "_head.php";
                                                     <i class="fa fa-male fa-fw"></i> <?php echo $pinjam['nama_ayah']; ?>
                                                 </td>
                                                 <td><i class="fa fa-child fa-fw"></i> <?php echo $pinjam['nama_bayi']; ?></td>
+                                                <td><?php echo ($pinjam['kond']>0.5?'Sehat':'Sakit'); ?></td>
                                                 <td><?php echo $pinjam['tgl_pinjam']; ?></td>
                                                 <td><span class="label label-<?php echo $kclass ?>"><?php echo $pinjam['tgl_kembali']; ?></span></td>
                                                 <td>

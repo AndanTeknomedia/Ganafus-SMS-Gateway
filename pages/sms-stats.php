@@ -241,8 +241,8 @@ if ($ajax)
                 'data' => $data,
                 // metadata:
                 'xkey'      => 'period',
-                'ykeys'     => array('sent', 'received'),
-                'labels'    => array('SMS Sent', 'SMS Received'),
+                'ykeys'     => array('received', 'sent'),
+                'labels'    => array('SMS Received', 'SMS Sent'),
                 'pointSize' => 2,
                 'lineColors'=> array('#ff9eb6','#62d8b6'),
                 'hideHover' => 'auto',
@@ -461,7 +461,8 @@ $(document).ready(function(){
         $.post(url, postData, function (respData){
             // console.log(respData);
             var o = JSON.parse(respData);
-            morrisChart = Morris.Area({ // Bedakan 'null' dengan null, kalo gak bakal error.
+            // morrisChart = Morris.Area({ // Bedakan 'null' dengan null, kalo gak bakal error.
+            morrisChart = Morris.Line({ // Bedakan 'null' dengan null, kalo gak bakal error.
                 element: 'sms-stat-area-chart',
                 data: null,                
                 xkey: o.xkey,

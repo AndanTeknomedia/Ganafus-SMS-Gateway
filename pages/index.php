@@ -93,7 +93,7 @@ include "_head.php";
                                 </div>
                             </div>
                         </div>
-                        <a href="pinjam-data.php">
+                        <a href="pinjam-data.php?status=Disetujui">
                             <div class="panel-footer">
                                 <span class="pull-left">Lihat Detail</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -115,7 +115,7 @@ include "_head.php";
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="inkubator-data-peminjam.php?id=0&grup=<?php echo urlencode('Belum Kembali'); ?>">
                             <div class="panel-footer">
                                 <span class="pull-left">Lihat Detail</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -137,7 +137,7 @@ include "_head.php";
                                 </div>
                             </div>
                         </div>
-                        <a href="#">
+                        <a href="inkubator-data-peminjam.php?id=0&skor=sehat">
                             <div class="panel-footer">
                                 <span class="pull-left">Lihat Detail</span>
                                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
